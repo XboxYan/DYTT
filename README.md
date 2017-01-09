@@ -49,6 +49,35 @@ http://k.youku.com/player/getFlvPath/sid/44834550183378776b910_00/st/mp4/fileid/
 </string>
 ```
 
+* 情况3.
+
+*Bilibili资源mp4*
+
+```xml
+<string xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+{"MovieDownUrls":[],"MoviePlayUrls":[{"sourceType":{"ID":3,"Name":"Bilibili","SortBy":2},"ID":22920,"Index":1,"Name":null,"PlayUrl":"av7620304.html@page=1"},{"sourceType":{"ID":3,"Name":"Bilibili","SortBy":2},"ID":22921,"Index":2,"Name":null,"PlayUrl":"av7620304.html@page=2"},{"sourceType":{"ID":3,"Name":"Bilibili","SortBy":2},"ID":22922,"Index":3,"Name":null,"PlayUrl":"av7620304.html@page=3"},{"sourceType":{"ID":3,"Name":"Bilibili","SortBy":2},"ID":22923,"Index":4,"Name":null,"PlayUrl":"av7620304.html@page=4"},{"sourceType":{"ID":3,"Name":"Bilibili","SortBy":2},"ID":22924,"Index":5,"Name":null,"PlayUrl":"av7620304.html@page=5"},{"sourceType":{"ID":3,"Name":"Bilibili","SortBy":2},"ID":22925,"Index":6,"Name":null,"PlayUrl":"av7620304.html@page=6"},{"sourceType":{"ID":3,"Name":"Bilibili","SortBy":2},"ID":22926,"Index":7,"Name":null,"PlayUrl":"av7620304.html@page=7"},{"sourceType":{"ID":3,"Name":"Bilibili","SortBy":2},"ID":22927,"Index":8,"Name":null,"PlayUrl":"av7620304.html@page=8"},{"sourceType":{"ID":3,"Name":"Bilibili","SortBy":2},"ID":22928,"Index":9,"Name":null,"PlayUrl":"av7620304.html@page=9"}],"ID":20150,"DBID":"26410598","Name":"刑事7人 第一季","MovieTitle":null,"Cover":"https://img3.doubanio.com/view/movie_poster_cover/lpst/public/p2253550180.jpg","Tags":" 日本","Introduction":null,"ReleaseDate":"2015-07-15T00:00:00","Score":7.2,"Year":2015,"IsDisplay":true,"Type":"tv","UpdateTime":"2016-12-21T16:29:55.493"}
+</string>
+```
+
+> PlayUrl:"av7620304.html@page=1"
+
+## 请求播放串
+
+> http://api.skyrj.com/api/PlayBilibili?vid=播放串
+
+### 示例
+
+> http://api.skyrj.com/api/PlayBilibili?vid=av7620304.html@page=1
+
+### 返回XML
+
+```xml
+<string xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+http://ws.acgvideo.com/a/1c/12481570-1.mp4?wsTime=1483987999&wsSecret2=69c8f570f7ec5d573d07c41fb8912e40&oi=2067327298&rate=140
+</string>
+```
+
+
 ## 获取电影列表
 
 > http://api.skyrj.com/api/movies?pageSize=每页数目&pageIndex=当前页&orderBy=排序
@@ -203,3 +232,16 @@ https://img1.doubanio.com/view/movie_poster_cover/lpst/public/p915815758.jpg
   ]
 }
 ```
+
+## 影片分类
+
+> http://api.skyrj.com/api/movies?pageSize=50&pageIndex=1&CategoryType=**类型**&CategoryArea=**地区**&Year=**年份**
+
+### 示例
+
+> http://api.skyrj.com/api/movies?pageSize=50&pageIndex=1&CategoryType=动画&CategoryArea=日本&Year=2016
+
+### 返回XML
+
+` 同影片列表 `
+
