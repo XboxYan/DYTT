@@ -18,5 +18,7 @@ global.$ = {
 
 global.api = {
   getMovies: 'http://api.skyrj.com/api/movies/',
-  getSubject:'https://api.douban.com/v2/movie/subject/'
+  getSubject:'https://api.douban.com/v2/movie/subject/',
+  PlayYouku:'http://api.skyrj.com/api/PlayYouku?vid=',
+  PlayBilibili:'http://api.skyrj.com/api/PlayBilibili?vid='
 }

@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Touchable from './touchable';
+import Search from '../search'
 
 class TopBar extends Component {
 
@@ -26,6 +27,7 @@ class TopBar extends Component {
         <Text style={styles.apptitle} numberOfLines={1}>{this.props.title || ''}</Text>
         <Touchable
           style={styles.btn}
+          onPress={()=>navigator.push({name: Search})}
           >
           <Icon name='search' size={24} color='#fff' />
         </Touchable>

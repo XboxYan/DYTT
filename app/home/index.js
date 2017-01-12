@@ -106,7 +106,7 @@ class Home extends Component {
           style={styles.content}>
           {
             tabbar.map((el, i) => (
-              <MovieList key={'movielist' + i} sort={el.sort}  navigator={navigator} lazyload={i===index} />
+              <View key={'movielist' + i} style={styles.content}><MovieList type={0} sort={el.sort}  navigator={navigator} lazyload={i===index} /></View>
             ))
           }
         </ViewPagerAndroid>
@@ -117,7 +117,8 @@ class Home extends Component {
 
 const styles = StyleSheet.create({
   content: {
-    flex: 1
+    flex: 1,
+    height: $.HEIGHT - 90 - $.STATUS_HEIGHT,
   },
   tabbar: {
     height: 40,

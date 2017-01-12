@@ -10,7 +10,10 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
+import com.github.yamill.orientation.OrientationPackage;
 import com.cboy.rn.splashscreen.SplashScreenReactPackage;
+import com.github.wusuopu.RNIdle.RNIdlePackage;
+import com.greatdroid.reactnative.media.MediaKitPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,6 +31,9 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
             new VectorIconsPackage(),
+            new OrientationPackage(),
+            new RNIdlePackage(),
+            new MediaKitPackage(),
           new SplashScreenReactPackage()
       );
     }

@@ -245,3 +245,15 @@ https://img1.doubanio.com/view/movie_poster_cover/lpst/public/p915815758.jpg
 
 ` 同影片列表 `
 
+## 影片搜索
+
+> http://api.skyrj.com/api/movies?pageSize=50&pageIndex=1&searchKey=关键词
+
+### 示例
+
+> http://api.skyrj.com/api/movies?pageSize=50&pageIndex=1&searchKey=西游
+
+### 返回XML
+
+` 同影片列表 `
+

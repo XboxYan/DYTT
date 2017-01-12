@@ -102,7 +102,7 @@ class Index extends Component {
         renderNavigationView={() => navigationView}>
         <View style={styles.content}>
             <View style={styles.header}>
-                <TopBar title='首页' openDrawer={this.openDrawer} />
+                <TopBar navigator={navigator} title='首页' openDrawer={this.openDrawer} />
             </View>
             <Home navigator={navigator} />
         </View>

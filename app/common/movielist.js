@@ -29,12 +29,14 @@ class MovieList extends Component {
     this.state = {
       loaded: false,
       isRefreshing: false,
+      isAdd: true,
       pageIndex: 1,
       dataSource: new ListView.DataSource({
         rowHasChanged: (r1, r2) => r1 !== r2,
       }),
       _dataSource: []
     }
+    this.reload = this.reload.bind(this);
     this.getMovies = this.getMovies.bind(this);
     this.renderMovies = this.renderMovies.bind(this);
     this.onRefresh = this.onRefresh.bind(this);
@@ -43,7 +45,17 @@ class MovieList extends Component {
   }
 
   getMovies(pageIndex, Bmore) {
-    let URL = `${api.getMovies}?pageSize=50&pageIndex=${pageIndex}&${this.props.sort}`
+    let URL = '';
+    switch (this.props.type) {
+      case 0:
+        //首页列表
+        URL = `${api.getMovies}?pageSize=50&pageIndex=${pageIndex}&${this.props.sort}`;
+        break;
+      case 1:
+        //搜索列表
+        URL = `${api.getMovies}?pageSize=50&pageIndex=${pageIndex}&searchKey=${this.props.keywords}`;
+        break;
+    }
     fetch(URL)
       .then((response) => {
         if (response.ok) {
@@ -54,6 +66,8 @@ class MovieList extends Component {
         if (Bmore) {
           let dataSource = this.state._dataSource.concat(responseData);
           this.setState({
+            pageIndex: pageIndex,
+            isAdd: true,
             _dataSource: dataSource,
             dataSource: this.state.dataSource.cloneWithRows(dataSource),
           })
@@ -64,6 +78,12 @@ class MovieList extends Component {
             _dataSource: responseData,
             isRefreshing: false,
           })
+        }
+        if (responseData.length < 50) {
+          this.setState({
+            isAdd: false
+          })
+          ToastAndroid.show('已经全部加载完了~', ToastAndroid.SHORT);
         }
         LayoutAnimation.easeInEaseOut();
       })
@@ -76,8 +96,11 @@ class MovieList extends Component {
   }
 
   componentWillUpdate(prevProps, prevState) {
-    if ((prevProps.lazyload != this.props.lazyload) &&!this.state.loaded) {
+    if ((prevProps.lazyload != this.props.lazyload) && !this.state.loaded) {
       this.getMovies(1);
+    }
+    if (prevProps.keywords != this.props.keywords) {
+      this.reload();
     }
   }
 
@@ -90,17 +113,27 @@ class MovieList extends Component {
   }
 
   loadMore() {
-    ToastAndroid.show('正在加载~', ToastAndroid.SHORT);
-    let pageIndex = this.state.pageIndex;
-    pageIndex++;
+    if (this.state.isAdd) {
+      ToastAndroid.show('正在加载~', ToastAndroid.SHORT);
+      let pageIndex = this.state.pageIndex;
+      pageIndex++;
+      this.setState({
+        isAdd: false
+      });
+      this.getMovies(pageIndex, true);
+    }
+  }
+
+  reload() {
     this.setState({
-      pageIndex: pageIndex
+      loaded: false,
+      pageIndex: 1
     });
-    this.getMovies(pageIndex, true)
+    this.getMovies(1)
   }
 
   componentWillMount() {
-    if(this.props.lazyload&&!this.state.loaded){
+    if (this.props.lazyload && !this.state.loaded) {
       this.getMovies(1);
     }
   }
@@ -126,12 +159,12 @@ class MovieList extends Component {
 
   renderMovies(rowDate, i, j) {
     return (
-      <Touchable style={styles.listview} onPress={() => this.props.navigator.push({ name: Movie,id:rowDate.ID,dbid:rowDate.DBID,isTv:rowDate.Type === 'tv' })}>
+      <Touchable style={styles.listview} onPress={() => this.props.navigator.push({ name: Movie, id: rowDate.ID, dbid: rowDate.DBID, isTv: rowDate.Type === 'tv' })}>
         <View style={styles.score}><Text style={styles.scoretext}>{rowDate.Score}分</Text></View>
         <Image style={styles.listimg} source={{ uri: rowDate.Cover }} />
         <View style={styles.listtextwrap}><Text numberOfLines={1} style={styles.listtext}>{rowDate.Name}</Text></View>
         {
-          (rowDate.Type === 'tv')?<View style={styles.tvsign} ><Icon name='live-tv' size={16} color='#fff' /></View>:null
+          (rowDate.Type === 'tv') ? <View style={styles.tvsign} ><Icon name='live-tv' size={16} color='#fff' /></View> : null
         }
       </Touchable>
     )
@@ -169,7 +202,7 @@ class MovieList extends Component {
 const styles = StyleSheet.create({
   content: {
     backgroundColor: '#f1f1f1',
-    height:$.HEIGHT-90-$.STATUS_HEIGHT,
+    flex: 1
   },
   sublist: {
     flexWrap: 'wrap',
@@ -177,11 +210,11 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   listview: {
-    width: ($.WIDTH -28) / 3,
+    width: ($.WIDTH - 28) / 3,
     margin: 3,
     height: ($.WIDTH - 28) * 432 / 900 + 30,
     backgroundColor: '#fff',
-    borderRadius:2,
+    borderRadius: 2,
   },
   listtextwrap: {
     justifyContent: 'center',
@@ -194,7 +227,7 @@ const styles = StyleSheet.create({
     zIndex: 10,
     left: 0,
     bottom: 30,
-    borderTopRightRadius:10,
+    borderTopRightRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 5,
@@ -210,15 +243,15 @@ const styles = StyleSheet.create({
     color: '#666'
   },
   listimg: {
-    borderTopRightRadius:2,
-    borderTopLeftRadius:2,
+    borderTopRightRadius: 2,
+    borderTopLeftRadius: 2,
     flex: 1,
     resizeMode: 'cover'
   },
-  tvsign:{
-    position:'absolute',
-    right:5,
-    top:5
+  tvsign: {
+    position: 'absolute',
+    right: 5,
+    top: 5
   }
 });
 
