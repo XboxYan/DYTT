@@ -116,15 +116,18 @@ class Search extends Component {
   }
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
-      this.setState({
-        actions: true
-      })
       storage.load({
         key: 'searchhistory',
       }).then(ret => {
-        this.setState({ history: ret })
+        this.setState({ 
+          history: ret,
+          actions: true
+        })
       }).catch(err => {
-        this.setState({ history: [] })
+        this.setState({ 
+          history: [],
+          actions: true
+        })
       })
     })
   }
@@ -133,7 +136,7 @@ class Search extends Component {
     let { issearch, actions, history, keyworads } = this.state;
     return (
       <KeyboardAvoidingView behavior="padding" style={styles.content}>
-        <View style={styles.searchhd}>
+        <View style={[styles.searchhd,{backgroundColor: $.THEME_COLOR}]}>
           <Touchable
             style={styles.btn}
             onPress={() => this.props.navigator.pop()} >
@@ -172,7 +175,6 @@ const styles = StyleSheet.create({
   },
   searchhd: {
     paddingTop: $.STATUS_HEIGHT,
-    backgroundColor: $.THEME_COLOR,
     flexDirection: 'row',
     alignItems: 'center',
   },

@@ -3,7 +3,7 @@
  * https://github.com/facebook/react-native
  * @flow
  */
-import './const/global'
+import './const/global';
 import React, { Component } from 'react';
 import {
   AppRegistry,
@@ -31,7 +31,7 @@ let storage = new Storage({
   // 读写时在内存中缓存数据。默认启用。
   enableCache: true,
 
-  // 如果storage中没有相应数据，或数据已过期，
+  // 如果storage中没有相应数据，或数$据已过期，
   // 则会调用相应的sync同步方法，无缝返回最新数据。
   sync: {
     // 同步方法的具体说明会在后文提到
@@ -44,6 +44,9 @@ class App extends Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+      loaded: false,
+    }
   }
 
   renderScene(route, navigator) {
@@ -53,18 +56,36 @@ class App extends Component {
     );
   }
 
+  componentWillMount() {
+
+  }
+
   componentDidMount() {
-    // do anything while splash screen keeps, use await to wait for an async task.
-     SplashScreen.hide();
+    storage.load({
+      key: 'theme',
+    }).then(ret => {
+      $.THEME_COLOR = ret.color;
+      $.THEME_INDEX = ret.index;
+      this.setState({
+        loaded: true
+      })
+      SplashScreen.hide();
+    }).catch(err => {
+      this.setState({
+        loaded: true
+      })
+      SplashScreen.hide();
+    })
+
   }
 
   render() {
     return (
-      <View style={{ flex: 1 }}>
-        <StatusBar translucent={true} backgroundColor='transparent'  />
+      this.state.loaded && <View style={{ flex: 1 }}>
+        <StatusBar translucent={true} backgroundColor='transparent' />
         <Navigator
           initialRoute={{ name: Index }}
-          configureScene={(route) => Object.assign(Navigator.SceneConfigs.PushFromRight, { defaultTransitionVelocity: 10, gestures:null })}
+          configureScene={(route) => Object.assign(Navigator.SceneConfigs.PushFromRight, { defaultTransitionVelocity: 10, gestures: null })}
           renderScene={this.renderScene}
           />
       </View>

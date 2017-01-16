@@ -15,16 +15,28 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import Touchable from './common/touchable';
 import TopBar from './common/topbar';
 import Home from './home';
+import Theme from './theme';
+
 //import Orientation from 'react-native-orientation';
 
+class Item extends Component {
+  render() {
+    return (
+      <Touchable style={styles.sideitem} onPress={this.props.onPress} >
+        <Icon name={this.props.icon} size={20} color='#999' />
+        <Text style={styles.itemtext}>{this.props.name}</Text>
+      </Touchable>
+    )
+  }
+}
 
 class Index extends Component {
   constructor(props) {
     super(props);
     this.openDrawer = this.openDrawer.bind(this);
     this.onBackAndroid = this.onBackAndroid.bind(this);
+    this.navigationView = this.navigationView.bind(this);
     this.state = {
-      //selectedTab: Home,
     }
   }
 
@@ -43,16 +55,7 @@ class Index extends Component {
   componentDidMount() {
 
     //Orientation.lockToPortrait();
-    storage.load({
-      key: 'user',
-    }).then(ret => {
-      // 如果找到数据，则在then方法中返回
-      //ToastAndroid.show('用户登录成功~', ToastAndroid.SHORT);
-    }).catch(err => {
-      // 如果没有找到数据且没有同步方法，
-      // 或者有其他异常，则在catch中返回
-      //ToastAndroid.show('用户未登录~', ToastAndroid.SHORT);
-    })
+    
   }
 
   onBackAndroid() {
@@ -84,27 +87,39 @@ class Index extends Component {
   }
 
   openDrawer() {
-      this.drawer.openDrawer();
+    this.drawer.openDrawer();
+  }
+
+  navigationView() {
+    return (
+      <View style={styles.sideView}>
+        <View style={[styles.sideTop, { backgroundColor: $.THEME_COLOR }]}></View>
+        <View style={styles.sideList}>
+          <Item icon='sort' name='资源分类' />
+          <View style={styles.line}></View>
+          <Item icon='schedule' name='历史记录' />
+          <Item icon='favorite-border' name='喜欢' />
+          <View style={styles.line}></View>
+          <Item icon='colorize' name='主题颜色' onPress={() => this.props.navigator.push({ name: Theme })} />
+          <Item icon='settings' name='设置' />
+        </View>
+      </View>
+    )
   }
 
   render() {
     const { navigator } = this.props;
-    var navigationView = (
-    <View style={{flex: 1, backgroundColor: '#fff'}}>
-      <Text style={{margin: 10, fontSize: 15, textAlign: 'left'}}>I'm in the Drawer!</Text>
-    </View>
-  );
     return (
       <DrawerLayoutAndroid
         drawerWidth={250}
-        ref={(drawer) => { this.drawer = drawer; }}
+        ref={(drawer) => { this.drawer = drawer; } }
         drawerPosition={DrawerLayoutAndroid.positions.Left}
-        renderNavigationView={() => navigationView}>
+        renderNavigationView={this.navigationView}>
         <View style={styles.content}>
-            <View style={styles.header}>
-                <TopBar navigator={navigator} title='首页' openDrawer={this.openDrawer} />
-            </View>
-            <Home navigator={navigator} />
+          <View style={[styles.header, { backgroundColor: $.THEME_COLOR }]}>
+            <TopBar navigator={navigator} title='首页' openDrawer={this.openDrawer} />
+          </View>
+          <Home navigator={navigator} />
         </View>
       </DrawerLayoutAndroid>
     );
@@ -117,7 +132,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#f1f1f1',
   },
   header: {
-    backgroundColor: $.THEME_COLOR,
     paddingTop: $.STATUS_HEIGHT,
   },
   center: {
@@ -129,6 +143,34 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: '#666'
   },
+  sideView: {
+    flex: 1,
+    backgroundColor: '#fff'
+  },
+  sideTop: {
+    height: 200
+  },
+  sideitem: {
+    height: 50,
+    paddingLeft: 20,
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  itemtext: {
+    flex: 1,
+    paddingLeft: 10,
+    fontSize: 16,
+    color: '#666',
+    alignItems: 'center'
+  },
+  sideList: {
+    paddingTop: 10
+  },
+  line: {
+    marginVertical: 10,
+    backgroundColor: '#eee',
+    height: 1 / $.PixelRatio
+  }
 });
 
 module.exports = Index;

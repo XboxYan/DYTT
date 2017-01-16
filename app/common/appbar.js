@@ -28,7 +28,9 @@ class AppBar extends Component {
           <Icon name='keyboard-arrow-left' size={30} color='#fff' />
         </Touchable>
         <Text style={styles.apptitle} numberOfLines={1}>{this.props.title || ''}</Text>
-        <View style={styles.btn}></View>
+        {
+          this.props.children||<View style={styles.btn}></View>
+        }
       </View>
     );
   }

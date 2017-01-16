@@ -82,7 +82,7 @@ class VideoCon extends Component {
             style={styles.btn}
             onPress={this.setFullScreen}
             >
-            <Icon name='arrow-back' size={24} color='#fff' />
+            <Icon name='keyboard-arrow-left' size={30} color='#fff' />
           </Touchable>
           <Text style={styles.apptitle} numberOfLines={1}>{route.title || ''}</Text>
           <View style={styles.btn}></View>
@@ -92,7 +92,7 @@ class VideoCon extends Component {
           src={route.playUrl}
           ref='video'
           autoplay={true}
-          preload={'none'}
+          preload='auto'
           loop={false}
           controls={!this.state.hideStadus}
           muted={false}

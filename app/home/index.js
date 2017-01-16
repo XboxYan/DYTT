@@ -14,7 +14,7 @@ import {
   UIManager,
   ToastAndroid
 } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import Touchable from '../common/touchable';
 import MovieList from '../common/movielist';
 
@@ -85,7 +85,7 @@ class Home extends Component {
     let tabwidth = tabbar[index].text.length*14+30;
     return (
       <View style={styles.content}>
-        <View style={styles.tabbar}>
+        <View style={[styles.tabbar,{backgroundColor: $.THEME_COLOR}]}>
           <ScrollView ref='tabbar' showsHorizontalScrollIndicator={false} horizontal={true}>
             {
               tabbar.map((el, i) => (
@@ -93,7 +93,7 @@ class Home extends Component {
                   onPress={() => this.onSetPage(i)}
                   style={styles.tabbaritem}
                   key={'tabbar' + i}
-                  ><Text style={styles.tabbartext}>{el.text}</Text></Touchable>
+                  ><Text style={[styles.tabbartext,index===i&&{opacity:1}]}>{el.text}</Text></Touchable>
               ))
             }
             <View style={[styles.tabline,{width:tabwidth,left:this.state.xoffset}]}></View>
@@ -122,7 +122,6 @@ const styles = StyleSheet.create({
   },
   tabbar: {
     height: 40,
-    backgroundColor: $.THEME_COLOR,
   },
   tabbaritem: {
     paddingHorizontal: 15,
@@ -138,6 +137,7 @@ const styles = StyleSheet.create({
   },
   tabbartext: {
     fontSize: 14,
+    opacity:.8,
     color: '#fff'
   },
   center: {

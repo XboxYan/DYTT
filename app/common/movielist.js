@@ -23,6 +23,26 @@ import Movie from '../movie';
 
 //const { width, height} = Dimensions.get('window');
 
+class LazyImg extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      loaded: true,
+    }
+    this.onlayout = this.onlayout.bind(this);
+  }
+  onlayout(){
+    this.setState({
+      loaded: false,
+    })
+  }
+  render (){
+    return (
+      this.state.loaded?<Image onLayout={this.onlayout} style={this.props.style} source={this.props.source} ></Image>:<Text>正在加载</Text>
+    )
+  }
+}
+
 class MovieList extends Component {
   constructor(props) {
     super(props);
@@ -30,6 +50,7 @@ class MovieList extends Component {
       loaded: false,
       isRefreshing: false,
       isAdd: true,
+      isEmpty:false,
       pageIndex: 1,
       dataSource: new ListView.DataSource({
         rowHasChanged: (r1, r2) => r1 !== r2,
@@ -72,6 +93,13 @@ class MovieList extends Component {
             dataSource: this.state.dataSource.cloneWithRows(dataSource),
           })
         } else {
+          if(responseData.length == 0){
+            this.setState({
+              isEmpty: true,
+              loaded: true
+            })
+            return
+          }
           this.setState({
             loaded: true,
             dataSource: this.state.dataSource.cloneWithRows(responseData),
@@ -172,6 +200,9 @@ class MovieList extends Component {
   render() {
     if (!this.state.loaded) {
       return <View style={styles.content}><Loading /></View>
+    }
+    if(this.state.isEmpty){
+      return <View style={styles.content}><EmptyContent /></View>
     }
     return (
       <View style={styles.content}>

@@ -173,9 +173,9 @@ class Movie extends Component {
     let movieslist = movieinfo.MoviePlayUrls;
     return (
       <View style={styles.content}>
-        <View style={styles.moviebg}>
+        <View style={[styles.moviebg,{backgroundColor: $.THEME_COLOR}]}>
           <Image style={styles.imgbg} source={{ uri: movieinfo.Cover }} />
-          <View style={styles.moviebgmask}></View>
+          <View style={[styles.moviebgmask,{backgroundColor: $.THEME_COLOR}]}></View>
         </View>
         <AppBar style={{ paddingTop: $.STATUS_HEIGHT }} title={(movieinfo.Name || '加载中') + route.id} navigator={navigator} />
         {
@@ -186,18 +186,18 @@ class Movie extends Component {
             <View style={styles.topcover}>
               <Image style={styles.topimg} source={{ uri: movieinfo.Cover }} />
               <View style={styles.playbtnwrap}>
-                <TouchableOpacity onPress={() => navigator.push({ name: Videocon,playUrl:this.state.playUrl,title:movieinfo.Name })} activeOpacity={.8}><View style={styles.playbtn}><Icon name='play-arrow' color='#fff' size={30} /></View></TouchableOpacity>
+                <TouchableOpacity onPress={() => navigator.push({ name: Videocon,playUrl:this.state.playUrl,title:movieinfo.Name })} activeOpacity={.8}><View style={[styles.playbtn,{backgroundColor: $.THEME_COLOR}]}><Icon name='play-arrow' color='#fff' size={30} /></View></TouchableOpacity>
               </View>
             </View>
             <View style={styles.topinfo}>
-              <Text style={styles.movietitle}>{movieinfo.Name || '加载中'}</Text>
+              <Text style={[styles.movietitle,{color: $.THEME_COLOR}]}>{movieinfo.Name || '加载中'}</Text>
               <View style={styles.moviescore}>
                 <View style={styles.scorepro}>
                   {
-                    loaded ? (<View style={styles.scorepro}><View style={[styles.scorebar, { flex: moviesubject.rating.average }]}></View><View style={{ flex: 10 - moviesubject.rating.average }}></View></View>) : null
+                    loaded ? (<View style={styles.scorepro}><View style={[styles.scorebar, { backgroundColor: $.THEME_COLOR,flex: moviesubject.rating.average }]}></View><View style={{ flex: 10 - moviesubject.rating.average }}></View></View>) : null
                   }
                 </View>
-                <Text style={styles.scoretext}>{'豆瓣' + (loaded ? moviesubject.rating.average : '0.0')}</Text>
+                <Text style={[styles.scoretext,{color: $.THEME_COLOR}]}>{'豆瓣' + (loaded ? moviesubject.rating.average : '0.0')}</Text>
               </View>
               <Text style={[styles.movietext, { fontStyle: 'italic' }]}>{_loaded && movieinfo.ReleaseDate.slice(0, 10)}</Text>
               <Text style={styles.movietext}>{'导演/' + (loaded ? moviesubject.directors.map((el) => ' ' + el.name) : ' ...')}</Text>
@@ -241,7 +241,7 @@ class Movie extends Component {
                         >
                         <Text style={styles.movieplaytext}>{movieslist[i].Name ? movieslist[i].Name : (route.isTv ? (i + 1) : '资源' + (i + 1))}</Text>
                         {
-                          (i === sourceIndex) ? <View style={styles.currentplay}></View> : null
+                          (i === sourceIndex) ? <View style={[styles.currentplay,{backgroundColor: $.THEME_COLOR}]}></View> : null
                         }
                       </TouchableOpacity>
                     )
@@ -249,7 +249,7 @@ class Movie extends Component {
                 }
               </View>
             </View>
-            <View style={styles.Lline}></View>
+            <View style={[styles.Lline,{backgroundColor: $.THEME_COLOR}]}></View>
           </View>
           <View style={styles.papercon}>
             <View style={styles.paperinner} onLayout={this.onLayout} >
@@ -266,10 +266,10 @@ class Movie extends Component {
                     }),
                     LayoutAnimation.spring()
                   )}
-                  style={styles.slidebtn} ><Text style={styles.slidebtntxt}>{isSlide ? '收起简介' : '展开简介'}</Text></TouchableOpacity> : null
+                  style={styles.slidebtn} ><Text style={[styles.slidebtntxt,{color: $.THEME_COLOR,}]}>{isSlide ? '收起简介' : '展开简介'}</Text></TouchableOpacity> : null
               }
             </View>
-            <View style={styles.Lline}></View>
+            <View style={[styles.Lline,{backgroundColor: $.THEME_COLOR}]}></View>
           </View>
         </ScrollView>
       </View>
@@ -286,8 +286,7 @@ const styles = StyleSheet.create({
     height: $.WIDTH * 9 / 16,
     paddingTop: $.STATUS_HEIGHT,
     width: $.WIDTH,
-    position: 'absolute',
-    backgroundColor: $.THEME_COLOR,
+    position: 'absolute'
   },
   moviebgmask: {
     position: 'absolute',
@@ -295,7 +294,6 @@ const styles = StyleSheet.create({
     top: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: $.THEME_COLOR,
     opacity: .8
   },
   imgbg: {
@@ -329,7 +327,6 @@ const styles = StyleSheet.create({
   movietitle: {
     paddingBottom: 5,
     fontSize: 18,
-    color: $.THEME_COLOR
   },
   moviescore: {
     flexDirection: 'row',
@@ -347,12 +344,10 @@ const styles = StyleSheet.create({
   scorebar: {
     height: 6,
     flex: 0,
-    backgroundColor: $.THEME_COLOR
   },
   scoretext: {
     marginLeft: 10,
     fontSize: 14,
-    color: $.THEME_COLOR
   },
   movietext: {
     fontSize: 14,
@@ -367,7 +362,6 @@ const styles = StyleSheet.create({
     zIndex: 10,
     left: 0,
     top: 13,
-    backgroundColor: $.THEME_COLOR,
     width: 4,
     height: 20
   },
@@ -379,7 +373,6 @@ const styles = StyleSheet.create({
   },
   slidebtntxt: {
     fontSize: 12,
-    color: $.THEME_COLOR,
   },
   movieplayurl: {
     height: 40,
@@ -392,7 +385,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   movieplaylist: {
-    marginTop: 10,
+    marginTop: 5,
     flexWrap: 'wrap',
     flexDirection: 'row',
   },
@@ -409,7 +402,6 @@ const styles = StyleSheet.create({
     width: 5,
     height: 5,
     borderRadius: 5,
-    backgroundColor: $.THEME_COLOR,
   },
   moviegenres: {
     height: 26,
@@ -418,6 +410,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 13,
     borderRadius: 13,
     marginRight: 5,
+    marginTop: 5,
     backgroundColor: '#eee'
   },
   playbtnwrap: {
@@ -432,7 +425,6 @@ const styles = StyleSheet.create({
   playbtn: {
     width: 40,
     height: 40,
-    backgroundColor: $.THEME_COLOR,
     opacity: .9,
     borderRadius: 20,
     justifyContent: 'center',

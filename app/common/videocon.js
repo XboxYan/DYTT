@@ -148,7 +148,7 @@ class VideoCon extends Component {
             style={styles.btn}
             onPress={this.setFullScreen}
             >
-            <Icon name='arrow-back' size={24} color='#fff' />
+            <Icon name='keyboard-arrow-left' size={30} color='red' />
           </Touchable>
           <Text style={styles.apptitle} numberOfLines={1}>{this.props.title || ''}</Text>
           <View style={styles.btn}></View>
