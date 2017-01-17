@@ -48,7 +48,7 @@ class VideoHistory extends Component {
     $.THEME_COLOR = this.state.theme_color;
     $.THEME_INDEX = this.state.theme_index;
     storage.save({
-      key: 'theme',  // 注意:请不要在key中使用_下划线符号!
+      key: 'theme',
       rawData: {
         color: this.state.theme_color,
         index: this.state.theme_index
