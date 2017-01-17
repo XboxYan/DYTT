@@ -9,6 +9,7 @@ import {
   Image,
   ScrollView,
   UIManager,
+  Animated,
   TouchableOpacity,
   LayoutAnimation,
   InteractionManager,
@@ -34,11 +35,13 @@ class Movie extends Component {
       sourceIndex: 0,
       playUrl: '',
       movieinfo: {},
-      moviesubject: {}
+      moviesubject: {},
+      AnimatedValue: new Animated.Value(0),
     }
     this.getPlayUrl = this.getPlayUrl.bind(this);
     this.turnSource = this.turnSource.bind(this);
     this.onLayout = this.onLayout.bind(this);
+    this.toPlay = this.toPlay.bind(this);
     UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
   }
 
@@ -167,64 +170,111 @@ class Movie extends Component {
       });
   }
 
+  toPlay() {
+    Animated.timing(this.state.AnimatedValue, {
+      toValue: 1,
+    }).start();
+  }
+
   render() {
     const { navigator, route } = this.props;
     let { movieinfo, moviesubject, _loaded, loaded, isSlide, sourceIndex, isMore } = this.state;
     let movieslist = movieinfo.MoviePlayUrls;
+    let R = ($.WIDTH - 40)/2;
     return (
       <View style={styles.content}>
-        <View style={[styles.moviebg,{backgroundColor: $.THEME_COLOR}]}>
+        <View style={[styles.moviebg, { backgroundColor: $.THEME_COLOR }]}>
           <Image style={styles.imgbg} source={{ uri: movieinfo.Cover }} />
-          <View style={[styles.moviebgmask,{backgroundColor: $.THEME_COLOR}]}></View>
+          <View style={[styles.moviebgmask, { backgroundColor: $.THEME_COLOR }]}></View>
         </View>
         <AppBar style={{ paddingTop: $.STATUS_HEIGHT }} title={(movieinfo.Name || '加载中') + route.id} navigator={navigator} />
         {
-          //<View style={{height:$.WIDTH*9/16,backgroundColor:'#000'}}></View>
         }
         <ScrollView showsVerticalScrollIndicator={false} style={[styles.content, { backgroundColor: 'transparent' }]}>
           <View style={[styles.papercon, styles.flexDirectionR]}>
             <View style={styles.topcover}>
               <Image style={styles.topimg} source={{ uri: movieinfo.Cover }} />
-              <View style={styles.playbtnwrap}>
-                <TouchableOpacity onPress={() => navigator.push({ name: Videocon,playUrl:this.state.playUrl,title:movieinfo.Name })} activeOpacity={.8}><View style={[styles.playbtn,{backgroundColor: $.THEME_COLOR}]}><Icon name='play-arrow' color='#fff' size={30} /></View></TouchableOpacity>
-              </View>
             </View>
+            <Animated.View style={[styles.playbtnwrap, {
+              right: this.state.AnimatedValue.interpolate({
+                inputRange: [0, 1],
+                outputRange: [$.WIDTH - 140, 10]
+              }),
+            }]}>
+              <TouchableOpacity onPress={this.toPlay} activeOpacity={.8}>
+                <Animated.View
+                  style={[styles.playbtn, {
+                    backgroundColor: $.THEME_COLOR,
+                    width: this.state.AnimatedValue.interpolate({
+                      inputRange: [0, .5, 1],
+                      outputRange: [40, R, 2*R]
+                    }),
+                    height: this.state.AnimatedValue.interpolate({
+                      inputRange: [0, .5, 1],
+                      outputRange: [40, R, R]
+                    }),
+                    borderRadius: this.state.AnimatedValue.interpolate({
+                      inputRange: [0, .5, 1],
+                      outputRange: [R, R, 2]
+                    }),
+                    opacity: this.state.AnimatedValue.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [.9, .5]
+                    })
+                  }]}>
+                  <Icon name='play-arrow' color='#fff' size={30} />
+                </Animated.View>
+              </TouchableOpacity>
+            </Animated.View>
             <View style={styles.topinfo}>
-              <Text style={[styles.movietitle,{color: $.THEME_COLOR}]}>{movieinfo.Name || '加载中'}</Text>
+              <Text style={[styles.movietitle, { color: $.THEME_COLOR }]}>{movieinfo.Name || '加载中'}</Text>
               <View style={styles.moviescore}>
                 <View style={styles.scorepro}>
                   {
-                    loaded ? (<View style={styles.scorepro}><View style={[styles.scorebar, { backgroundColor: $.THEME_COLOR,flex: moviesubject.rating.average }]}></View><View style={{ flex: 10 - moviesubject.rating.average }}></View></View>) : null
+                    loaded ? (<View style={styles.scorepro}><View style={[styles.scorebar, { backgroundColor: $.THEME_COLOR, flex: moviesubject.rating.average }]}></View><View style={{ flex: 10 - moviesubject.rating.average }}></View></View>) : null
                   }
                 </View>
-                <Text style={[styles.scoretext,{color: $.THEME_COLOR}]}>{'豆瓣' + (loaded ? moviesubject.rating.average : '0.0')}</Text>
+                <Text style={[styles.scoretext, { color: $.THEME_COLOR }]}>{'豆瓣' + (loaded ? moviesubject.rating.average : '0.0')}</Text>
               </View>
               <Text style={[styles.movietext, { fontStyle: 'italic' }]}>{_loaded && movieinfo.ReleaseDate.slice(0, 10)}</Text>
               <Text style={styles.movietext}>{'导演/' + (loaded ? moviesubject.directors.map((el) => ' ' + el.name) : ' ...')}</Text>
               <Text style={styles.movietext}>{'主演/' + (loaded ? moviesubject.casts.map((el) => ' ' + el.name) : ' ...')}</Text>
-              <View style={styles.movieplaylist}>
-                {
-                  loaded ? moviesubject.countries.map((el, i) => (
-                    <TouchableOpacity
-                      activeOpacity={.8}
-                      style={styles.moviegenres}
-                      key={i}
-                      ><Text style={styles.movieplaytext}>{el}</Text></TouchableOpacity>
-                  )) : null
-                }
-              </View>
-              <View style={styles.movieplaylist}>
-                {
-                  loaded ? moviesubject.genres.map((el, i) => (
-                    <TouchableOpacity
-                      activeOpacity={.8}
-                      style={styles.moviegenres}
-                      key={i}
-                      ><Text style={styles.movieplaytext}>{el}</Text></TouchableOpacity>
-                  )) : null
-                }
-              </View>
             </View>
+          </View>
+          <View style={styles.papercon}>
+            <View style={styles.paperinner} onLayout={this.onLayout} >
+              <Text style={styles.movietext}>分类</Text>
+              {
+                loaded ? (
+                  <View>
+                    <View style={styles.movieplaylist}>
+                      {
+                        moviesubject.countries.map((el, i) => (
+                          <TouchableOpacity
+                            activeOpacity={.8}
+                            style={styles.moviegenres}
+                            key={i}
+                            ><Text style={styles.movieplaytext}>{el}</Text></TouchableOpacity>
+                        ))
+                      }
+                    </View>
+                    <View style={styles.movieplaylist}>
+                      {
+                        moviesubject.genres.map((el, i) => (
+                          <TouchableOpacity
+                            activeOpacity={.8}
+                            style={styles.moviegenres}
+                            key={i}
+                            ><Text style={styles.movieplaytext}>{el}</Text></TouchableOpacity>
+                        ))
+                      }
+                    </View>
+                  </View>
+                ) : <View style={styles.movieplaylist}><View style={styles.moviegenres}><Text style={styles.movieplaytext}></Text></View></View>
+              }
+
+            </View>
+            <View style={[styles.Lline, { backgroundColor: $.THEME_COLOR }]}></View>
           </View>
           <View style={styles.papercon}>
             <View style={styles.paperinner}>
@@ -241,15 +291,15 @@ class Movie extends Component {
                         >
                         <Text style={styles.movieplaytext}>{movieslist[i].Name ? movieslist[i].Name : (route.isTv ? (i + 1) : '资源' + (i + 1))}</Text>
                         {
-                          (i === sourceIndex) ? <View style={[styles.currentplay,{backgroundColor: $.THEME_COLOR}]}></View> : null
+                          (i === sourceIndex) ? <View style={[styles.currentplay, { backgroundColor: $.THEME_COLOR }]}></View> : null
                         }
                       </TouchableOpacity>
                     )
-                  ) : <Loading size='small' />
+                  ) : <View style={styles.movieplayurl}></View>
                 }
               </View>
             </View>
-            <View style={[styles.Lline,{backgroundColor: $.THEME_COLOR}]}></View>
+            <View style={[styles.Lline, { backgroundColor: $.THEME_COLOR }]}></View>
           </View>
           <View style={styles.papercon}>
             <View style={styles.paperinner} onLayout={this.onLayout} >
@@ -266,10 +316,10 @@ class Movie extends Component {
                     }),
                     LayoutAnimation.spring()
                   )}
-                  style={styles.slidebtn} ><Text style={[styles.slidebtntxt,{color: $.THEME_COLOR,}]}>{isSlide ? '收起简介' : '展开简介'}</Text></TouchableOpacity> : null
+                  style={styles.slidebtn} ><Text style={[styles.slidebtntxt, { color: $.THEME_COLOR, }]}>{isSlide ? '收起简介' : '展开简介'}</Text></TouchableOpacity> : null
               }
             </View>
-            <View style={[styles.Lline,{backgroundColor: $.THEME_COLOR}]}></View>
+            <View style={[styles.Lline, { backgroundColor: $.THEME_COLOR }]}></View>
           </View>
         </ScrollView>
       </View>
@@ -313,7 +363,9 @@ const styles = StyleSheet.create({
   },
   topcover: {
     width: 110,
-    height: 160
+    height: 160,
+    backgroundColor: '#eee',
+    borderRadius: 2,
   },
   topimg: {
     flex: 1,
@@ -322,7 +374,7 @@ const styles = StyleSheet.create({
   },
   topinfo: {
     flex: 1,
-    marginLeft: 15
+    marginLeft: 15,
   },
   movietitle: {
     paddingBottom: 5,
@@ -376,6 +428,7 @@ const styles = StyleSheet.create({
   },
   movieplayurl: {
     height: 40,
+    minWidth: 50,
     backgroundColor: '#eee',
     borderBottomRightRadius: 10,
     borderTopLeftRadius: 10,
@@ -405,6 +458,7 @@ const styles = StyleSheet.create({
   },
   moviegenres: {
     height: 26,
+    minWidth: 50,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 13,
@@ -415,10 +469,12 @@ const styles = StyleSheet.create({
   },
   playbtnwrap: {
     position: 'absolute',
-    left: 0,
-    top: 0,
-    right: 0,
-    bottom: 0,
+    left: 10,
+    top: 10,
+    right: $.WIDTH - 140,
+    bottom: 10,
+    zIndex: 10,
+    overflow: 'hidden',
     justifyContent: 'center',
     alignItems: 'center',
   },
