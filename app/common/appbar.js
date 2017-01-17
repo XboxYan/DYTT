@@ -28,7 +28,9 @@ class AppBar extends Component {
           <Icon name='keyboard-arrow-left' size={30} color='#fff' />
         </Touchable>
         <Text style={styles.apptitle} numberOfLines={1}>{this.props.title || ''}</Text>
-        <View style={styles.btn}></View>
+        {
+          this.props.children||<View style={styles.btn}></View>
+        }
       </View>
     );
   }
@@ -47,7 +49,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   apptitle: {
-    textAlign: 'center',
+    //textAlign: 'center',
     flex: 1,
     fontSize: 16,
     color: '#fff'

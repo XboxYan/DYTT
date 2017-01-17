@@ -12,6 +12,8 @@ import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 import com.github.yamill.orientation.OrientationPackage;
 import com.cboy.rn.splashscreen.SplashScreenReactPackage;
+import com.github.wusuopu.RNIdle.RNIdlePackage;
+import com.greatdroid.reactnative.media.MediaKitPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,6 +32,11 @@ public class MainApplication extends Application implements ReactApplication {
           new MainReactPackage(),
             new VectorIconsPackage(),
             new OrientationPackage(),
+<<<<<<< HEAD
+=======
+            new RNIdlePackage(),
+            new MediaKitPackage(),
+>>>>>>> 69e3280a6314e356259be85414e5973b42a492da
           new SplashScreenReactPackage()
       );
     }
