@@ -6,12 +6,8 @@ include ':app'
 include ':react-native-splash-screen'
 project(':react-native-splash-screen').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-splash-screen/android')
 include ':react-native-orientation'
-<<<<<<< HEAD
-project(':react-native-orientation').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-orientation/android')
-=======
 project(':react-native-orientation').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-orientation/android')
 include ':react-native-idle'
 project(':react-native-idle').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-idle/android')
 include ':react-native-media-kit'
 project(':react-native-media-kit').projectDir = new File('../node_modules/react-native-media-kit/android')
->>>>>>> 69e3280a6314e356259be85414e5973b42a492da

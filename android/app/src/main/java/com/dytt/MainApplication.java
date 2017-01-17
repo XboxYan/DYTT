@@ -32,11 +32,8 @@ public class MainApplication extends Application implements ReactApplication {
           new MainReactPackage(),
             new VectorIconsPackage(),
             new OrientationPackage(),
-<<<<<<< HEAD
-=======
             new RNIdlePackage(),
             new MediaKitPackage(),
->>>>>>> 69e3280a6314e356259be85414e5973b42a492da
           new SplashScreenReactPackage()
       );
     }

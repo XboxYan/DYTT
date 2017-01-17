@@ -31,10 +31,6 @@ class Movie extends Component {
       _loaded: false,
       isSlide: false,
       isMore: false,
-<<<<<<< HEAD
-=======
-      playUrl: '',
->>>>>>> 69e3280a6314e356259be85414e5973b42a492da
       sourceIndex: 0,
       playUrl: '',
       movieinfo: {},
@@ -43,7 +39,6 @@ class Movie extends Component {
     this.getPlayUrl = this.getPlayUrl.bind(this);
     this.turnSource = this.turnSource.bind(this);
     this.onLayout = this.onLayout.bind(this);
-    this.getPlayurl = this.getPlayurl.bind(this);
     UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
   }
 
@@ -62,60 +57,6 @@ class Movie extends Component {
     this.setState({
       sourceIndex: index
     })
-<<<<<<< HEAD
-    this.getPlayurl(index);
-  }
-
-  getPlayurl(index) {
-    let MoviePlayUrls = this.state.movieinfo.MoviePlayUrls[index];
-    let playUrl = MoviePlayUrls.PlayUrl;
-    switch (MoviePlayUrls.sourceType.Name) {
-      case 'm3u8':
-        this.setState({
-          playUrl: playUrl
-        })
-        break;
-      case 'Youku':
-        //Youku
-        fetch(`${api.PlayYouku}${playUrl}`)
-          .then((response) => {
-            if (response.ok) {
-              return response.json()
-            }
-          })
-          .then((responseData) => {
-            this.setState({
-              playUrl: responseData
-            })
-          })
-          .catch(() => {
-            this.setState({
-              playUrl: ''
-            })
-            ToastAndroid.show('网络有误~', ToastAndroid.SHORT);
-          });
-        break;
-      case 'Bilibili':
-        //Bilibili
-        fetch(`${api.PlayBilibili}${playUrl}`)
-          .then((response) => {
-            if (response.ok) {
-              return response.json()
-            }
-          })
-          .then((responseData) => {
-            this.setState({
-              playUrl: responseData
-            })
-          })
-          .catch(() => {
-            this.setState({
-              playUrl: ''
-            })
-            ToastAndroid.show('网络有误~', ToastAndroid.SHORT);
-          });
-        break;
-=======
     this.getPlayUrl(index);
   }
 
@@ -165,7 +106,6 @@ class Movie extends Component {
       this.setState({
         playUrl: playUrl
       })
->>>>>>> 69e3280a6314e356259be85414e5973b42a492da
     }
   }
 
@@ -216,11 +156,7 @@ class Movie extends Component {
           _loaded: true,
           movieinfo: Data
         })
-<<<<<<< HEAD
-        this.getPlayurl(0);
-=======
         this.getPlayUrl(0);
->>>>>>> 69e3280a6314e356259be85414e5973b42a492da
         LayoutAnimation.spring();
       })
       .catch(() => {
@@ -250,15 +186,7 @@ class Movie extends Component {
             <View style={styles.topcover}>
               <Image style={styles.topimg} source={{ uri: movieinfo.Cover }} />
               <View style={styles.playbtnwrap}>
-<<<<<<< HEAD
-                <TouchableOpacity
-                  onPress={() => alert(this.state.playUrl)}
-                  activeOpacity={.8}>
-                  <View style={styles.playbtn}><Icon name='play-arrow' color='#fff' size={30} /></View>
-                </TouchableOpacity>
-=======
                 <TouchableOpacity onPress={() => navigator.push({ name: Videocon,playUrl:this.state.playUrl,title:movieinfo.Name })} activeOpacity={.8}><View style={[styles.playbtn,{backgroundColor: $.THEME_COLOR}]}><Icon name='play-arrow' color='#fff' size={30} /></View></TouchableOpacity>
->>>>>>> 69e3280a6314e356259be85414e5973b42a492da
               </View>
             </View>
             <View style={styles.topinfo}>
@@ -269,11 +197,7 @@ class Movie extends Component {
                     loaded ? (<View style={styles.scorepro}><View style={[styles.scorebar, { backgroundColor: $.THEME_COLOR,flex: moviesubject.rating.average }]}></View><View style={{ flex: 10 - moviesubject.rating.average }}></View></View>) : null
                   }
                 </View>
-<<<<<<< HEAD
-                <Text style={styles.scoretext}>{'豆瓣' + (loaded ? moviesubject.rating.average : '0.0')}</Text>
-=======
                 <Text style={[styles.scoretext,{color: $.THEME_COLOR}]}>{'豆瓣' + (loaded ? moviesubject.rating.average : '0.0')}</Text>
->>>>>>> 69e3280a6314e356259be85414e5973b42a492da
               </View>
               <Text style={[styles.movietext, { fontStyle: 'italic' }]}>{_loaded && movieinfo.ReleaseDate.slice(0, 10)}</Text>
               <Text style={styles.movietext}>{'导演/' + (loaded ? moviesubject.directors.map((el) => ' ' + el.name) : ' ...')}</Text>
@@ -501,10 +425,6 @@ const styles = StyleSheet.create({
   playbtn: {
     width: 40,
     height: 40,
-<<<<<<< HEAD
-    backgroundColor: $.THEME_COLOR,
-=======
->>>>>>> 69e3280a6314e356259be85414e5973b42a492da
     opacity: .9,
     borderRadius: 20,
     justifyContent: 'center',
