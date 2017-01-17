@@ -29,13 +29,15 @@ class Movie extends Component {
       loaded: false,
       _loaded: false,
       isSlide: false,
-      isMore:false,
+      isMore: false,
       sourceIndex: 0,
+      playUrl: '',
       movieinfo: {},
       moviesubject: {}
     }
     this.turnSource = this.turnSource.bind(this);
     this.onLayout = this.onLayout.bind(this);
+    this.getPlayurl = this.getPlayurl.bind(this);
     UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
   }
 
@@ -54,6 +56,59 @@ class Movie extends Component {
     this.setState({
       sourceIndex: index
     })
+    this.getPlayurl(index);
+  }
+
+  getPlayurl(index) {
+    let MoviePlayUrls = this.state.movieinfo.MoviePlayUrls[index];
+    let playUrl = MoviePlayUrls.PlayUrl;
+    switch (MoviePlayUrls.sourceType.Name) {
+      case 'm3u8':
+        this.setState({
+          playUrl: playUrl
+        })
+        break;
+      case 'Youku':
+        //Youku
+        fetch(`${api.PlayYouku}${playUrl}`)
+          .then((response) => {
+            if (response.ok) {
+              return response.json()
+            }
+          })
+          .then((responseData) => {
+            this.setState({
+              playUrl: responseData
+            })
+          })
+          .catch(() => {
+            this.setState({
+              playUrl: ''
+            })
+            ToastAndroid.show('网络有误~', ToastAndroid.SHORT);
+          });
+        break;
+      case 'Bilibili':
+        //Bilibili
+        fetch(`${api.PlayBilibili}${playUrl}`)
+          .then((response) => {
+            if (response.ok) {
+              return response.json()
+            }
+          })
+          .then((responseData) => {
+            this.setState({
+              playUrl: responseData
+            })
+          })
+          .catch(() => {
+            this.setState({
+              playUrl: ''
+            })
+            ToastAndroid.show('网络有误~', ToastAndroid.SHORT);
+          });
+        break;
+    }
   }
 
   getMovieSubject() {
@@ -80,10 +135,10 @@ class Movie extends Component {
       });
   }
 
-  onLayout(e){
-    if(e.nativeEvent.layout.height>110){
+  onLayout(e) {
+    if (e.nativeEvent.layout.height > 110) {
       this.setState({
-        isMore:true
+        isMore: true
       })
     }
   }
@@ -103,6 +158,7 @@ class Movie extends Component {
           _loaded: true,
           movieinfo: Data
         })
+        this.getPlayurl(0);
         LayoutAnimation.spring();
       })
       .catch(() => {
@@ -115,7 +171,7 @@ class Movie extends Component {
 
   render() {
     const { navigator, route } = this.props;
-    let { movieinfo, moviesubject, _loaded, loaded, isSlide, sourceIndex,isMore } = this.state;
+    let { movieinfo, moviesubject, _loaded, loaded, isSlide, sourceIndex, isMore } = this.state;
     let movieslist = movieinfo.MoviePlayUrls;
     return (
       <View style={styles.content}>
@@ -123,7 +179,7 @@ class Movie extends Component {
           <Image style={styles.imgbg} source={{ uri: movieinfo.Cover }} />
           <View style={styles.moviebgmask}></View>
         </View>
-        <AppBar style={{ paddingTop: $.STATUS_HEIGHT }} title={ (movieinfo.Name || '加载中') + route.id} navigator={navigator} />
+        <AppBar style={{ paddingTop: $.STATUS_HEIGHT }} title={(movieinfo.Name || '加载中') + route.id} navigator={navigator} />
         {
           //<View style={{height:$.WIDTH*9/16,backgroundColor:'#000'}}></View>
         }
@@ -131,9 +187,13 @@ class Movie extends Component {
           <View style={[styles.papercon, styles.flexDirectionR]}>
             <View style={styles.topcover}>
               <Image style={styles.topimg} source={{ uri: movieinfo.Cover }} />
-              {
-                <View style={styles.playbtnwrap}><TouchableOpacity activeOpacity={.8}><View style={styles.playbtn}><Icon name='play-arrow' color='#fff' size={30} /></View></TouchableOpacity></View>
-              }
+              <View style={styles.playbtnwrap}>
+                <TouchableOpacity
+                  onPress={() => alert(this.state.playUrl)}
+                  activeOpacity={.8}>
+                  <View style={styles.playbtn}><Icon name='play-arrow' color='#fff' size={30} /></View>
+                </TouchableOpacity>
+              </View>
             </View>
             <View style={styles.topinfo}>
               <Text style={styles.movietitle}>{movieinfo.Name || '加载中'}</Text>
@@ -143,9 +203,9 @@ class Movie extends Component {
                     loaded ? (<View style={styles.scorepro}><View style={[styles.scorebar, { flex: moviesubject.rating.average }]}></View><View style={{ flex: 10 - moviesubject.rating.average }}></View></View>) : null
                   }
                 </View>
-                <Text style={styles.scoretext}>{'豆瓣'+ (loaded ? moviesubject.rating.average : '0.0')}</Text>
+                <Text style={styles.scoretext}>{'豆瓣' + (loaded ? moviesubject.rating.average : '0.0')}</Text>
               </View>
-              <Text style={[styles.movietext,{fontStyle:'italic'}]}>{_loaded && movieinfo.ReleaseDate.slice(0, 10)}</Text>
+              <Text style={[styles.movietext, { fontStyle: 'italic' }]}>{_loaded && movieinfo.ReleaseDate.slice(0, 10)}</Text>
               <Text style={styles.movietext}>{'导演/' + (loaded ? moviesubject.directors.map((el) => ' ' + el.name) : ' ...')}</Text>
               <Text style={styles.movietext}>{'主演/' + (loaded ? moviesubject.casts.map((el) => ' ' + el.name) : ' ...')}</Text>
               <View style={styles.movieplaylist}>
@@ -229,7 +289,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f1f1f1',
   },
   moviebg: {
-    height: $.WIDTH*9/16,
+    height: $.WIDTH * 9 / 16,
     paddingTop: $.STATUS_HEIGHT,
     width: $.WIDTH,
     position: 'absolute',
@@ -366,21 +426,21 @@ const styles = StyleSheet.create({
     marginRight: 5,
     backgroundColor: '#eee'
   },
-  playbtnwrap:{
-    position:'absolute',
-    left:0,
-    top:0,
-    right:0,
-    bottom:0,
+  playbtnwrap: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    right: 0,
+    bottom: 0,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  playbtn:{
-    width:40,
-    height:40,
-    backgroundColor:$.THEME_COLOR,
-    opacity:.9,
-    borderRadius:20,
+  playbtn: {
+    width: 40,
+    height: 40,
+    backgroundColor: $.THEME_COLOR,
+    opacity: .9,
+    borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center'
   }
