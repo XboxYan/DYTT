@@ -16,6 +16,7 @@ import Touchable from './common/touchable';
 import TopBar from './common/topbar';
 import Home from './home';
 import Theme from './theme';
+import History from './history';
 
 //import Orientation from 'react-native-orientation';
 
@@ -97,7 +98,7 @@ class Index extends Component {
         <View style={styles.sideList}>
           <Item icon='sort' name='资源分类' />
           <View style={styles.line}></View>
-          <Item icon='schedule' name='历史记录' />
+          <Item icon='schedule' name='历史记录' onPress={() => this.props.navigator.push({ name: History })}  />
           <Item icon='favorite-border' name='喜欢' />
           <View style={styles.line}></View>
           <Item icon='colorize' name='主题颜色' onPress={() => this.props.navigator.push({ name: Theme })} />
