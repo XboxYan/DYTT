@@ -85,7 +85,7 @@ class App extends Component {
         <StatusBar translucent={true} backgroundColor='transparent' />
         <Navigator
           initialRoute={{ name: Index }}
-          configureScene={(route) => Object.assign(Navigator.SceneConfigs.PushFromRight, { defaultTransitionVelocity: 10, gestures: null })}
+          configureScene={(route) => Object.assign(Navigator.SceneConfigs.PushFromRight, { defaultTransitionVelocity: 10 })}
           renderScene={this.renderScene}
           />
       </View>

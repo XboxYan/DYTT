@@ -8,6 +8,7 @@ import {
   View,
   Image,
   ScrollView,
+  StatusBar,
   UIManager,
   Animated,
   TouchableOpacity,
@@ -16,44 +17,83 @@ import {
   ToastAndroid
 } from 'react-native';
 import Touchable from '../common/touchable';
-import AppBar from '../common/appbar';
 import Loading from '../common/loading';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import Videocon from '../video';
-//import Orientation from 'react-native-orientation';
+import { Video } from 'react-native-media-kit';
+import Orientation from 'react-native-orientation';
+import RNIdle from 'react-native-idle'
 
+global.$FULLSCREEN = false;
 
 class Movie extends Component {
   constructor(props) {
     super(props);
+    $FULLSCREEN = false;
     this.state = {
       actions: false,
       loaded: false,
       _loaded: false,
       isSlide: false,
       isMore: false,
+      isPlay: false,
+      fullScreen: false,
+      hideStadus: false,
       sourceIndex: 0,
       playUrl: '',
       movieinfo: {},
       moviesubject: {},
       AnimatedValue: new Animated.Value(0),
+      yOffset: new Animated.Value(0),
     }
+    this.setFullScreen = this.setFullScreen.bind(this);
     this.getPlayUrl = this.getPlayUrl.bind(this);
     this.turnSource = this.turnSource.bind(this);
     this.onLayout = this.onLayout.bind(this);
     this.toPlay = this.toPlay.bind(this);
+    //处理安卓Back键
+    const { navigator } = this.props;
+    const routers = navigator.getCurrentRoutes();
+    const top = routers[routers.length - 1];
+    top.handleBack = this.handleBack.bind(this);
     UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
+  }
+
+  handleBack() {
+    if (this.state.fullScreen) {
+      this.setFullScreen();
+    } else {
+      if (this.state.isPlay) {
+        this.refs.video.pause();
+        //记录播放进度
+      }
+      this.props.navigator.pop();
+    }
   }
 
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
       this.getMovieInfo();
       this.getMovieSubject();
+      RNIdle.disableIdleTimer();
     })
   }
 
-  componentWillMount() {
-    //this.getMovieInfo()
+  componentWillUnmount() {
+    RNIdle.enableIdleTimer();
+  }
+
+  setFullScreen() {
+    if ($FULLSCREEN) {
+      Orientation.lockToPortrait();
+    } else {
+      this.scrollview.scrollTo({ y: 0 });
+      Orientation.lockToLandscape();
+    }
+    $FULLSCREEN = !$FULLSCREEN;
+    this.setState({
+      fullScreen: !this.state.fullScreen,
+      hideStadus: false
+    })
   }
 
   turnSource(index) {
@@ -173,59 +213,117 @@ class Movie extends Component {
   toPlay() {
     Animated.timing(this.state.AnimatedValue, {
       toValue: 1,
-    }).start();
+    }).start(() => {
+      this.setState({
+        isPlay: true
+      })
+    });
   }
+
 
   render() {
     const { navigator, route } = this.props;
-    let { movieinfo, moviesubject, _loaded, loaded, isSlide, sourceIndex, isMore } = this.state;
+    let { movieinfo, moviesubject, _loaded, loaded, isSlide, sourceIndex, isMore, fullScreen } = this.state;
     let movieslist = movieinfo.MoviePlayUrls;
-    let R = ($.WIDTH - 40)/2;
+    let R = ($.WIDTH - 40) / 2;
+
     return (
       <View style={styles.content}>
-        <View style={[styles.moviebg, { backgroundColor: $.THEME_COLOR }]}>
-          <Image style={styles.imgbg} source={{ uri: movieinfo.Cover }} />
-          <View style={[styles.moviebgmask, { backgroundColor: $.THEME_COLOR }]}></View>
+        <View style={[styles.appbar, { paddingTop: $.STATUS_HEIGHT, backgroundColor: 'transparent' }, fullScreen && { zIndex: -1 }]}>
+          <Animated.View style={[styles.appbg, {
+            opacity: this.state.yOffset.interpolate({
+              inputRange: [0, $.STATUS_HEIGHT + 50],
+              outputRange: [0, 1]
+            })
+          }]}></Animated.View>
+          <Touchable
+            style={styles.btn}
+            onPress={() => navigator.pop()}
+            >
+            <Icon name='keyboard-arrow-left' size={30} color='#fff' />
+          </Touchable>
+          <View style={{ flex: 1 }}>
+            <Text> </Text>
+            <Animated.Text style={[styles.title, {
+              opacity: this.state.yOffset.interpolate({
+                inputRange: [0, $.STATUS_HEIGHT + 50],
+                outputRange: [1, 0]
+              })
+            }]} numberOfLines={1}>{(this.state.isPlay ? movieinfo.Name : '影片详情') + route.id}</Animated.Text>
+            <Animated.Text style={[styles.title, {
+              opacity: this.state.yOffset.interpolate({
+                inputRange: [0, $.STATUS_HEIGHT + 50],
+                outputRange: [0, 1]
+              })
+            }]} numberOfLines={1}>{movieinfo.Name}</Animated.Text>
+          </View>
         </View>
-        <AppBar style={{ paddingTop: $.STATUS_HEIGHT }} title={(movieinfo.Name || '加载中') + route.id} navigator={navigator} />
-        {
-        }
-        <ScrollView showsVerticalScrollIndicator={false} style={[styles.content, { backgroundColor: 'transparent' }]}>
-          <View style={[styles.papercon, styles.flexDirectionR]}>
-            <View style={styles.topcover}>
-              <Image style={styles.topimg} source={{ uri: movieinfo.Cover }} />
-            </View>
-            <Animated.View style={[styles.playbtnwrap, {
-              right: this.state.AnimatedValue.interpolate({
+        <ScrollView
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { y: this.state.yOffset } } }]
+          )}
+          ref={(scrollview) => { this.scrollview = scrollview; } }
+          showsVerticalScrollIndicator={false}
+          scrollEnabled={!fullScreen}
+          style={[styles.content, { backgroundColor: 'transparent' }]}>
+          <View style={[styles.moviebg, { backgroundColor: $.THEME_COLOR }]}>
+            <Image style={styles.imgbg} source={{ uri: movieinfo.Cover }} />
+            <View style={[styles.moviebgmask, { backgroundColor: $.THEME_COLOR }]}></View>
+          </View>
+          <View style={[styles.papercon, styles.flexDirectionR, { marginTop: $.STATUS_HEIGHT + 50 }, fullScreen && styles.fullvideocon]}>
+            <Animated.View style={[styles.topcover, {
+              height: this.state.AnimatedValue.interpolate({
                 inputRange: [0, 1],
-                outputRange: [$.WIDTH - 140, 10]
-              }),
+                outputRange: [160, R * 9 / 8]
+              })
             }]}>
-              <TouchableOpacity onPress={this.toPlay} activeOpacity={.8}>
-                <Animated.View
-                  style={[styles.playbtn, {
-                    backgroundColor: $.THEME_COLOR,
-                    width: this.state.AnimatedValue.interpolate({
-                      inputRange: [0, .5, 1],
-                      outputRange: [40, R, 2*R]
-                    }),
-                    height: this.state.AnimatedValue.interpolate({
-                      inputRange: [0, .5, 1],
-                      outputRange: [40, R, R]
-                    }),
-                    borderRadius: this.state.AnimatedValue.interpolate({
-                      inputRange: [0, .5, 1],
-                      outputRange: [R, R, 2]
-                    }),
-                    opacity: this.state.AnimatedValue.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: [.9, .5]
-                    })
-                  }]}>
-                  <Icon name='play-arrow' color='#fff' size={30} />
-                </Animated.View>
-              </TouchableOpacity>
+              <Image style={styles.topimg} source={{ uri: movieinfo.Cover }} />
             </Animated.View>
+            <View style={[styles.playbtnwrap, { zIndex: this.state.isPlay ? 1 : 10 }]}>
+              <Animated.View
+                style={[styles.playbtn, {
+                  backgroundColor: $.THEME_COLOR,
+                  zIndex: this.state.isPlay ? 0 : 10,
+                  transform: [
+                    {
+                      translateX: this.state.AnimatedValue.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [35, R - 20]
+                      })
+                    },
+                    {
+                      translateY: this.state.AnimatedValue.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [60, R * 9 / 16 - 20]
+                      })
+                    },
+                    {
+                      scale: this.state.AnimatedValue.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [1, 10]
+                      })
+                    }
+                  ],
+                  opacity: this.state.AnimatedValue.interpolate({
+                    inputRange: [0, .4, 1],
+                    outputRange: [.9, 1, 0]
+                  })
+                }]}>
+                <TouchableOpacity onPress={this.toPlay} activeOpacity={.8}>
+                  <Animated.View style={{
+                    transform: [
+                      {
+                        scale: this.state.AnimatedValue.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: [1, .2]
+                        })
+                      }]
+                  }}>
+                    <Icon name='play-arrow' color='#fff' size={30} />
+                  </Animated.View>
+                </TouchableOpacity>
+              </Animated.View>
+            </View>
             <View style={styles.topinfo}>
               <Text style={[styles.movietitle, { color: $.THEME_COLOR }]}>{movieinfo.Name || '加载中'}</Text>
               <View style={styles.moviescore}>
@@ -240,6 +338,34 @@ class Movie extends Component {
               <Text style={styles.movietext}>{'导演/' + (loaded ? moviesubject.directors.map((el) => ' ' + el.name) : ' ...')}</Text>
               <Text style={styles.movietext}>{'主演/' + (loaded ? moviesubject.casts.map((el) => ' ' + el.name) : ' ...')}</Text>
             </View>
+            <Animated.View style={[styles.videowrap, { opacity: this.state.AnimatedValue }, fullScreen && styles.videofullwrap]}>
+              {
+                this.state.isPlay ? <TouchableOpacity onPress={() => { this.setState({ hideStadus: !this.state.hideStadus }) } } activeOpacity={1} delayPressIn={0} style={styles.videocon}>
+                  <StatusBar animated={true} hidden={fullScreen} />
+                  <View pointerEvents={(!fullScreen || this.state.hideStadus) ? 'none' : 'auto'} style={[styles.appbar, (!fullScreen || this.state.hideStadus) && { opacity: 0 }]}>
+                    <Touchable
+                      style={styles.btn}
+                      onPress={this.setFullScreen}
+                      >
+                      <Icon name='keyboard-arrow-left' size={30} color='#fff' />
+                    </Touchable>
+                    <Text style={styles.apptitle} numberOfLines={1}>{movieinfo.Name || ''}</Text>
+                    <View style={styles.btn}></View>
+                  </View>
+                  <Video
+                    style={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }}
+                    src={this.state.playUrl}
+                    ref='video'
+                    autoplay={true}
+                    preload='auto'
+                    loop={false}
+                    controls={!this.state.hideStadus}
+                    muted={false}
+                    setFullScreen={this.setFullScreen}
+                    />
+                </TouchableOpacity> : null
+              }
+            </Animated.View>
           </View>
           <View style={styles.papercon}>
             <View style={styles.paperinner} onLayout={this.onLayout} >
@@ -471,20 +597,98 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 10,
     top: 10,
-    right: $.WIDTH - 140,
+    right: 10,
     bottom: 10,
     zIndex: 10,
-    overflow: 'hidden',
-    justifyContent: 'center',
-    alignItems: 'center',
+    overflow: 'hidden'
   },
   playbtn: {
     width: 40,
     height: 40,
+    transform: [
+      { translateX: 35 },
+      { translateY: 60 }
+    ],
     opacity: .9,
-    borderRadius: 20,
+    zIndex: 20,
+    borderRadius: 200,
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  videowrap: {
+    position: 'absolute',
+    left: 10,
+    top: 10,
+    right: 10,
+    bottom: 10,
+    backgroundColor: '#000',
+    zIndex: 5,
+    borderRadius: 2,
+    opacity: 0
+  },
+  videofullwrap: {
+    left: 0,
+    top: 0,
+    right: 0,
+    bottom: 0,
+  },
+  videocon: {
+    flex: 1,
+    backgroundColor: '#000',
+  },
+  fullvideocon: {
+    height: $.WIDTH,
+    margin: 0,
+    marginTop: 0,
+    padding: 0
+  },
+  controls: {
+    backgroundColor: "#eee",
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  appbar: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,.5)',
+    zIndex: 15
+  },
+  btn: {
+    width: 50,
+    height: 50,
+    zIndex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  apptitle: {
+    textAlign: 'center',
+    flex: 1,
+    fontSize: 16,
+    color: '#fff'
+  },
+  title: {
+    position: 'absolute',
+    left: 0,
+    alignItems: 'center',
+    fontSize: 16,
+    color: '#fff'
+  },
+  appbg: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    top: 0,
+    backgroundColor: $.THEME_COLOR,
+    opacity: 0
   }
 });
 

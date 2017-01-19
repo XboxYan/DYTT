@@ -16,10 +16,7 @@ import {
 import { Video } from 'react-native-media-kit';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Touchable from '../common/touchable';
-import Orientation from 'react-native-orientation';
-import RNIdle from 'react-native-idle'
 
-global.$FULLSCREEN = false;
 
 class VideoCon extends Component {
   constructor(props) {
@@ -30,23 +27,11 @@ class VideoCon extends Component {
       hideStadus: false,
       fullScreen: false,
     };
-    this.setFullScreen = this.setFullScreen.bind(this);
     //处理安卓Back键
     const { navigator } = this.props;
     const routers = navigator.getCurrentRoutes();
     const top = routers[routers.length - 1];
     top.handleBack = this.handleBack.bind(this);
-  }
-  componentWillMount() {
-
-  }
-
-  componentDidMount() {
-    RNIdle.disableIdleTimer();
-  }
-
-  componentWillUnmount() {
-    RNIdle.enableIdleTimer();
   }
 
   setFullScreen() {
@@ -73,7 +58,7 @@ class VideoCon extends Component {
 
 
   render() {
-    let { route } = this.props;
+    const { route } = this.props;
     return (
       <TouchableOpacity onPress={() => { this.setState({ hideStadus: !this.state.hideStadus }) } } activeOpacity={1} delayPressIn={0} style={[styles.videocon, this.state.fullScreen && styles.fullvideocon]}>
         <StatusBar animated={true} hidden={this.state.fullScreen} />
@@ -84,12 +69,12 @@ class VideoCon extends Component {
             >
             <Icon name='keyboard-arrow-left' size={30} color='#fff' />
           </Touchable>
-          <Text style={styles.apptitle} numberOfLines={1}>{route.title || ''}</Text>
+          <Text style={styles.apptitle} numberOfLines={1}>{this.props.title || ''}</Text>
           <View style={styles.btn}></View>
         </View>
         <Video
           style={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }}
-          src={route.playUrl}
+          src={this.props.playUrl}
           ref='video'
           autoplay={true}
           preload='auto'
@@ -105,15 +90,12 @@ class VideoCon extends Component {
 
 const styles = StyleSheet.create({
   videocon: {
-    width: $.WIDTH,
-    left: 0,
-    height: $.WIDTH * 9 / 16,
-    backgroundColor: '#000',
-    zIndex: 10
+    flex:1,
+    backgroundColor:'#000',
   },
   fullvideocon: {
-    width: $.HEIGHT,
-    height: $.WIDTH,
+    //width: $.HEIGHT,
+    //height: $.WIDTH,
   },
   controls: {
     backgroundColor: "#eee",
@@ -123,39 +105,6 @@ const styles = StyleSheet.create({
     right: 0,
     flexDirection: 'row',
     alignItems: 'center'
-  },
-  progress: {
-    flex: 1,
-    marginLeft: 10,
-    marginRight: 10,
-    alignItems: 'stretch',
-    justifyContent: 'center',
-  },
-  track: {
-    height: 2,
-    borderRadius: 0
-  },
-  thumb: {
-    width: 14,
-    height: 14,
-    borderRadius: 20
-  },
-  innerProgressCompleted: {
-    height: 3
-  },
-  innerProgressRemaining: {
-    height: 3,
-    backgroundColor: '#ccc',
-  },
-  actionbtn: {
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  timetext: {
-    fontSize: 12,
-    color: '#666'
   },
   appbar: {
     position: 'absolute',
