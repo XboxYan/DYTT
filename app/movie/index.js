@@ -21,7 +21,8 @@ import Loading from '../common/loading';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Video } from 'react-native-media-kit';
 import Orientation from 'react-native-orientation';
-import RNIdle from 'react-native-idle'
+import RNIdle from 'react-native-idle';
+import makeCancelable from '../../util/Cancelable'
 
 global.$FULLSCREEN = false;
 
@@ -38,6 +39,7 @@ class Movie extends Component {
       isPlay: false,
       fullScreen: false,
       hideStadus: false,
+      current: 0,
       sourceIndex: 0,
       playUrl: '',
       movieinfo: {},
@@ -59,26 +61,31 @@ class Movie extends Component {
   }
 
   handleBack() {
-    if (this.state.fullScreen) {
-      this.setFullScreen();
-    } else {
-      if (this.state.isPlay) {
-        this.refs.video.pause();
-        //记录播放进度
+    InteractionManager.runAfterInteractions(() => {
+      if (this.state.fullScreen) {
+        this.setFullScreen();
+      } else {
+        if (this.state.isPlay) {
+          this.refs.video.pause();
+          //记录播放进度
+
+        }
+        this.props.navigator.pop();
       }
-      this.props.navigator.pop();
-    }
+    })
   }
 
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
       this.getMovieInfo();
       this.getMovieSubject();
-      RNIdle.disableIdleTimer();
     })
   }
 
   componentWillUnmount() {
+    this.cancelable && this.cancelable.cancel();
+    this.cancelable2 && this.cancelable2.cancel();
+    this.cancelable3 && this.cancelable3.cancel();
     RNIdle.enableIdleTimer();
   }
 
@@ -108,7 +115,8 @@ class Movie extends Component {
     let playUrl = MoviePlayUrls.PlayUrl;
 
     if (MoviePlayUrls.sourceType.Name === 'Youku') {
-      fetch(`${api.PlayYouku}${playUrl}`)
+      this.cancelable = makeCancelable(fetch(`${api.PlayYouku}${playUrl}`));
+      this.cancelable.promise
         .then((response) => {
           if (response.ok) {
             return response.json()
@@ -120,13 +128,11 @@ class Movie extends Component {
           })
         })
         .catch(() => {
-          this.setState({
-            playUrl: ''
-          })
           ToastAndroid.show('网络有误~', ToastAndroid.SHORT);
         });
     } else if (MoviePlayUrls.sourceType.Name === 'Bilibili') {
-      fetch(`${api.PlayBilibili}${playUrl}`)
+      this.cancelable = makeCancelable(fetch(`${api.PlayBilibili}${playUrl}`));
+      this.cancelable.promise
         .then((response) => {
           if (response.ok) {
             return response.json()
@@ -138,9 +144,6 @@ class Movie extends Component {
           })
         })
         .catch(() => {
-          this.setState({
-            playUrl: ''
-          })
           ToastAndroid.show('网络有误~', ToastAndroid.SHORT);
         });
     } else if (MoviePlayUrls.sourceType.Name === 'Sytv01') {
@@ -155,23 +158,21 @@ class Movie extends Component {
   getMovieSubject() {
     const { route } = this.props;
     let URL = `${api.getSubject}${route.dbid}`;
-    fetch(URL)
+    this.cancelable2 = makeCancelable(fetch(URL));
+    this.cancelable2.promise
       .then((response) => {
         if (response.ok) {
           return response.json()
         }
       })
       .then((responseData) => {
+        LayoutAnimation.spring();
         this.setState({
           loaded: true,
           moviesubject: responseData
         })
-        LayoutAnimation.spring();
       })
       .catch(() => {
-        this.setState({
-          loaded: false
-        })
         ToastAndroid.show('网络有误~', ToastAndroid.SHORT);
       });
   }
@@ -187,7 +188,8 @@ class Movie extends Component {
   getMovieInfo() {
     const { route } = this.props;
     let URL = `${api.getMovies}${route.id}`;
-    fetch(URL)
+    this.cancelable3 = makeCancelable(fetch(URL));
+    this.cancelable3.promise
       .then((response) => {
         if (response.ok) {
           return response.json()
@@ -195,17 +197,14 @@ class Movie extends Component {
       })
       .then((responseData) => {
         let Data = JSON.parse(responseData);
+        LayoutAnimation.spring();
         this.setState({
           _loaded: true,
           movieinfo: Data
         })
         this.getPlayUrl(0);
-        LayoutAnimation.spring();
       })
       .catch(() => {
-        this.setState({
-          _loaded: false
-        })
         ToastAndroid.show('网络有误~', ToastAndroid.SHORT);
       });
   }
@@ -214,6 +213,7 @@ class Movie extends Component {
     Animated.timing(this.state.AnimatedValue, {
       toValue: 1,
     }).start(() => {
+      RNIdle.disableIdleTimer();
       this.setState({
         isPlay: true
       })
@@ -231,6 +231,7 @@ class Movie extends Component {
       <View style={styles.content}>
         <View style={[styles.appbar, { paddingTop: $.STATUS_HEIGHT, backgroundColor: 'transparent' }, fullScreen && { zIndex: -1 }]}>
           <Animated.View style={[styles.appbg, {
+            backgroundColor: $.THEME_COLOR,
             opacity: this.state.yOffset.interpolate({
               inputRange: [0, $.STATUS_HEIGHT + 50],
               outputRange: [0, 1]
@@ -242,21 +243,18 @@ class Movie extends Component {
             >
             <Icon name='keyboard-arrow-left' size={30} color='#fff' />
           </Touchable>
-          <View style={{ flex: 1 }}>
-            <Text> </Text>
-            <Animated.Text style={[styles.title, {
-              opacity: this.state.yOffset.interpolate({
-                inputRange: [0, $.STATUS_HEIGHT + 50],
-                outputRange: [1, 0]
-              })
-            }]} numberOfLines={1}>{(this.state.isPlay ? movieinfo.Name : '影片详情') + route.id}</Animated.Text>
-            <Animated.Text style={[styles.title, {
-              opacity: this.state.yOffset.interpolate({
-                inputRange: [0, $.STATUS_HEIGHT + 50],
-                outputRange: [0, 1]
-              })
-            }]} numberOfLines={1}>{movieinfo.Name}</Animated.Text>
-          </View>
+          <Animated.View style={[styles.title, {
+            opacity: this.state.yOffset.interpolate({
+              inputRange: [0, $.STATUS_HEIGHT + 45, $.STATUS_HEIGHT + 50],
+              outputRange: [1, 1, 0]
+            })
+          }]}><Text style={{ fontSize: 16, color: '#fff' }} numberOfLines={1}>{(this.state.isPlay ? movieinfo.Name : '影片详情')}</Text></Animated.View>
+          <Animated.Text style={[styles.apptitle, { textAlign: 'left', opacity: 0 }, {
+            opacity: this.state.yOffset.interpolate({
+              inputRange: [0, $.STATUS_HEIGHT + 45, $.STATUS_HEIGHT + 50],
+              outputRange: [0, 0, 1]
+            })
+          }]} numberOfLines={1}>{movieinfo.Name}</Animated.Text>
         </View>
         <ScrollView
           onScroll={Animated.event(
@@ -325,7 +323,7 @@ class Movie extends Component {
               </Animated.View>
             </View>
             <View style={styles.topinfo}>
-              <Text style={[styles.movietitle, { color: $.THEME_COLOR }]}>{movieinfo.Name || '加载中'}</Text>
+              <Text style={[styles.movietitle, { color: $.THEME_COLOR }]}>{(route.id + movieinfo.Name) || '加载中'}</Text>
               <View style={styles.moviescore}>
                 <View style={styles.scorepro}>
                   {
@@ -359,6 +357,7 @@ class Movie extends Component {
                     autoplay={true}
                     preload='auto'
                     loop={false}
+                    onPlayerProgress={(event) => this.setState({ current: event })}
                     controls={!this.state.hideStadus}
                     muted={false}
                     setFullScreen={this.setFullScreen}
@@ -404,7 +403,7 @@ class Movie extends Component {
           </View>
           <View style={styles.papercon}>
             <View style={styles.paperinner}>
-              <Text style={styles.movietext}>{route.isTv ? '选集' : '资源'}</Text>
+              <Text style={styles.movietext}>{route.isTv ? '选集' : '资源'}{~~(this.state.current / 1000)}</Text>
               <View style={styles.movieplaylist}>
                 {
                   _loaded ? movieslist.map(
@@ -437,10 +436,10 @@ class Movie extends Component {
                 isMore ? <TouchableOpacity
                   activeOpacity={.8}
                   onPress={() => (
+                    LayoutAnimation.spring(),
                     this.setState({
                       isSlide: !this.state.isSlide
-                    }),
-                    LayoutAnimation.spring()
+                    })
                   )}
                   style={styles.slidebtn} ><Text style={[styles.slidebtntxt, { color: $.THEME_COLOR, }]}>{isSlide ? '收起简介' : '展开简介'}</Text></TouchableOpacity> : null
               }
@@ -675,11 +674,13 @@ const styles = StyleSheet.create({
     color: '#fff'
   },
   title: {
-    position: 'absolute',
-    left: 0,
+    flex: 1,
     alignItems: 'center',
-    fontSize: 16,
-    color: '#fff'
+    justifyContent: 'center',
+    position: 'absolute',
+    left: 50,
+    bottom: 0,
+    height: 50,
   },
   appbg: {
     position: 'absolute',
@@ -687,7 +688,6 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     top: 0,
-    backgroundColor: $.THEME_COLOR,
     opacity: 0
   }
 });

@@ -20,6 +20,7 @@ import Loading from '../common/loading';
 import EmptyContent from '../common/emptycontent';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Movie from '../movie';
+import makeCancelable from '../../util/Cancelable'
 
 //const { width, height} = Dimensions.get('window');
 
@@ -31,14 +32,14 @@ class LazyImg extends Component {
     }
     this.onlayout = this.onlayout.bind(this);
   }
-  onlayout(){
+  onlayout() {
     this.setState({
       loaded: false,
     })
   }
-  render (){
+  render() {
     return (
-      this.state.loaded?<Image onLayout={this.onlayout} style={this.props.style} source={this.props.source} ></Image>:<Text>正在加载</Text>
+      this.state.loaded ? <Image onLayout={this.onlayout} style={this.props.style} source={this.props.source} ></Image> : <Text>正在加载</Text>
     )
   }
 }
@@ -50,7 +51,7 @@ class MovieList extends Component {
       loaded: false,
       isRefreshing: false,
       isAdd: true,
-      isEmpty:false,
+      isEmpty: false,
       pageIndex: 1,
       dataSource: new ListView.DataSource({
         rowHasChanged: (r1, r2) => r1 !== r2,
@@ -77,7 +78,8 @@ class MovieList extends Component {
         URL = `${api.getMovies}?pageSize=50&pageIndex=${pageIndex}&searchKey=${this.props.keywords}`;
         break;
     }
-    fetch(URL)
+    this.cancelable = makeCancelable(fetch(URL));
+    this.cancelable.promise
       .then((response) => {
         if (response.ok) {
           return response.json()
@@ -93,7 +95,7 @@ class MovieList extends Component {
             dataSource: this.state.dataSource.cloneWithRows(dataSource),
           })
         } else {
-          if(responseData.length == 0){
+          if (responseData.length == 0) {
             this.setState({
               isEmpty: true,
               loaded: true
@@ -166,6 +168,10 @@ class MovieList extends Component {
     }
   }
 
+  componentWillUnmount() {
+    this.cancelable.cancel();
+  }
+
   // renderFooter() {
   //   if (!this.state.loaded) {
   //     return <Loading height={height - 150} />
@@ -201,7 +207,7 @@ class MovieList extends Component {
     if (!this.state.loaded) {
       return <View style={styles.content}><Loading /></View>
     }
-    if(this.state.isEmpty){
+    if (this.state.isEmpty) {
       return <View style={styles.content}><EmptyContent /></View>
     }
     return (

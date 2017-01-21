@@ -148,9 +148,9 @@ class Search extends Component {
             onSubmitEditing={() => this.onSubmit(this.state.text)}
             value={this.state.text}
             style={styles.searchbar}
-            placeholder="请输入关键词"
-            placeholderTextColor="#999"
-            autoFocus={false}
+            placeholder="请输入电影名"
+            placeholderTextColor="#ccc"
+            autoFocus={true}
             returnKeyType="search"
             underlineColorAndroid='transparent' />
           <Touchable style={styles.btn} onPress={() => this.onSubmit(this.state.text)}>

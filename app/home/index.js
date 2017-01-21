@@ -118,7 +118,6 @@ class Home extends Component {
 const styles = StyleSheet.create({
   content: {
     flex: 1,
-    height: $.HEIGHT - 90 - $.STATUS_HEIGHT,
   },
   tabbar: {
     height: 40,
