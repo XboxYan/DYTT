@@ -223,8 +223,6 @@ class MovieList extends Component {
               colors={[$.THEME_COLOR]}
               progressBackgroundColor="#fff"
               />}
-          intialListSize={1}
-          pageSize={1}
           enableEmptySections={true}
           dataSource={this.state.dataSource}
           renderRow={this.renderMovies}

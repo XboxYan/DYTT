@@ -12,12 +12,13 @@ class Touchable extends Component {
 
   render() {
     return (
-      <TouchableNativeFeedback 
-          delayPressIn={50}
-          disabled={this.props.disabled}
-          onPress={this.props.onPress}
-          background={TouchableNativeFeedback.SelectableBackground() } >
-          <View style={this.props.style}>{this.props.children}</View>
+      <TouchableNativeFeedback
+        delayPressIn={50}
+        disabled={this.props.disabled}
+        onPress={this.props.onPress}
+        onLongPress={this.props.onLongPress}
+        background={TouchableNativeFeedback.SelectableBackground()} >
+        <View style={this.props.style}>{this.props.children}</View>
       </TouchableNativeFeedback>
     );
   }

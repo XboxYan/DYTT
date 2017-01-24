@@ -10,7 +10,8 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Touchable from './touchable';
-import Search from '../search'
+import Search from '../search';
+import History from '../history';
 
 class TopBar extends Component {
 
@@ -25,6 +26,12 @@ class TopBar extends Component {
           <Icon name='menu' size={24} color='#fff' />
         </Touchable>
         <Text style={styles.apptitle} numberOfLines={1}>{this.props.title || ''}</Text>
+        <Touchable
+          style={styles.btn}
+          onPress={()=>navigator.push({name: History})}
+          >
+          <Icon name='schedule' size={20} color='#fff' />
+        </Touchable>
         <Touchable
           style={styles.btn}
           onPress={()=>navigator.push({name: Search})}

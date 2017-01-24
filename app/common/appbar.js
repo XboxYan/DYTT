@@ -23,7 +23,7 @@ class AppBar extends Component {
       <View style={[styles.appbar,this.props.style]}>
         <Touchable
           style={styles.btn}
-          onPress={() => this.props.navigator.pop()}
+          onPress={this.props.onPress}
           >
           <Icon name='keyboard-arrow-left' size={30} color='#fff' />
         </Touchable>

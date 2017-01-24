@@ -70,7 +70,7 @@ class Theme extends Component {
     return (
       <View style={styles.content}>
         <View style={[styles.header, { backgroundColor: $.THEME_COLOR }]}>
-          <AppBar title='主题选择' navigator={navigator}>
+          <AppBar title='主题选择' onPress={()=>navigator.pop()}>
             <Touchable onPress={this.onSet} style={styles.btn}><Text style={styles.btntext}>确定</Text></Touchable>
           </AppBar>
         </View>

@@ -39,8 +39,8 @@ class Movie extends Component {
       isPlay: false,
       fullScreen: false,
       hideStadus: false,
-      current: 0,
-      sourceIndex: 0,
+      current: this.props.route.current||0,
+      sourceIndex: this.props.route.sourceIndex||0,
       playUrl: '',
       movieinfo: {},
       moviesubject: {},
@@ -56,7 +56,7 @@ class Movie extends Component {
     const { navigator } = this.props;
     const routers = navigator.getCurrentRoutes();
     const top = routers[routers.length - 1];
-    top.handleBack = this.handleBack.bind(this);
+    this.handleBack = top.handleBack = this.handleBack.bind(this);
     UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
   }
 
@@ -68,7 +68,32 @@ class Movie extends Component {
         if (this.state.isPlay) {
           this.refs.video.pause();
           //记录播放进度
-
+          let {movieinfo, current} = this.state;
+          let {route} = this.props;
+          let _index = -1;
+          $HISTORY.forEach((el, i) => {
+            if (el.id === route.id) {
+              _index = i;
+            }
+          })
+          if (_index >= 0) {
+            $HISTORY.splice(_index, 1);
+          }
+          $HISTORY.push({
+            id: route.id,
+            dbid:route.dbid,
+            isTv:route.isTv,
+            name: movieinfo.Name,
+            img: movieinfo.Cover,
+            current: current,
+            sourceIndex:this.state.sourceIndex,
+            now: new Date().getTime()
+          })
+          storage.save({
+            key: 'history',  // 注意:请不要在key中使用_下划线符号!
+            rawData: $HISTORY,
+            expires: null
+          });
         }
         this.props.navigator.pop();
       }
@@ -202,7 +227,7 @@ class Movie extends Component {
           _loaded: true,
           movieinfo: Data
         })
-        this.getPlayUrl(0);
+        this.getPlayUrl(this.state.sourceIndex);
       })
       .catch(() => {
         ToastAndroid.show('网络有误~', ToastAndroid.SHORT);
@@ -210,6 +235,10 @@ class Movie extends Component {
   }
 
   toPlay() {
+    if(this.state.playUrl===''){
+      ToastAndroid.show('暂时无法播放该视频，请切换资源试试~~', ToastAndroid.SHORT);
+      return
+    }
     Animated.timing(this.state.AnimatedValue, {
       toValue: 1,
     }).start(() => {
@@ -217,6 +246,7 @@ class Movie extends Component {
       this.setState({
         isPlay: true
       })
+      this.refs.video.seekTo(this.state.current);
     });
   }
 
@@ -239,7 +269,7 @@ class Movie extends Component {
           }]}></Animated.View>
           <Touchable
             style={styles.btn}
-            onPress={() => navigator.pop()}
+            onPress={this.handleBack}
             >
             <Icon name='keyboard-arrow-left' size={30} color='#fff' />
           </Touchable>
@@ -403,7 +433,7 @@ class Movie extends Component {
           </View>
           <View style={styles.papercon}>
             <View style={styles.paperinner}>
-              <Text style={styles.movietext}>{route.isTv ? '选集' : '资源'}{~~(this.state.current / 1000)}</Text>
+              <Text style={styles.movietext}>{route.isTv ? '选集' : '资源'}</Text>
               <View style={styles.movieplaylist}>
                 {
                   _loaded ? movieslist.map(

@@ -10,7 +10,7 @@ const STATUS_HEIGHT = (Platform.Version && Platform.Version >= 19) ? StatusBar.c
 
 global.$ = {
   STATUS_HEIGHT: STATUS_HEIGHT,
-  THEME_COLOR: 'red',
+  THEME_COLOR: '#F44336',
   THEME_INDEX:0,
   WIDTH: width,
   HEIGHT: height,

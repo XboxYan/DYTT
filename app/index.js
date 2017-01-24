@@ -12,13 +12,12 @@ import {
   ToastAndroid
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import Orientation from 'react-native-orientation';
 import Touchable from './common/touchable';
 import TopBar from './common/topbar';
 import Home from './home';
 import Theme from './theme';
 import History from './history';
-
-//import Orientation from 'react-native-orientation';
 
 class Item extends Component {
   render() {
@@ -37,8 +36,6 @@ class Index extends Component {
     this.openDrawer = this.openDrawer.bind(this);
     this.onBackAndroid = this.onBackAndroid.bind(this);
     this.navigationView = this.navigationView.bind(this);
-    this.state = {
-    }
   }
 
   componentWillMount() {
@@ -54,9 +51,7 @@ class Index extends Component {
   }
 
   componentDidMount() {
-
-    //Orientation.lockToPortrait();
-    
+    Orientation.lockToPortrait(); 
   }
 
   onBackAndroid() {
@@ -120,7 +115,7 @@ class Index extends Component {
           <View style={[styles.header, { backgroundColor: $.THEME_COLOR }]}>
             <TopBar navigator={navigator} title='首页' openDrawer={this.openDrawer} />
           </View>
-          <Home navigator={navigator} />
+          <Home navigator={navigator} historyData={this.props.historyData} />
         </View>
       </DrawerLayoutAndroid>
     );

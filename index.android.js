@@ -38,6 +38,15 @@ let storage = new Storage({
   }
 })
 
+if (!__DEV__) {
+  global.console = {
+    info: () => {},
+    log: () => {},
+    warn: () => {},
+    error: () => {},
+  };
+}
+
 global.storage = storage;
 
 class App extends Component {
@@ -77,6 +86,14 @@ class App extends Component {
       SplashScreen.hide();
     })
 
+    storage.load({
+      key: 'history',
+    }).then(ret => {
+      global.$HISTORY = ret;
+    }).catch(err => {
+      global.$HISTORY = [];
+    })
+
   }
 
   render() {
@@ -85,7 +102,7 @@ class App extends Component {
         <StatusBar translucent={true} backgroundColor='transparent' />
         <Navigator
           initialRoute={{ name: Index }}
-          configureScene={(route) => Object.assign(Navigator.SceneConfigs.PushFromRight, { defaultTransitionVelocity: 10 })}
+          configureScene={(route) => Object.assign(Navigator.SceneConfigs.PushFromRight, { defaultTransitionVelocity: 10, gestures: null })}
           renderScene={this.renderScene}
           />
       </View>
