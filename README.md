@@ -1,5 +1,9 @@
 # 电影天堂React Native 客户端
 
+## 祝大家新年愉快！
+
+经过二十多天的奋战，电影天堂for React Native 客户端初步完成，最新的影片资源等你来体验！
+
 ## 声明：
 
 本项目中所用的api来自电影天堂UWP(作者邮箱：<hengshuixu@foxmail.com>;)通过Fiddle抓包工具所得， 项目中所有内容的一切权利属于电影天堂UWP，本项目所有内容及代码仅供私下学习参考，不得作为其他用途。
@@ -121,3 +125,10 @@ github: [项目地址](https://github.com/XboxYan/DYTT)
 
 如果体验觉得还不错的话,请往我的微信或支付宝客户端，扫描二维码，捐赠 X元，^_^，谢谢！
 
+#### 微信
+
+![微信](https://raw.githubusercontent.com/XboxYan/DYTT/master/apk/wechat.png)
+
+#### 支付宝
+
+![支付宝](https://raw.githubusercontent.com/XboxYan/DYTT/master/apk/zhifubao.png)
