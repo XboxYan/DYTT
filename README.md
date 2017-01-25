@@ -10,4 +10,9 @@
 
 二维码：
 
+![电影天堂](https://raw.githubusercontent.com/XboxYan/DYTT/master/apk/code.png)
+
+## 功能截图
+
+
 
