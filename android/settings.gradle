@@ -1,13 +1,3 @@
 rootProject.name = 'DYTT'
-include ':react-native-vector-icons'
-project(':react-native-vector-icons').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-vector-icons/android')
 
 include ':app'
-include ':react-native-splash-screen'
-project(':react-native-splash-screen').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-splash-screen/android')
-include ':react-native-orientation'
-project(':react-native-orientation').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-orientation/android')
-include ':react-native-idle'
-project(':react-native-idle').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-idle/android')
-include ':react-native-media-kit'
-project(':react-native-media-kit').projectDir = new File('../node_modules/react-native-media-kit/android')
