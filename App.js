@@ -6,44 +6,32 @@
  * @flow
  */
 
-import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import React from 'react';
+import { Easing, Animated } from 'react-native';
+import { createStackNavigator, createAppContainer } from "react-navigation";
+import StackViewStyleInterpolator from 'react-navigation-stack/dist/views/StackView/StackViewStyleInterpolator';
+import { ThemeProvider } from './util/theme-context';
+import Home from './src';
+import Detail from './src/Detail';
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android:
-    'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
-
-type Props = {};
-export default class App extends Component<Props> {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
-        <Text style={styles.instructions}>To get started, edit App.js</Text>
-        <Text style={styles.instructions}>{instructions}</Text>
-      </View>
-    );
-  }
+const StackNavigatorConfig = {
+	headerMode: 'none',
+	mode: 'card',
+	cardStyle:{
+		backgroundColor:'red'
+	},
+	transitionConfig: () => ({
+        screenInterpolator: StackViewStyleInterpolator.forHorizontal,
+    })
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
+const App = createAppContainer(createStackNavigator({
+	Home: Home,
+	Detail: Detail,
+}, StackNavigatorConfig));
+
+export default () => (
+	<ThemeProvider>
+		<App screenProps={{themeColor:'red'}} />
+	</ThemeProvider>
+)
