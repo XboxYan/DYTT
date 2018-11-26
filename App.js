@@ -5,9 +5,9 @@
  * @format
  * @flow
  */
-
+import './util/global';
 import React from 'react';
-import { Easing, Animated } from 'react-native';
+import { StatusBar } from 'react-native';
 import { createStackNavigator, createAppContainer } from "react-navigation";
 import StackViewStyleInterpolator from 'react-navigation-stack/dist/views/StackView/StackViewStyleInterpolator';
 import { ThemeProvider } from './util/theme-context';
@@ -32,6 +32,7 @@ const App = createAppContainer(createStackNavigator({
 
 export default () => (
 	<ThemeProvider>
+		<StatusBar translucent={false} backgroundColor="#fff" />
 		<App screenProps={{themeColor:'red'}} />
 	</ThemeProvider>
 )

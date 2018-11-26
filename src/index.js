@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
 import { Text, View, } from 'react-native';
-import { createMaterialTopTabNavigator } from "react-navigation";
-import Screen from './Screen'
+import { createAppContainer,createMaterialTopTabNavigator,withNavigation } from "react-navigation";
+import Home from './page/home';
+import Screen from './page/Screen';
 
 class TabItem extends PureComponent {
     componentDidMount() {
@@ -18,38 +19,57 @@ class TabItem extends PureComponent {
 const TabNavigatorConfig = {
     lazy: true,
     tabBarOptions: {
+        //scrollEnabled: true,
         indicatorStyle: {
-            backgroundColor: '#fff',
+            backgroundColor: 'royalblue',
             borderRadius: 4,
         },
         style: {
-            backgroundColor: 'red'
+            backgroundColor: '#fff',
+            elevation:0
         },
         tabStyle: {
             height: 40,
+            //width:80
             //backgroundColor:'red'
-        }
+        },
+        labelStyle:{
+            //color:'#666'
+        },
+        pressColor:'royalblue',
+        inactiveTintColor: '#666',
+        activeTintColor: 'royalblue',
     }
 }
 
 const TabNavigator = createMaterialTopTabNavigator({
-    //Home:Home,
+    Home:Home,
     Movie: {
         screen: Screen,
         params: {
-            type: 'movie'
+            type: 'movie',
+            title:'电影'
         }
     },
     TV: {
         screen: Screen,
         params: {
-            type: 'tv'
+            type: 'tv',
+            title:'电视剧'
         }
     },
     Comic: {
         screen: Screen,
         params: {
-            type: 'comic'
+            type: 'comic',
+            title:'动漫'
+        }
+    },
+    Variety: {
+        screen: Screen,
+        params: {
+            type: 'variety',
+            title:'综艺'
         }
     },
 },TabNavigatorConfig)
@@ -58,5 +78,6 @@ const TabNavigator = createMaterialTopTabNavigator({
 //     console.warn(a.screenProps)
 //     return TabNavigatorConfig(a)
 // }
+
 
 export default TabNavigator;
