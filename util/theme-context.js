@@ -2,12 +2,10 @@ import React, {createContext, PureComponent} from 'react';
 
 export const themes = {
     royalblue: {
-      foreground: '#000000',
-      background: 'royalblue',
+      themeColor: 'royalblue',
     },
     dark: {
-      foreground: '#ffffff',
-      background: '#222222',
+      themeColor: '#222222',
     },
 };
 
