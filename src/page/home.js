@@ -6,7 +6,7 @@ import Loading from '../components/Loading';
 import MovieTitle from '../components/MovieTitle';
 import MovieList from '../components/MovieList';
 import MovieMoreBtn from '../components/MovieMoreBtn'
-import fetchData from '../../util/fetchData';
+import {GetHomeData} from '../../util/api';
 import {ThemeContext} from '../../util/theme-context';
 
 const maps = [
@@ -62,7 +62,7 @@ export default class Home extends PureComponent {
     }
 
     GetHomeData = async () => {
-        const _data = await fetchData('/GetHomeData');
+        const _data = await GetHomeData();
         const data = mapto(_data,maps);
         this.setState({
             data,
@@ -80,7 +80,7 @@ export default class Home extends PureComponent {
         const {theme} = this.context;
         return (
             <ScrollView style={styles.content}>
-                <Swiper loading={loading} data={data.solling&&data.solling.list} />
+                <Swiper loading={loading} data={data.solling&&data.solling.list} navigation={navigation} />
                 <View style={styles.links}>
                     {
                         maps.filter(el=>!el.isRender).map((d,i)=>(

@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { View, StyleSheet,Button } from 'react-native';
 import Scrollviewpager from './components/Scrollviewpager';
-import Home from './page/home';
+import Home from './page/Home';
 import Screen from './page/Screen';
 
 const tablist = [

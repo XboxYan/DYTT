@@ -12,7 +12,7 @@ import { createStackNavigator, createAppContainer } from "react-navigation";
 import StackViewStyleInterpolator from 'react-navigation-stack/dist/views/StackView/StackViewStyleInterpolator';
 import { ThemeProvider } from './util/theme-context';
 import Home from './src';
-import Detail from './src/Detail';
+import MovieDetail from './src/page/MovieDetail';
 
 const StackNavigatorConfig = {
 	headerMode: 'none',
@@ -27,7 +27,7 @@ const StackNavigatorConfig = {
 
 const App = createAppContainer(createStackNavigator({
 	Home: Home,
-	Detail: Detail,
+	MovieDetail: MovieDetail,
 }, StackNavigatorConfig));
 
 export default () => (

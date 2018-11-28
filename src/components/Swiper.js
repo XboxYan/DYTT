@@ -23,7 +23,7 @@ import {ThemeContext} from '../../util/theme-context';
 class SwiperCon extends React.Component {
     render(){
         const {theme} = this.context;
-        const {loading,data} = this.props;
+        const {loading,data,navigation} = this.props;
         if(loading){
             return <View style={styles.item} ><Loading size="small" text="" /></View>
         }
@@ -31,7 +31,7 @@ class SwiperCon extends React.Component {
             <Swiper style={styles.wrap} autoplay={true} paginationStyle={{bottom:30,right:10,justifyContent:'flex-end'}} dotColor='rgba(252,255,255,.7)' dotStyle={{width: 6, height: 6}}  activeDotStyle={{width: 6, height: 6}} activeDotColor={theme.themeColor}>
                 {
                     data.map((d,i)=>(
-                        <TouchableOpacity key={i} activeOpacity={.9} style={styles.item}>
+                        <TouchableOpacity key={i} activeOpacity={.9} style={styles.item} onPress={()=>navigation.navigate('MovieDetail',{movieId:d.ID})} >
                             <ImageBackground style={styles.bg} resizeMode="cover" blurRadius={5} source={{uri:d.Cover}}>
                                 <Image style={styles.itemimg} source={{uri:d.Cover}} />
                                 <View style={styles.iteminfo}>
