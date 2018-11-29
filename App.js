@@ -32,7 +32,7 @@ const App = createAppContainer(createStackNavigator({
 
 export default () => (
 	<ThemeProvider>
-		<StatusBar translucent={false} backgroundColor="#fff" />
+		<StatusBar translucent={true} backgroundColor="transparent" />
 		<App screenProps={{themeColor:'red'}} />
 	</ThemeProvider>
 )

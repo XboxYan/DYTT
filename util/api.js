@@ -15,4 +15,4 @@ const GetHomeData = ()=>fetchData('/GetHomeData');
 const GetVideoInfo = (ID)=>fetchData(`/GetVideoInfo?Id=${ID}`);
 const GetSameVideo = (vName,ID)=>fetchData(`/GetSameVideo?vName=${vName}&CurrentVideoId=${ID}`);
 
-export {fetchData,GetHomeData,GetVideoInfo}
+export {fetchData,GetHomeData,GetVideoInfo,GetSameVideo}
