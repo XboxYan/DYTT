@@ -83,7 +83,6 @@ const styles = StyleSheet.create({
 		padding:10,
 		borderRadius:5,
 		backgroundColor:'#fff',
-		paddingBottom:5,
 		flexDirection:'row'
 	},
 	commentimg: {

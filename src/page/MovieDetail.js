@@ -204,7 +204,7 @@ class MovieSource extends PureComponent {
                             renderItem={this.renderItem}
                         />
                         :
-                        <View style={styles.con}><Loading size='small' text='' /></View>
+                        <Loading size='small' text='' />
                 }
             </View>
         )
@@ -271,10 +271,10 @@ class MovieSame extends PureComponent {
                                 </ScrollView>
                             </View>
                             :
-                            <View style={styles.con}><Text style={styles.empty}>╮(╯﹏╰）╭ 暂无同名视频</Text></View>
+                            <Text style={styles.empty}>╮(╯﹏╰）╭ 暂无同名视频</Text>
                         )
                         :
-                        <View style={styles.con}><Loading size='small' text='' /></View>
+                        <Loading size='small' text='' />
                 }
             </View>
         )
@@ -316,12 +316,12 @@ class MovieComments extends PureComponent {
         const {isFetch,data,height} = this.state;
         return(
             <View style={styles.viewcon}>
-                <SortTitle title='豆瓣评论' icon='message-circle' themeColor={themeColor} />
-                <View style={{marginTop:-10}}>
+                <SortTitle title='豆瓣影评' icon='message-circle' themeColor={themeColor} />
+                <View>
                     {
                         isRender&&isFetch
                             ?
-                            <View style={{height:height}}><CommentList isRender={isFetch} data={data} onLayout={this.onLayout} /></View>
+                            <View style={{height:height,marginTop:-10}}><CommentList isRender={isFetch} data={data} onLayout={this.onLayout} /></View>
                             :
                             <Loading size='small' text='' />
                     }
