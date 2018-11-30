@@ -15,10 +15,13 @@ import {
 import Touchable from '../components/Touchable';
 import Star from '../components/Star';
 import Loading from '../components/Loading';
+import CommentList from '../components/CommentList';
+import MovieMoreBtn from '../components/MovieMoreBtn';
 import Icon from 'react-native-vector-icons/Feather';
+import IconE from 'react-native-vector-icons/Entypo';
 import IconM from 'react-native-vector-icons/MaterialIcons';
 import Video from 'react-native-video';
-import { GetVideoInfo,GetSameVideo } from '../../util/api';
+import { GetVideoInfo,GetSameVideo,GetDoubanInterests } from '../../util/api';
 import { ThemeContext } from '../../util/theme-context';
 
 const { UIManager } = NativeModules;
@@ -35,18 +38,7 @@ class Appbar extends PureComponent {
                     <Icon name='chevron-left' size={24} color='#fff' />
                 </Touchable>
                 <View style={styles.apptitle}>
-                    <Animated.Text style={[styles.apptitletext, {
-                        opacity: scrollTop.interpolate({
-                            inputRange: [$.STATUS_HEIGHT + 40, $.STATUS_HEIGHT + 41],
-                            outputRange: [1, 0]
-                        })
-                    }]} numberOfLines={1}>影视详情</Animated.Text>
-                    <Animated.Text style={[styles.apptitletext, {
-                        opacity: scrollTop.interpolate({
-                            inputRange: [$.STATUS_HEIGHT + 40, $.STATUS_HEIGHT + 41],
-                            outputRange: [0, 1]
-                        })
-                    }]} numberOfLines={1}>{name}</Animated.Text>
+                    <Text style={styles.apptitletext}>{name||'影视详情'}</Text>
                 </View>
                 <Touchable style={styles.btn}>
                     <IconM name='favorite-border' size={20} color='#fff' />
@@ -67,7 +59,7 @@ const MovieInfo = ({movieInfo,themeColor,isPlaying,onPlay}) => (
         <View style={styles.poster}>
             <Image source={{ uri: movieInfo.Cover }} style={[styles.fullcon, styles.borR]} />
             <TouchableOpacity onPress={onPlay} activeOpacity={.8} style={[styles.playbtn, { backgroundColor: themeColor }]}>
-                <IconM name='play-arrow' size={24} color='#fff' />
+                <IconE name='controller-play' size={24} color='#fff' />
             </TouchableOpacity>
         </View>
         <View style={[styles.postertext,isPlaying&&{height:($.WIDTH-40)*9/16}]}>
@@ -115,7 +107,7 @@ class MovieSummary extends PureComponent {
                             style={styles.view_more}
                         >
                             <Text style={styles.view_moretext}>{isMore ? '收起' : '展开'}</Text>
-                            <IconM name={isMore ? 'expand-less' : 'expand-more'} size={20} color={themeColor} />
+                            <Icon name={isMore ? 'chevron-up' : 'chevron-down'} size={16} color={themeColor} />
                         </TouchableOpacity>
                     }
                 </SortTitle>
@@ -134,6 +126,31 @@ class MovieSummary extends PureComponent {
 }
 
 class MovieSource extends PureComponent {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            source:props.source||[],
+            dir:true
+        }
+    }
+
+
+
+    changeDir = () => {
+        this.setState({
+            source:[...this.state.source.reverse()],
+            dir:!this.state.dir
+        })
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.isRender !== this.props.isRender) {
+            this.setState({
+                source:nextProps.source,
+            })
+        }
+    }
 
     renderItem = ({ item, index }) => {
         const {sourceId,onPlay,themeColor} = this.props;
@@ -154,10 +171,22 @@ class MovieSource extends PureComponent {
     )
 
     render () {
-        const {source=[],isRender,themeColor,sourceId} = this.props;
+        const {isRender,themeColor,sourceId} = this.props;
+        const {source,dir} = this.state;
         return (
             <View style={styles.viewcon}>
-                <SortTitle title={`选集(${source.length})`} icon="grid" themeColor={themeColor}/>
+                <SortTitle title={`选集(${source.length})`} icon="grid" themeColor={themeColor}>
+                {
+                    source.length>1&&
+                    <TouchableOpacity
+                        onPress={this.changeDir}
+                        style={styles.view_more}
+                    >
+                        <Text style={styles.view_moretext}>反向</Text>
+                        <Icon name={dir ? 'chevron-right' : 'chevron-left'} size={16} color={themeColor} />
+                    </TouchableOpacity>
+                }
+                </SortTitle>
                 {
                     isRender
                         ?
@@ -215,36 +244,89 @@ class MovieSame extends PureComponent {
                         ?
                         (
                             sameVideo.length>0?
-                            <ScrollView 
-                                horizontal={true}
-                                contentContainerStyle={{paddingHorizontal:10,height:180}}
-                                showsHorizontalScrollIndicator={false}
-                                style={{flex:1}}
-                            >
-                                {
-                                    sameVideo.map(d=>(
-                                        <TouchableOpacity
-                                            key={d.ID}
-                                            activeOpacity={.9}
-                                            onPress={() => navigation.replace('MovieDetail',{movieId:d.ID})}
-                                            style={styles.movieitem}>
-                                            <Image 
-                                                style={styles.movieimg}
-                                                source={{uri:d.Cover}}
-                                            />
-                                            <View style={styles.movietext}>
-                                                <Text numberOfLines={1} style={styles.moviename}>{d.Name}</Text>
-                                            </View>
-                                        </TouchableOpacity>
-                                    ))
-                                }
-                            </ScrollView>
+                            <View style={{height:180}}>
+                                <ScrollView 
+                                    horizontal={true}
+                                    contentContainerStyle={{paddingHorizontal:10}}
+                                    showsHorizontalScrollIndicator={false}
+                                    style={{flex:1}}
+                                >
+                                    {
+                                        sameVideo.map(d=>(
+                                            <TouchableOpacity
+                                                key={d.ID}
+                                                activeOpacity={.9}
+                                                onPress={() => navigation.replace('MovieDetail',{movieId:d.ID})}
+                                                style={styles.movieitem}>
+                                                <Image 
+                                                    style={styles.movieimg}
+                                                    source={{uri:d.Cover}}
+                                                />
+                                                <View style={styles.movietext}>
+                                                    <Text numberOfLines={1} style={styles.moviename}>{d.Name}</Text>
+                                                </View>
+                                            </TouchableOpacity>
+                                        ))
+                                    }
+                                </ScrollView>
+                            </View>
                             :
-                            <View style={styles.con}><Text style={styles.text}>╮(╯﹏╰）╭ 暂无同名视频</Text></View>
+                            <View style={styles.con}><Text style={styles.empty}>╮(╯﹏╰）╭ 暂无同名视频</Text></View>
                         )
                         :
                         <View style={styles.con}><Loading size='small' text='' /></View>
                 }
+            </View>
+        )
+    }
+}
+
+class MovieComments extends PureComponent {
+
+    state = {
+        isFetch:false,
+        data:[],
+        height:null
+    }
+
+    GetDoubanInterests = async (DBID) => {
+        const data = await GetDoubanInterests({DBID});
+        this.setState({
+            data:data.interests||[],
+            isFetch:true
+        })
+    }
+
+    onLayout = (ev) => {
+        const {height} = ev.nativeEvent.layout;
+        if(height>0){
+            this.setState({height});
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.isRender !== this.props.isRender) {
+            const DBID = nextProps.DBID;
+            this.GetDoubanInterests(DBID);
+        }
+    }
+
+    render(){
+        const {isRender,themeColor,navigation,DBID} = this.props;
+        const {isFetch,data,height} = this.state;
+        return(
+            <View style={styles.viewcon}>
+                <SortTitle title='豆瓣评论' icon='message-circle' themeColor={themeColor} />
+                <View style={{marginTop:-10}}>
+                    {
+                        isRender&&isFetch
+                            ?
+                            <View style={{height:height}}><CommentList isRender={isFetch} data={data} onLayout={this.onLayout} /></View>
+                            :
+                            <Loading size='small' text='' />
+                    }
+                </View>
+                <MovieMoreBtn show={data.length>=5} themeColor={themeColor} style={{backgroundColor:'#f1f1f1',marginTop:10,marginBottom:0}} text='查看更多评论' onPress={()=>navigation.navigate('Comment',{DBID})} />
             </View>
         )
     }
@@ -316,63 +398,69 @@ export default class MovieDetail extends PureComponent {
         const { movieInfo,isRender,isPlaying,sourceId,playUrl } = this.state;
         const { navigation } = this.props;
         return (
-            <Animated.ScrollView
-                showsVerticalScrollIndicator={false}
-                style={{flex:1}}
-                contentContainerStyle={styles.content}
-                stickyHeaderIndices={[0]}
-                //scrollEventThrottle={1}
-                onScroll={Animated.event(
-                    [{ nativeEvent: { contentOffset: { y: this.scrollTop } } }],
-                    //{ useNativeDriver: true } // <-- 加上这一行
-                )}
-            >
-                <Appbar themeColor={theme.themeColor} name={movieInfo.Name} scrollTop={this.scrollTop} />
-                <Animated.Image
-                    resizeMode='cover'
-                    blurRadius={3.5}
-                    source={{ uri: movieInfo.Cover||'http' }}
-                    style={[styles.bg_place, {backgroundColor: theme.themeColor,
-                        transform: [{
-                            scale: this.scrollTop.interpolate({
-                                inputRange: [0, $.STATUS_HEIGHT + 50],
-                                outputRange: [1, 1.3]
+            <View style={styles.content}>
+                <Animated.ScrollView
+                    showsVerticalScrollIndicator={false}
+                    style={{flex:1}}
+                    stickyHeaderIndices={[0]}
+                    scrollEventThrottle={1}
+                    onScroll={Animated.event(
+                        [{ nativeEvent: { contentOffset: { y: this.scrollTop } } }],
+                        { useNativeDriver: true }
+                    )}
+                >
+                    <Appbar themeColor={theme.themeColor} name={movieInfo.Name} scrollTop={this.scrollTop} />
+                    <Animated.Image
+                        resizeMode='cover'
+                        blurRadius={3.5}
+                        source={{ uri: movieInfo.Cover||'http' }}
+                        style={[styles.bg_place, {backgroundColor: theme.themeColor,
+                            transform: [{
+                                scale: this.scrollTop.interpolate({
+                                    inputRange: [0, $.STATUS_HEIGHT + 50],
+                                    outputRange: [1, 1.3]
+                                })
+                            }]
+                    }]} />
+                    <Animated.View style={[styles.videobox, {
+                        transform: [{ perspective: 850 }, {
+                            rotateX: this.scrollRotate.interpolate({
+                                inputRange: [0, 1],
+                                outputRange: ['0deg','180deg']
                             })
                         }]
-                }]} />
-                <Animated.View style={[styles.videobox, {
-                    transform: [{ perspective: 850 }, {
-                        rotateX: this.scrollRotate.interpolate({
-                            inputRange: [0, 1],
-                            outputRange: ['0deg','180deg']
-                        })
-                    }]
-                }]}>
-                    <MovieInfo movieInfo={movieInfo} themeColor={theme.themeColor} onPlay={this.onPlay} isPlaying={isPlaying} />
-                    <Animated.View style={[styles.videoCon, {
-                        zIndex: this.scrollRotate.interpolate({
-                            inputRange: [0,.499,.501, 1],
-                            outputRange: [-1,-1,1, 1]
-                        })
                     }]}>
-                        <Video
-                            ref={(ref) => this.video = ref}
-                            source={{ uri: playUrl }}
-                            paused={!isPlaying}
-                            style={styles.backgroundVideo}
-                            resizeMode="contain"
-                            controls={true}
-                            repeat={true}
-                        />
-                        <TouchableOpacity style={styles.closebtn} onPress={this.onClose} >
-                            <Icon name='x' size={20} color='#fff' />
-                        </TouchableOpacity>
+                        <MovieInfo movieInfo={movieInfo} themeColor={theme.themeColor} onPlay={this.onPlay} isPlaying={isPlaying} />
+                        <Animated.View style={[styles.videoCon, {
+                            zIndex: this.scrollRotate.interpolate({
+                                inputRange: [0,.499,.501, 1],
+                                outputRange: [-1,-1,1, 1]
+                            }),
+                            opacity: this.scrollRotate.interpolate({
+                                inputRange: [0,.499,.501, 1],
+                                outputRange: [0,0,1, 1]
+                            })
+                        }]}>
+                            <Video
+                                ref={(ref) => this.video = ref}
+                                source={{ uri: playUrl }}
+                                paused={!isPlaying}
+                                style={styles.backgroundVideo}
+                                resizeMode="contain"
+                                controls={true}
+                                repeat={true}
+                            />
+                            <TouchableOpacity style={styles.closebtn} onPress={this.onClose} >
+                                <Icon name='x' size={20} color='#fff' />
+                            </TouchableOpacity>
+                        </Animated.View>
                     </Animated.View>
-                </Animated.View>
-                <MovieSource source={movieInfo.MoviePlayUrls} sourceId={sourceId} onPlay={this.onPlay} isRender={isRender} themeColor={theme.themeColor} />
-                <MovieSummary summary={movieInfo.Introduction} isRender={isRender} themeColor={theme.themeColor} />
-                <MovieSame movieInfo={movieInfo} isRender={isRender} themeColor={theme.themeColor} navigation={navigation} />
-            </Animated.ScrollView>
+                    <MovieSource source={movieInfo.MoviePlayUrls} sourceId={sourceId} onPlay={this.onPlay} isRender={isRender} themeColor={theme.themeColor} />
+                    <MovieSummary summary={movieInfo.Introduction} isRender={isRender} themeColor={theme.themeColor} />
+                    <MovieSame movieInfo={movieInfo} isRender={isRender} themeColor={theme.themeColor} navigation={navigation} />
+                    <MovieComments DBID={movieInfo.DBID} isRender={isRender} themeColor={theme.themeColor} navigation={navigation} />
+                </Animated.ScrollView>
+            </View>
         );
     }
 }
@@ -381,7 +469,8 @@ MovieDetail.contextType = ThemeContext;
 
 const styles = StyleSheet.create({
     content: {
-        backgroundColor:'#f7f7f7'
+        backgroundColor:'#f7f7f7',
+        flex:1
     },
     bg_place: {
         position: 'absolute',
@@ -427,7 +516,6 @@ const styles = StyleSheet.create({
     con: {
         paddingHorizontal: 15,
         flexWrap: 'wrap',
-        flexDirection: 'row'
     },
     text: {
         fontSize: 14,
@@ -481,7 +569,7 @@ const styles = StyleSheet.create({
         padding: 10,
         borderRadius: 3,
         backgroundColor: '#f1f1f1',
-        width: 110,
+        width: 100,
         height: 150,
         marginHorizontal: 10,
         justifyContent: 'center',
@@ -519,12 +607,6 @@ const styles = StyleSheet.create({
     playtext: {
         fontSize: 14,
         color: '#fff'
-    },
-    castitem: {
-        alignItems: 'center',
-        marginRight: 10,
-        width: 60,
-
     },
     star: {
         marginVertical: 5
@@ -589,7 +671,7 @@ const styles = StyleSheet.create({
         top: 10,
         right: 10,
         bottom: 10,
-        backgroundColor: '#000',
+        //backgroundColor: '#000',
         transform: [{ rotateX: '180deg' }]
     },
     closebtn: {
@@ -600,7 +682,7 @@ const styles = StyleSheet.create({
     },
     videobox: {
         marginBottom: 10,
-        marginTop:30,
+        marginTop:10,
         marginHorizontal: 10,
     },
     videosInfo: {
@@ -617,6 +699,7 @@ const styles = StyleSheet.create({
 	movieimg: {
 		width: 100,
         height:150,
+        backgroundColor:'#f1f1f1',
         borderRadius:3,
 		flex: 1,
 		resizeMode: 'cover'
@@ -632,5 +715,12 @@ const styles = StyleSheet.create({
 		color: '#333',
 		textAlign: 'center',
 		flex: 1
-	},
+    },
+    empty:{
+		flex:1,
+		padding:10,
+		textAlign:'center',
+		fontSize: 14,
+		color: '#666'
+	}
 })

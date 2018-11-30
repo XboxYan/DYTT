@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import {
-	StyleSheet,
+    StyleSheet,
+    TouchableOpacity,
 	Text,
 } from 'react-native';
 
@@ -11,9 +12,9 @@ const Btn = (props) => {
         return null
     }
     return(
-        <Touchable style={styles.btn}>
-            <Text style={styles.text}>{props.text}</Text>
-        </Touchable>
+        <TouchableOpacity style={[styles.btn,props.style]} activeOpacity={.8} onPress={props.onPress}>
+            <Text style={[styles.text,{color:props.themeColor}]}>{props.text}</Text>
+        </TouchableOpacity>
     )
 }
 

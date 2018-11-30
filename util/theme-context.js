@@ -2,7 +2,7 @@ import React, {createContext, PureComponent} from 'react';
 
 export const themes = {
     royalblue: {
-      themeColor: 'royalblue',
+      themeColor: '#ff2442',
     },
     dark: {
       themeColor: '#222222',

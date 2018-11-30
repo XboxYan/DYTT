@@ -18,7 +18,7 @@ export default class extends PureComponent {
                         <Text style={styles.loadtext}>-E-N-D-</Text>
                     </View>
                     :
-                    <Loading/>
+                    <Loading text="" size="small" />
                 }
             </View>
         )

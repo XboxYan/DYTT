@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
         //margin:5,
         //borderRadius:5,
         overflow:'hidden',
-        backgroundColor:'#fff',
+        backgroundColor:'#f1f1f1',
     },
     bg:{
         flex:1,

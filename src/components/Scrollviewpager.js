@@ -22,7 +22,8 @@ const tabBarOptions = (theme) => ({
         width:20,
         borderRadius:4,
         height:3,
-        backgroundColor:theme.themeColor
+        backgroundColor:theme.themeColor,
+        bottom:2
     }
 })
 
