@@ -60,13 +60,14 @@ export default class Comment extends PureComponent {
     }
 
     render() {
-        const { navigation } = this.props;
+        const {navigation,screenProps:{themeColor}} = this.props;
         const { data,isRender,total,isEnding } = this.state;
         return (
             <View style={styles.content}>
-                <Appbar navigation={navigation} title={`全部${total}条热评`} />
+                <Appbar navigation={navigation} themeColor={themeColor} title={`全部${total}条热评`} />
                 <CommentList 
-					style={styles.commentview}
+                    style={styles.commentview}
+                    themeColor={themeColor}
                     isRender={isRender} 
                     data={data} 
                     navigation={navigation} 

@@ -6,13 +6,10 @@ import React, { PureComponent } from 'react';
 import {
 	StyleSheet,
 	Text,
-	Platform,
 	View,
-	PixelRatio,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import Touchable from './Touchable';
-import {ThemeContext} from '../../util/theme-context';
 
 export default class AppBar extends PureComponent {
 	goBack = () => {
@@ -21,10 +18,9 @@ export default class AppBar extends PureComponent {
 		navigation.goBack();
 	}
 	render() {
-		const { theme } = this.context;
-		const { onPress=()=>{}, title } = this.props;
+		const { title,themeColor } = this.props;
 		return (
-			<View style={[styles.appbar, { backgroundColor: theme.themeColor }]}>
+			<View style={[styles.appbar, { backgroundColor: themeColor }]}>
 				<Touchable
 					style={styles.btn}
 					onPress={this.goBack}
@@ -39,8 +35,6 @@ export default class AppBar extends PureComponent {
 		);
 	}
 }
-
-AppBar.contextType = ThemeContext;
 
 const styles = StyleSheet.create({
 	appbar: {

@@ -34,10 +34,10 @@ export default class TabNavigator extends PureComponent {
         ),
     };
     render() {
-        const { navigation } = this.props;
+        const {navigation,screenProps:{themeColor}} = this.props;
         return (
             <View style={styles.container}>
-                <AppTop title="电影天堂" navigation={navigation}>
+                <AppTop title="电影天堂" navigation={navigation} themeColor={themeColor}>
                     <Touchable
                         style={styles.btn}
                         onPress={()=>navigation.navigate('History')}
@@ -50,10 +50,10 @@ export default class TabNavigator extends PureComponent {
                         <Icon name='search' size={20} color='#fff' />
                     </Touchable>
                 </AppTop>
-                <Scrollviewpager>
-                    <Home tablabel="首页" navigation={navigation} />
+                <Scrollviewpager themeColor={themeColor}>
+                    <Home tablabel="首页" {...this.props} />
                     {
-                        tablist.map(el => <Screen key={el.type} type={el.type} tablabel={el.name} navigation={navigation} />)
+                        tablist.map(el => <Screen key={el.type} type={el.type} tablabel={el.name} {...this.props} />)
                     }
                 </Scrollviewpager>
             </View>

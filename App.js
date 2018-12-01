@@ -6,11 +6,11 @@
  * @flow
  */
 import './util/global';
-import React from 'react';
+import React,{PureComponent} from 'react';
 import { StatusBar } from 'react-native';
 import { createStackNavigator, createAppContainer, createDrawerNavigator } from "react-navigation";
 import StackViewStyleInterpolator from 'react-navigation-stack/dist/views/StackView/StackViewStyleInterpolator';
-import { ThemeProvider } from './util/theme-context';
+import { ThemeProvider,ThemeContext } from './util/theme-context';
 import Home from './src';
 import MovieDetail from './src/page/MovieDetail';
 import Comment from './src/page/Comment';
@@ -48,9 +48,15 @@ const App = createAppContainer(createStackNavigator({
 	Comment: Comment,
 }, StackNavigatorConfig));
 
+
+
 export default () => (
 	<ThemeProvider>
 		<StatusBar translucent={true} backgroundColor="transparent" />
-		<App screenProps={{themeColor:'red'}} />
+		<ThemeContext.Consumer>
+			{
+				({theme}) => <App screenProps={{themeColor:theme.themeColor}} />
+			}
+		</ThemeContext.Consumer>
 	</ThemeProvider>
 )

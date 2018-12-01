@@ -12,7 +12,6 @@ import {
 } from 'react-native';
 //import Icon from 'react-native-vector-icons/Feather';
 //import Touchable from '../components/Touchable';
-import {ThemeContext} from '../../util/theme-context';
 
 const contentOptions = {
     itemsContainerStyle :{
@@ -34,18 +33,16 @@ export default class DrawerContent extends PureComponent {
         //console.warn(this.props)
     }
 	render() {
-		const { theme } = this.context;
+		const { themeColor } = this.props.screenProps;
 		return (
             <ScrollView style={{flex:1}}>
-                <View style={[styles.top,{backgroundColor:theme.themeColor}]}></View>
-                <DrawerItems {...this.props} {...contentOptions} inactiveTintColor="#333" activeTintColor={theme.themeColor} />
+                <View style={[styles.top,{backgroundColor:themeColor}]}></View>
+                <DrawerItems {...this.props} {...contentOptions} inactiveTintColor="#333" activeTintColor={themeColor} />
             </ScrollView>
 			
 		);
 	}
 }
-
-DrawerContent.contextType = ThemeContext;
 
 const styles = StyleSheet.create({
 	top: {

@@ -53,9 +53,9 @@ export default class extends PureComponent {
 	renderFooter = () => {
 		const { data } = this.props;
 		if(data.length>0){
-			const { onEndReached,isEnding=false } = this.props;
+			const { onEndReached,themeColor,isEnding=false } = this.props;
 			if(onEndReached){
-				return <LoadView isEnding={isEnding} />;
+				return <LoadView isEnding={isEnding} themeColor={themeColor} />;
 			}else{
 				return null;
 			}
@@ -64,10 +64,10 @@ export default class extends PureComponent {
 		}
 	}
 	render() {
-		const { data, isRender,onEndReached=()=>{} } = this.props;
+		const { data, isRender,themeColor,onEndReached=()=>{} } = this.props;
 		const height = ($.WIDTH - 40) / 2+40;
 		if (!isRender) {
-			return <Loading style={{height:100}} size='small' text='' />
+			return <Loading style={{height:100}} size='small' text='' themeColor={themeColor} />
 		}
 		return (
 			<FlatList

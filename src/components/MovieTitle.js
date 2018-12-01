@@ -5,29 +5,25 @@
 import React, { PureComponent } from 'react';
 import {
     StyleSheet,
-    TouchableOpacity,
     Text,
     View,
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Feather';
-import { ThemeContext } from '../../util/theme-context';
 
 export default class MovieTitle extends PureComponent {
 
     render() {
-        const { theme } = this.context;
-        const { icon, title } = this.props;
+        const { icon, title, themeColor } = this.props;
         return (
             <View style={styles.view_hd}>
-                <Icon name={icon} size={16} color={theme.themeColor} />
+                <Icon name={icon} size={16} color={themeColor} />
                 <Text style={styles.view_title}>{title}</Text>
             </View>
         )
     }
 }
 
-MovieTitle.contextType = ThemeContext;
 
 const styles = StyleSheet.create({
     view_hd: {

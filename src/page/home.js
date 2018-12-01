@@ -2,12 +2,10 @@ import React, { PureComponent,Fragment } from 'react';
 import { StyleSheet, ScrollView, Text, View, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import Swiper from '../components/Swiper';
-import Loading from '../components/Loading';
 import MovieTitle from '../components/MovieTitle';
 import MovieList from '../components/MovieList';
 import MovieMoreBtn from '../components/MovieMoreBtn'
 import {GetHomeData} from '../../util/api';
-import {ThemeContext} from '../../util/theme-context';
 
 const maps = [
     {
@@ -76,23 +74,22 @@ export default class Home extends PureComponent {
 
     render() {
         const {loading,data={}} = this.state;
-        const {navigation} = this.props;
-        const {theme} = this.context;
+        const {navigation,screenProps:{themeColor}} = this.props;
         return (
             <ScrollView style={styles.content}>
-                <Swiper loading={loading} data={data.solling&&data.solling.list} navigation={navigation} />
+                <Swiper loading={loading} data={data.solling&&data.solling.list} navigation={navigation} themeColor={themeColor} />
                 <View style={styles.links}>
                     {
                         maps.filter(el=>!el.isRender).map((d,i)=>(
-                            <TouchableOpacity key={i} style={styles.linkitem} activeOpacity={.9} ><View style={[styles.linkicon,{backgroundColor:theme.themeColor}]}><Icon name={d.icon} color={'#fff'} size={16} /></View><Text style={styles.linktext}>{d.name}</Text></TouchableOpacity>
+                            <TouchableOpacity key={i} style={styles.linkitem} activeOpacity={.9} ><View style={[styles.linkicon,{backgroundColor:themeColor}]}><Icon name={d.icon} color={'#fff'} size={16} /></View><Text style={styles.linktext}>{d.name}</Text></TouchableOpacity>
                         ))
                     }
                 </View>
                 {
                     maps.filter(el=>!el.isRender).map((d,i)=>(
                         <Fragment key={i}>
-                            <MovieTitle title={d.name} icon={d.icon} />
-                            <MovieList isRender={!loading} data={data[d.listType]?data[d.listType]['list']:[]} navigation={navigation} />
+                            <MovieTitle title={d.name} icon={d.icon} themeColor={themeColor} />
+                            <MovieList isRender={!loading} data={data[d.listType]?data[d.listType]['list']:[]} navigation={navigation} themeColor={themeColor} />
                             <MovieMoreBtn show={!loading} text={"查看更多"+d.name} />
                         </Fragment>
                     ))
@@ -101,8 +98,6 @@ export default class Home extends PureComponent {
         );
     }
 }
-
-Home.contextType = ThemeContext;
 
 const styles = StyleSheet.create({
 	content: {

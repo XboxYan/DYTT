@@ -5,8 +5,6 @@ import {
 	Text,
 } from 'react-native';
 
-import Touchable from './Touchable';
-
 const Btn = (props) => {
     if(!props.show){
         return null

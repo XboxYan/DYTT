@@ -29,7 +29,7 @@ const CommentItem = (props) => (
 			<Text style={styles.commentname}>{props.item.user.name}</Text>
 			<Text style={styles.commenttime}>{props.item.create_time}</Text>
 			<Text style={styles.commentpage}>{props.item.comment}</Text>
-			<Star style={styles.star} score={props.item.rating?props.item.rating.value*2:0} isShowNum={false}/>
+			<Star style={styles.star} score={props.item.rating?props.item.rating.value*2:0} isShowNum={false} themeColor={props.themeColor}/>
 		</View>
 	</View>
 )
@@ -37,21 +37,21 @@ const CommentItem = (props) => (
 export default class extends PureComponent {
 
 	renderItem = ({ item, index }) => {
-		return <CommentItem item={item} navigation={this.props.navigation} />
+		return <CommentItem item={item} navigation={this.props.navigation} themeColor={this.props.themeColor} />
 	}
 
 	renderFooter = () => {
-		const { onEndReached,isEnding=false } = this.props;
+		const { onEndReached,themeColor,isEnding=false } = this.props;
 		if(onEndReached){
-			return <LoadView isEnding={isEnding} />;
+			return <LoadView isEnding={isEnding} themeColor={themeColor} />;
 		}else{
 			return null;
 		}
 	}
 	render() {
-		const { data,style, isRender,onEndReached=()=>{},onLayout } = this.props;
+		const { data,style, isRender,onEndReached=()=>{},onLayout,themeColor } = this.props;
 		if (!isRender) {
-			return <Loading size='small' text='' />
+			return <Loading size='small' text='' themeColor={themeColor} />
 		}
 		if(data.length==0){
 			return <CommentEmpty />

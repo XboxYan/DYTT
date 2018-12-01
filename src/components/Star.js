@@ -6,7 +6,6 @@ import {
     Image,
     View,
 } from 'react-native';
-import {ThemeContext} from '../../util/theme-context';
 
 class StarCurrent extends PureComponent {
     width = new Animated.Value(0);
@@ -45,25 +44,15 @@ class StarCurrent extends PureComponent {
     }
 }
 
-export default class Star extends PureComponent {
-    render() {
-        const { score, style, isShowNum = true } = this.props;
-        const { theme } = this.context;
-        return (
-            <View style={[styles.starcon, style]}>
-                <Image source={require('../img/star.png')} style={styles.star} />
-                <StarCurrent score={score} themeColor={theme.themeColor} />
-                {
-                    isShowNum&&<Text style={[styles.score, { color: theme.themeColor }]}>{score || '0.0'}</Text>
-                }
-            </View>
-        )
-    }
-}
-
-Star.contextType = ThemeContext;
-
-
+export default ({ score, style, themeColor, isShowNum = true }) => (
+    <View style={[styles.starcon, style]}>
+        <Image source={require('../img/star.png')} style={styles.star} />
+        <StarCurrent score={score} themeColor={themeColor} />
+        {
+            isShowNum&&<Text style={[styles.score, { color: themeColor }]}>{score || '0.0'}</Text>
+        }
+    </View>
+)
 
 const styles = StyleSheet.create({
     starcon: {

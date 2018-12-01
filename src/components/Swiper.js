@@ -16,19 +16,15 @@ import {
 import Swiper from 'react-native-swiper';
 import Loading from './Loading';
 
-import {ThemeContext} from '../../util/theme-context';
-
-
 
 class SwiperCon extends React.Component {
     render(){
-        const {theme} = this.context;
-        const {loading,data,navigation} = this.props;
+        const {loading,data,navigation,themeColor} = this.props;
         if(loading){
-            return <View style={styles.item} ><Loading size="small" text="" /></View>
+            return <View style={styles.item} ><Loading size="small" text="" themeColor={themeColor}/></View>
         }
         return (
-            <Swiper style={styles.wrap} autoplay={true} paginationStyle={{bottom:30,right:10,justifyContent:'flex-end'}} dotColor='rgba(252,255,255,.7)' dotStyle={{width: 6, height: 6}}  activeDotStyle={{width: 6, height: 6}} activeDotColor={theme.themeColor}>
+            <Swiper style={styles.wrap} autoplay={true} paginationStyle={{bottom:30,right:10,justifyContent:'flex-end'}} dotColor='rgba(252,255,255,.7)' dotStyle={{width: 6, height: 6}}  activeDotStyle={{width: 6, height: 6}} activeDotColor={themeColor}>
                 {
                     data.map((d,i)=>(
                         <TouchableOpacity key={i} activeOpacity={.9} style={styles.item} onPress={()=>navigation.navigate('MovieDetail',{movieId:d.ID})} >
@@ -48,8 +44,6 @@ class SwiperCon extends React.Component {
         )
     }
 };
-
-SwiperCon.contextType = ThemeContext;
 
 export default SwiperCon;
 

@@ -10,8 +10,6 @@ import {
 	View,
 } from 'react-native';
 
-import {ThemeContext} from '../../util/theme-context';
-
 export default class Loading extends PureComponent {
 
 	static defaultProps = {
@@ -22,18 +20,15 @@ export default class Loading extends PureComponent {
 	}
 
 	render() {
-		const { theme } = this.context;
-		const { style, size, color, text, textColor } = this.props;
+		const { style, size, text, textColor, themeColor } = this.props;
 		return (
 			<View style={[styles.content, style]}>
-				<ActivityIndicator color={color||theme.themeColor} size={size} />
+				<ActivityIndicator color={themeColor} size={size} />
 				<Text style={[styles.loadtext, { color: textColor }]}>{text}</Text>
 			</View>
 		)
 	}
 }
-
-Loading.contextType = ThemeContext;
 
 const styles = StyleSheet.create({
 	content: {

@@ -22,7 +22,6 @@ import IconE from 'react-native-vector-icons/Entypo';
 import IconM from 'react-native-vector-icons/MaterialIcons';
 import Video from 'react-native-video';
 import { GetVideoInfo,GetSameVideo,GetDoubanInterests } from '../../util/api';
-import { ThemeContext } from '../../util/theme-context';
 
 const { UIManager } = NativeModules;
 
@@ -64,7 +63,7 @@ const MovieInfo = ({movieInfo,themeColor,isPlaying,onPlay}) => (
         </View>
         <View style={[styles.postertext,isPlaying&&{height:($.WIDTH-40)*9/16}]}>
             <Text style={[styles.title, { color: themeColor }]}>{movieInfo.Name||'正在加载...'}</Text>
-            <Star style={styles.score} score={movieInfo.Score} />
+            <Star style={styles.score} score={movieInfo.Score} themeColor={themeColor} />
             {
                 movieInfo.MovieTitle ? <Text style={styles.status}>{movieInfo.MovieTitle}</Text>:null
             }
@@ -117,7 +116,7 @@ class MovieSummary extends PureComponent {
                             ?
                             <Text numberOfLines={isMore ? 0 : 5} style={styles.text}>{summary}</Text>
                             :
-                            <Loading size='small' text='' />
+                            <Loading size='small' text='' themeColor={themeColor} />
                     }
                 </View>
             </View>
@@ -204,7 +203,7 @@ class MovieSource extends PureComponent {
                             renderItem={this.renderItem}
                         />
                         :
-                        <Loading size='small' text='' />
+                        <Loading size='small' text='' themeColor={themeColor} />
                 }
             </View>
         )
@@ -274,7 +273,7 @@ class MovieSame extends PureComponent {
                             <Text style={styles.empty}>╮(╯﹏╰）╭ 暂无同名视频</Text>
                         )
                         :
-                        <Loading size='small' text='' />
+                        <Loading size='small' text='' themeColor={themeColor} />
                 }
             </View>
         )
@@ -321,9 +320,9 @@ class MovieComments extends PureComponent {
                     {
                         isRender&&isFetch
                             ?
-                            <View style={{height:height,marginTop:-10}}><CommentList isRender={isFetch} data={data} onLayout={this.onLayout} /></View>
+                            <View style={{height:height,marginTop:-10}}><CommentList isRender={isFetch} data={data} onLayout={this.onLayout} themeColor={themeColor} /></View>
                             :
-                            <Loading size='small' text='' />
+                            <Loading size='small' text='' themeColor={themeColor} />
                     }
                 </View>
                 <MovieMoreBtn show={data.length>=5} themeColor={themeColor} style={{backgroundColor:'#f1f1f1',marginTop:10,marginBottom:0}} text='查看更多评论' onPress={()=>navigation.navigate('Comment',{DBID})} />
@@ -394,9 +393,8 @@ export default class MovieDetail extends PureComponent {
     }
 
     render() {
-        const { theme } = this.context;
+        const {navigation,screenProps:{themeColor}} = this.props;
         const { movieInfo,isRender,isPlaying,sourceId,playUrl } = this.state;
-        const { navigation } = this.props;
         return (
             <View style={styles.content}>
                 <Animated.ScrollView
@@ -409,12 +407,12 @@ export default class MovieDetail extends PureComponent {
                         { useNativeDriver: true }
                     )}
                 >
-                    <Appbar themeColor={theme.themeColor} name={movieInfo.Name} scrollTop={this.scrollTop} />
+                    <Appbar themeColor={themeColor} name={movieInfo.Name} scrollTop={this.scrollTop} />
                     <Animated.Image
                         resizeMode='cover'
                         blurRadius={3.5}
                         source={{ uri: movieInfo.Cover||'http' }}
-                        style={[styles.bg_place, {backgroundColor: theme.themeColor,
+                        style={[styles.bg_place, {backgroundColor: themeColor,
                             transform: [{
                                 scale: this.scrollTop.interpolate({
                                     inputRange: [0, $.STATUS_HEIGHT + 50],
@@ -430,7 +428,7 @@ export default class MovieDetail extends PureComponent {
                             })
                         }]
                     }]}>
-                        <MovieInfo movieInfo={movieInfo} themeColor={theme.themeColor} onPlay={this.onPlay} isPlaying={isPlaying} />
+                        <MovieInfo movieInfo={movieInfo} themeColor={themeColor} onPlay={this.onPlay} isPlaying={isPlaying} />
                         <Animated.View style={[styles.videoCon, {
                             zIndex: this.scrollRotate.interpolate({
                                 inputRange: [0,.499,.501, 1],
@@ -455,17 +453,15 @@ export default class MovieDetail extends PureComponent {
                             </TouchableOpacity>
                         </Animated.View>
                     </Animated.View>
-                    <MovieSource source={movieInfo.MoviePlayUrls} sourceId={sourceId} onPlay={this.onPlay} isRender={isRender} themeColor={theme.themeColor} />
-                    <MovieSummary summary={movieInfo.Introduction} isRender={isRender} themeColor={theme.themeColor} />
-                    <MovieSame movieInfo={movieInfo} isRender={isRender} themeColor={theme.themeColor} navigation={navigation} />
-                    <MovieComments DBID={movieInfo.DBID} isRender={isRender} themeColor={theme.themeColor} navigation={navigation} />
+                    <MovieSource source={movieInfo.MoviePlayUrls} sourceId={sourceId} onPlay={this.onPlay} isRender={isRender} themeColor={themeColor} />
+                    <MovieSummary summary={movieInfo.Introduction} isRender={isRender} themeColor={themeColor} />
+                    <MovieSame movieInfo={movieInfo} isRender={isRender} themeColor={themeColor} navigation={navigation} />
+                    <MovieComments DBID={movieInfo.DBID} isRender={isRender} themeColor={themeColor} navigation={navigation} />
                 </Animated.ScrollView>
             </View>
         );
     }
 }
-
-MovieDetail.contextType = ThemeContext;
 
 const styles = StyleSheet.create({
     content: {

@@ -9,7 +9,7 @@ import Loading from './Loading';
 
 export default class extends PureComponent {
     render(){
-        const {isEnding} = this.props;
+        const {isEnding,themeColor} = this.props;
         return(
             <View style={styles.loadview}>
                 {
@@ -18,7 +18,7 @@ export default class extends PureComponent {
                         <Text style={styles.loadtext}>-E-N-D-</Text>
                     </View>
                     :
-                    <Loading text="" size="small" />
+                    <Loading text="" size="small" themeColor={themeColor} />
                 }
             </View>
         )

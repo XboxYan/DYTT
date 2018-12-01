@@ -2,13 +2,11 @@
  * Scrollviewpager
  */
 
-import React, { PureComponent } from 'react';
+import React from 'react';
 
 import Scrollviewpager from 'react-native-scrollviewpager';
 
-import {ThemeContext} from '../../util/theme-context';
-
-const tabBarOptions = (theme) => ({
+const tabBarOptions = (themeColor) => ({
     style:{
         paddingHorizontal:10,
         height:40,
@@ -17,27 +15,18 @@ const tabBarOptions = (theme) => ({
     labelStyle:{
         color:'#666'
     },
-    activeTintColor:theme.themeColor,
+    activeTintColor:themeColor,
     indicatorStyle:{
         width:20,
         borderRadius:4,
         height:3,
-        backgroundColor:theme.themeColor,
+        backgroundColor:themeColor,
         bottom:2
     }
 })
 
-class TabNavigator extends React.Component {
-    render(){
-        const {theme} = this.context;
-        return (
-            <Scrollviewpager tabBarOptions={tabBarOptions(theme)} >
-                {this.props.children}
-            </Scrollviewpager>
-        )
-    }
-};
-
-TabNavigator.contextType = ThemeContext;
-
-export default TabNavigator
+export default ({themeColor,children}) => (
+    <Scrollviewpager tabBarOptions={tabBarOptions(themeColor)} >
+        {children}
+    </Scrollviewpager> 
+)

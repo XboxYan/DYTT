@@ -22,10 +22,10 @@ export default class extends PureComponent {
     }
 
     render() {
-        const { navigation } = this.props;
+        const {navigation,screenProps:{themeColor}} = this.props;
         return (
             <View style={styles.container}>
-                <AppTop title="历史记录" navigation={navigation} />
+                <AppTop title="历史记录" navigation={navigation} themeColor={themeColor} />
                 <Text>这是历史记录页面</Text>
             </View>
         );
