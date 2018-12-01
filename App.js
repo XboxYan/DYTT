@@ -8,12 +8,14 @@
 import './util/global';
 import React from 'react';
 import { StatusBar } from 'react-native';
-import { createStackNavigator, createAppContainer } from "react-navigation";
+import { createStackNavigator, createAppContainer, createDrawerNavigator } from "react-navigation";
 import StackViewStyleInterpolator from 'react-navigation-stack/dist/views/StackView/StackViewStyleInterpolator';
 import { ThemeProvider } from './util/theme-context';
 import Home from './src';
 import MovieDetail from './src/page/MovieDetail';
 import Comment from './src/page/Comment';
+import DrawerContent from './src/page/DrawerContent';
+import History from './src/page/History';
 
 const StackNavigatorConfig = {
 	headerMode: 'none',
@@ -21,13 +23,27 @@ const StackNavigatorConfig = {
 	cardStyle:{
 		backgroundColor:'red'
 	},
+	defaultNavigationOptions: {
+		gesturesEnabled: true,
+	},
 	transitionConfig: () => ({
         screenInterpolator: StackViewStyleInterpolator.forHorizontal,
     })
 }
 
-const App = createAppContainer(createStackNavigator({
+const DrawerNavigatorConfig = {
+	//drawerType :'back',
+	contentComponent: DrawerContent,
+}
+
+const Drawer = createDrawerNavigator({
 	Home: Home,
+	History: History,
+	Home3: Home,
+},DrawerNavigatorConfig);
+
+const App = createAppContainer(createStackNavigator({
+	Drawer: Drawer,
 	MovieDetail: MovieDetail,
 	Comment: Comment,
 }, StackNavigatorConfig));
