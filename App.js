@@ -37,8 +37,8 @@ const DrawerNavigatorConfig = {
 }
 
 const Drawer = createDrawerNavigator({
-	Home: Home,
 	History: History,
+	Home: Home,
 	Home3: Home,
 },DrawerNavigatorConfig);
 

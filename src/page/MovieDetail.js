@@ -20,7 +20,7 @@ import MovieMoreBtn from '../components/MovieMoreBtn';
 import Icon from 'react-native-vector-icons/Feather';
 import IconE from 'react-native-vector-icons/Entypo';
 import IconM from 'react-native-vector-icons/MaterialIcons';
-import Video from 'react-native-video';
+import Video from '../components/Video';
 import { GetVideoInfo,GetSameVideo,GetDoubanInterests } from '../../util/api';
 
 const { UIManager } = NativeModules;
@@ -367,6 +367,7 @@ export default class MovieDetail extends PureComponent {
                 //useNativeDriver: true
             }                              
         ).start();
+        this.video.toPlay();
         this.setState({isPlaying:bool})
         LayoutAnimation.easeInEaseOut();
     }
@@ -441,12 +442,10 @@ export default class MovieDetail extends PureComponent {
                         }]}>
                             <Video
                                 ref={(ref) => this.video = ref}
-                                source={{ uri: playUrl }}
-                                paused={!isPlaying}
+                                uri={playUrl}
+                                useTextureView={false}
                                 style={styles.backgroundVideo}
                                 resizeMode="contain"
-                                controls={true}
-                                repeat={true}
                             />
                             <TouchableOpacity style={styles.closebtn} onPress={this.onClose} >
                                 <Icon name='x' size={20} color='#fff' />
