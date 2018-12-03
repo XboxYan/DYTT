@@ -62,9 +62,9 @@ const VideoBar = ({themeColor,toSeek,toPlay,playableDuration,currentTime,duratio
                 onPress={toPlay}
                 style={styles.videobtn}
             >
-                <Icon name={paused?'play':'pause'} size={20} color='#fff' />
+                <Icon name={paused?'play':'pause'} size={20} color='#333' />
                 {
-                    //<IconE name={paused?'controller-play':'controller-paus'} size={22} color='#fff' />
+                    //<IconE name={paused?'controller-play':'controller-paus'} size={22} color='#333' />
                 }
             </Touchable>
             */
@@ -77,7 +77,7 @@ const VideoBar = ({themeColor,toSeek,toPlay,playableDuration,currentTime,duratio
                 onValueChange={(value)=>toSeek(value,false,true)}
                 onSlidingComplete={(value)=>toSeek(value,true,true)}
                 maximumValue={duration}
-                maximumTrackTintColor="#fff"
+                maximumTrackTintColor="#333"
                 minimumTrackTintColor={themeColor}
                 thumbTintColor={themeColor}
             />
@@ -88,7 +88,7 @@ const VideoBar = ({themeColor,toSeek,toPlay,playableDuration,currentTime,duratio
             onPress={toFull}
             style={styles.videobtn}
         >
-            <Icon name={isFull?'minimize':'maximize'} size={20} color='#fff' />
+            <Icon name={isFull?'minimize':'maximize'} size={20} color='#333' />
         </Touchable>
         <View pointerEvents="none" style={[styles.progresscon,isShowBar&&{opacity:0}]}>
             <View style={[styles.progressbar,{backgroundColor:themeColor,flex:currentTime}]}/>
@@ -260,21 +260,20 @@ export default class extends PureComponent {
         
         //进度
         if(Math.abs(gestureState.dx)>20&&Math.abs(gestureState.dy)<50){
-            if(!this.$isMoved){
-                let current = this.$currentTime+gestureState.dx*.2;
-                if(current < 0){
-                    current = 0;
-                }
-                if(current > this.$duration){
-                    current = this.$duration;
-                }
-                this._currentTime = current;
-                this._isSet = true;
-                this.setState({
-                    $currentTime:current,
-                    $isMove:true
-                });
+            this.$isMoved = true;
+            let current = this.$currentTime+gestureState.dx*.2;
+            if(current < 0){
+                current = 0;
             }
+            if(current > this.$duration){
+                current = this.$duration;
+            }
+            this._currentTime = current;
+            this._isSet = true;
+            this.setState({
+                $currentTime:current,
+                $isMove:true
+            });
         }else{
             this._isSet = false;
             this.setState({$isMove:false})
@@ -372,9 +371,9 @@ export default class extends PureComponent {
                     :
                     null
                 }
-                <View pointerEvents={(isShowBar||paused)?"auto":"none"} style={[styles.playbtnWrap,(!isShowBar&&!paused||!isReady)&&{opacity:0}]} ><TouchableOpacity style={styles.playbtn} activeOpacity={.8} onPress={this.toTogglePlay}><IconF name={paused?'play':'pause'} size={20} color={'#fff'} /></TouchableOpacity></View>
+                <View pointerEvents={(isShowBar||paused)?"auto":"none"} style={[styles.playbtnWrap,(!isShowBar&&!paused||!isReady)&&{opacity:0}]} ><TouchableOpacity style={styles.playbtn} activeOpacity={.8} onPress={this.toTogglePlay}><IconF name={paused?'play':'pause'} size={20} color={themeColor} /></TouchableOpacity></View>
                 <View {...this._panResponder.panHandlers} style={[styles.fullScreen,{zIndex:5}]}>
-                    <ActivityIndicator pointerEvents="none" color='#fff' size='small' style={!isBuffering&&{opacity:0,zIndex:-1}} />
+                    <ActivityIndicator pointerEvents="none" color={themeColor} size='small' style={!isBuffering&&{opacity:0,zIndex:-1}} />
                     <Text pointerEvents="none" style={[styles.tips,!isError&&{opacity:0}]}>╮(╯﹏╰）╭ 抱歉，视频播放失败</Text>
                     <Text pointerEvents="none" style={[styles.tips,(!(isEnd&&!currentTime))&&{opacity:0}]}>播放完成</Text>
                     <Text pointerEvents="none" style={[styles.showTime,!$isMove&&{opacity:0}]}>
@@ -426,7 +425,7 @@ const styles = StyleSheet.create({
         right: 0,
         flexDirection:'row',
         alignItems: 'center',
-        backgroundColor:'rgba(0,0,0,.7)'
+        backgroundColor:'rgba(255,255,255,.7)'
     },
     videobtn:{
         width:40,
@@ -451,14 +450,14 @@ const styles = StyleSheet.create({
     },
     videotime:{
         fontSize:12,
-        color:'#fff',
+        color:'#333',
         paddingHorizontal:10,
     },
     showTime:{
         position: 'absolute',
         zIndex:20,
-        backgroundColor:'rgba(0,0,0,.7)',
-        color:'#fff',
+        backgroundColor:'rgba(255,255,255,.7)',
+        color:'#333',
         top:'10%',
         fontSize:18,
         paddingHorizontal:10,
@@ -466,7 +465,7 @@ const styles = StyleSheet.create({
         borderRadius:5
     },
     tips:{
-        color:'#fff',
+        color:'#333',
         position:'absolute'
     },
     progresscon:{
@@ -475,11 +474,11 @@ const styles = StyleSheet.create({
         left:0,
         right:0,
         height:2,
-        flexDirection:'row'
+        flexDirection:'row',
+        backgroundColor:'rgba(255,255,255,.7)'
     },
     progressbar:{
         height:2,
-        backgroundColor:'rgba(255,255,255,.7)'
     },
     playbtnWrap:{
         position:'absolute',
@@ -489,7 +488,7 @@ const styles = StyleSheet.create({
         width:50,
         height:50,
         borderRadius:100,
-        backgroundColor:'rgba(0,0,0,.7)',
+        backgroundColor:'rgba(255,255,255,.7)',
         justifyContent: 'center',
         alignItems: 'center',
     }

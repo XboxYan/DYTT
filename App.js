@@ -6,16 +6,16 @@
  * @flow
  */
 import './util/global';
-import React,{PureComponent} from 'react';
+import React,{ PureComponent,Fragment } from 'react';
 import { StatusBar } from 'react-native';
 import { createStackNavigator, createAppContainer, createDrawerNavigator } from "react-navigation";
 import StackViewStyleInterpolator from 'react-navigation-stack/dist/views/StackView/StackViewStyleInterpolator';
-import { ThemeProvider,ThemeContext } from './util/theme-context';
 import Index from './src';
 import MovieDetail from './src/page/MovieDetail';
 import Comment from './src/page/Comment';
 import DrawerContent from './src/page/DrawerContent';
 import History from './src/page/History';
+import Theme from './src/page/Theme';
 
 const StackNavigatorConfig = {
 	headerMode: 'none',
@@ -39,7 +39,7 @@ const DrawerNavigatorConfig = {
 const Drawer = createDrawerNavigator({
 	Index: Index,
 	History: History,
-	Home3: Index,
+	Theme: Theme,
 },DrawerNavigatorConfig);
 
 const App = createAppContainer(createStackNavigator({
@@ -48,15 +48,22 @@ const App = createAppContainer(createStackNavigator({
 	Comment: Comment,
 }, StackNavigatorConfig));
 
+export default class extends PureComponent {
+	state = {
+		themeColor:'#db4437'
+	}
 
+	setTheme = (themeColor) => {
+		this.setState({themeColor})
+	}
 
-export default () => (
-	<ThemeProvider>
-		<StatusBar translucent={true} backgroundColor="transparent" />
-		<ThemeContext.Consumer>
-			{
-				({theme}) => <App screenProps={{themeColor:theme.themeColor}} />
-			}
-		</ThemeContext.Consumer>
-	</ThemeProvider>
-)
+	render(){
+		const { themeColor } = this.state;
+		return(
+			<Fragment>
+				<StatusBar translucent={true} backgroundColor="transparent" />
+				<App screenProps={{themeColor:themeColor, setTheme:this.setTheme}} />
+			</Fragment>
+		)
+	}
+}
