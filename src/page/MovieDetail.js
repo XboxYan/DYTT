@@ -58,7 +58,7 @@ const MovieInfo = ({movieInfo,themeColor,isPlaying,onPlay}) => (
         <View style={styles.poster}>
             <Image source={{ uri: movieInfo.Cover }} style={[styles.fullcon, styles.borR]} />
             <TouchableOpacity onPress={onPlay} activeOpacity={.8} style={[styles.playbtn, { backgroundColor: themeColor }]}>
-                <IconE name='controller-play' size={24} color='#fff' />
+                <IconE name='controller-play' style={{marginLeft:3}} size={24} color='#fff' />
             </TouchableOpacity>
         </View>
         <View style={[styles.postertext,isPlaying&&{height:($.WIDTH-40)*9/16}]}>
@@ -341,7 +341,7 @@ export default class MovieDetail extends PureComponent {
             movieInfo:{},
             sourceId:null,
             isPlaying:false,
-            playUrl:''
+            playUrl:null
         }
     }
 
@@ -367,7 +367,7 @@ export default class MovieDetail extends PureComponent {
                 //useNativeDriver: true
             }                              
         ).start();
-        this.video.toPlay();
+        this.video.toPlay(bool);
         this.setState({isPlaying:bool})
         LayoutAnimation.easeInEaseOut();
     }
@@ -445,7 +445,7 @@ export default class MovieDetail extends PureComponent {
                                 uri={playUrl}
                                 useTextureView={false}
                                 style={styles.backgroundVideo}
-                                resizeMode="contain"
+                                themeColor={themeColor}
                             />
                             <TouchableOpacity style={styles.closebtn} onPress={this.onClose} >
                                 <Icon name='x' size={20} color='#fff' />
@@ -673,7 +673,8 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: 0,
         top: 0,
-        padding: 10
+        padding: 10,
+        zIndex:30
     },
     videobox: {
         marginBottom: 10,

@@ -11,7 +11,7 @@ import { StatusBar } from 'react-native';
 import { createStackNavigator, createAppContainer, createDrawerNavigator } from "react-navigation";
 import StackViewStyleInterpolator from 'react-navigation-stack/dist/views/StackView/StackViewStyleInterpolator';
 import { ThemeProvider,ThemeContext } from './util/theme-context';
-import Home from './src';
+import Index from './src';
 import MovieDetail from './src/page/MovieDetail';
 import Comment from './src/page/Comment';
 import DrawerContent from './src/page/DrawerContent';
@@ -37,9 +37,9 @@ const DrawerNavigatorConfig = {
 }
 
 const Drawer = createDrawerNavigator({
+	Index: Index,
 	History: History,
-	Home: Home,
-	Home3: Home,
+	Home3: Index,
 },DrawerNavigatorConfig);
 
 const App = createAppContainer(createStackNavigator({

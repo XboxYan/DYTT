@@ -31,7 +31,7 @@ const timeFormat =(timeSec, containHours) => {
     }
   
     let hours = Math.floor(timeSec / 60.0 / 60.0).toFixed(0);
-    let minutes = Math.floor(timeSec / 60.0 % 60.0).toFixed(0);
+    let minutes = containHours? Math.floor(timeSec / 60.0 % 60.0).toFixed(0):Math.floor(timeSec / 60.0).toFixed(0);
     let seconds = Math.floor(timeSec % 60.0).toFixed(0);
   
     if(hours < 0) {
@@ -93,7 +93,7 @@ const VideoBar = ({themeColor,toSeek,toPlay,playableDuration,currentTime,duratio
         <View pointerEvents="none" style={[styles.progresscon,isShowBar&&{opacity:0}]}>
             <View style={[styles.progressbar,{backgroundColor:themeColor,flex:currentTime}]}/>
             <View style={[styles.progressbar,{backgroundColor:themeColor,opacity:.5,flex:playableDuration>currentTime?playableDuration-currentTime:0}]}/>
-            <View style={[styles.progressbar,{flex:duration-currentTime}]}/>
+            <View style={[styles.progressbar,{flex:duration-(playableDuration>currentTime?playableDuration:currentTime)}]}/>
         </View>
     </View>
 )
@@ -107,7 +107,7 @@ export default class extends PureComponent {
             playableDuration: 0,
             currentTime: 0,
             $currentTime: 0,
-            paused: true,
+            paused: false,
             isBuffering:true,
             isFull:false,
             isError:false,
@@ -126,14 +126,19 @@ export default class extends PureComponent {
         this.video.presentFullscreenPlayer()
     }
 
-    toPlay = () => {
+    toPlay = (bool) => {
         if(this.state.isReady){
-            this.toShowBar(this.state.paused);
+            this.toShowBar();
             this.setState({ 
-                paused: !this.state.paused,
+                paused: !bool,
+                isError: false,
                 isEnd:false
             });
         }
+    }
+
+    toTogglePlay = () => {
+        this.toPlay(this.state.paused)
     }
 
     toPause = () => {
@@ -151,7 +156,7 @@ export default class extends PureComponent {
             this.isSeeking = true;
         }
         if(show){
-            this.toShowBar(true);
+            this.toShowBar();
         }
     }
 
@@ -163,17 +168,15 @@ export default class extends PureComponent {
         })
     }
 
-    toShowBar = (bool) => {
+    toShowBar = () => {
         this.timer&&clearTimeout(this.timer);
         LayoutAnimation.easeInEaseOut();
         this.setState({
             isShowBar:true
         })
-        if(bool){
-            this.timer = setTimeout(()=>{
-                this.toHideBar()
-            },5000)
-        }
+        this.timer = setTimeout(()=>{
+            this.toHideBar()
+        },5000)
     }
 
     /*
@@ -186,6 +189,7 @@ export default class extends PureComponent {
     }
 
     onLoad = (data) => {
+        //console.warn('onLoad')
         this.setState({
             isReady: true,
             duration: data.duration,
@@ -247,42 +251,42 @@ export default class extends PureComponent {
 
     onPanResponderMove = (evt, gestureState) => {
 
-        if(Math.abs(gestureState.dx)>20||Math.abs(gestureState.dy)>20){
-            if(!this.$isMoved){
+        if(!this.state.duration){
+            if(Math.abs(gestureState.dx)>20||Math.abs(gestureState.dy)>20){
                 this.$isMoved = true;
-                this.setState({$isMove:true})
             }
+            return false
         }
         
-        if(Math.abs(gestureState.dx)>20){
-            
-            this._isSet = true;
-        }
-
         //进度
-        if(this._isSet&&Math.abs(gestureState.dy)<30){
-            let current = this.$currentTime+gestureState.dx*.2;
-            if(current < 0){
-                current = 0;
+        if(Math.abs(gestureState.dx)>20&&Math.abs(gestureState.dy)<50){
+            if(!this.$isMoved){
+                let current = this.$currentTime+gestureState.dx*.2;
+                if(current < 0){
+                    current = 0;
+                }
+                if(current > this.$duration){
+                    current = this.$duration;
+                }
+                this._currentTime = current;
+                this._isSet = true;
+                this.setState({
+                    $currentTime:current,
+                    $isMove:true
+                });
             }
-            if(current > this.$duration){
-                current = this.$duration;
-            }
-            this._currentTime = current;
-            this.setState({$currentTime:current});
         }else{
-            this.setState({$isMove:false})
             this._isSet = false;
+            this.setState({$isMove:false})
         }
 
     }
 
     onPanResponderRelease = (evt, gestureState) => {
-        if(this._isSet){
+        //console.warn('onPanResponderRelease')
+        if(this._isSet){ 
+            this.setState({$isMove:false});
             this._isSet = false;
-            this.setState({
-                $isMove:false,
-            });
             this.toSeek(this._currentTime, true);
             // this.video.seek(_currentTime);
         }
@@ -291,7 +295,7 @@ export default class extends PureComponent {
             if(isShowBar){
                 this.toHideBar();
             }else{
-                this.toShowBar(true);
+                this.toShowBar();
             }
         }
     }
@@ -314,9 +318,20 @@ export default class extends PureComponent {
             onShouldBlockNativeResponder: (evt, gestureState) => {
                 // 返回一个布尔值，决定当前组件是否应该阻止原生组件成为JS响应者
                 // 默认返回true。目前暂时只支持android。
-                return false;
+                return true;
             },
         });
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (this.props.uri !== prevProps.uri) {
+            this.setState({
+                isReady:false,
+                duration:0,
+                currentTime:0,
+                playableDuration:0
+            })
+        }
     }
 
     componentWillUnmount(){
@@ -328,39 +343,45 @@ export default class extends PureComponent {
         const {paused,isReady,currentTime,duration,playableDuration,isBuffering,isFull,isError,isEnd,isShowBar,$isMove,$currentTime} = this.state;
         return (
             <View style={[styles.container,style]}>
-                <Video
-                    ref={(ref) => this.video = ref}
-                    style={styles.fullScreen}
-                    useTextureView={false}
-                    progressUpdateInterval={1000}
-                    source={{uri:uri}}
-                    paused={paused}
-                    resizeMode="contain"
-                    onFullscreenPlayerDidPresent={this.onFullscreenPlayerDidPresent}
-                    onLoad={this.onLoad}
-                    onProgress={this.onProgress}
-                    onSeek={this.onSeek}
-                    onBuffer={this.onBuffer}
-                    onEnd={this.onEnd}
-                    onError={this.onError}
-                    onTimedMetadata={this.onTimedMetadata}
-                    bufferConfig={{
-                        minBufferMs: 500000,
-                        maxBufferMs: 1500000,
-                        bufferForPlaybackMs: 50000,
-                        bufferForPlaybackAfterRebufferMs: 100000
-                    }}
-                    repeat={false}
-                />
-                <ActivityIndicator pointerEvents="none" color='#fff' size='small' style={!isBuffering&&{opacity:0}} />
-                <Text pointerEvents="none" style={[styles.tips,!isError&&{opacity:0}]}>╮(╯﹏╰）╭ 抱歉，视频播放失败</Text>
-                <Text pointerEvents="none" style={[styles.tips,(!(isEnd&&!currentTime))&&{opacity:0}]}>播放完成</Text>
-                <Text pointerEvents="none" style={[styles.showTime,!$isMove&&{opacity:0}]}>
-                    <Text style={{color:themeColor}}>{timeFormat($currentTime)}</Text>
-                     /{timeFormat(duration)}
-                </Text>
-                <View pointerEvents={(isShowBar||paused)?"auto":"none"} style={[styles.playbtnWrap,(!isShowBar&&!paused||!isReady)&&{opacity:0}]} ><TouchableOpacity style={styles.playbtn} activeOpacity={.8} onPress={this.toPlay}><IconF name={paused?'play':'pause'} size={20} color={'#fff'} /></TouchableOpacity></View>
-                <View {...this._panResponder.panHandlers} style={[styles.fullScreen,{zIndex:5}]}></View>
+                {
+                    uri?
+                    <Video
+                        ref={(ref) => this.video = ref}
+                        style={styles.fullScreen}
+                        useTextureView={false}
+                        progressUpdateInterval={1000}
+                        source={{uri:uri}}
+                        paused={paused}
+                        resizeMode="contain"
+                        onFullscreenPlayerDidPresent={this.onFullscreenPlayerDidPresent}
+                        onLoad={this.onLoad}
+                        onProgress={this.onProgress}
+                        onSeek={this.onSeek}
+                        onBuffer={this.onBuffer}
+                        onEnd={this.onEnd}
+                        onError={this.onError}
+                        onTimedMetadata={this.onTimedMetadata}
+                        bufferConfig={{
+                            minBufferMs: 15000,
+                            maxBufferMs: 6000000,
+                            bufferForPlaybackMs: 5000,
+                            bufferForPlaybackAfterRebufferMs: 10000
+                        }}
+                        repeat={false}
+                    />
+                    :
+                    null
+                }
+                <View pointerEvents={(isShowBar||paused)?"auto":"none"} style={[styles.playbtnWrap,(!isShowBar&&!paused||!isReady)&&{opacity:0}]} ><TouchableOpacity style={styles.playbtn} activeOpacity={.8} onPress={this.toTogglePlay}><IconF name={paused?'play':'pause'} size={20} color={'#fff'} /></TouchableOpacity></View>
+                <View {...this._panResponder.panHandlers} style={[styles.fullScreen,{zIndex:5}]}>
+                    <ActivityIndicator pointerEvents="none" color='#fff' size='small' style={!isBuffering&&{opacity:0,zIndex:-1}} />
+                    <Text pointerEvents="none" style={[styles.tips,!isError&&{opacity:0}]}>╮(╯﹏╰）╭ 抱歉，视频播放失败</Text>
+                    <Text pointerEvents="none" style={[styles.tips,(!(isEnd&&!currentTime))&&{opacity:0}]}>播放完成</Text>
+                    <Text pointerEvents="none" style={[styles.showTime,!$isMove&&{opacity:0}]}>
+                        <Text style={{color:themeColor}}>{timeFormat($currentTime)}</Text>
+                        /{timeFormat(duration)}
+                    </Text>
+                </View>
                 <VideoBar
                     paused={paused}
                     isShowBar={isShowBar}
@@ -394,6 +415,8 @@ const styles = StyleSheet.create({
         left: 0,
         bottom: 0,
         right: 0,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     videobar:{
         position: 'absolute',
@@ -418,6 +441,7 @@ const styles = StyleSheet.create({
     },
     videosliderbar:{
         position:'absolute',
+        zIndex:5,
         left:-16,
         right:-16,
     },
