@@ -15,7 +15,7 @@ export default class extends PureComponent {
                 {
                     isEnding?
                     <View style={styles.loadmore}>
-                        <Text style={styles.loadtext}>-E-N-D-</Text>
+                        <Text style={styles.loadtext}>ヾ(ｏ･ω･)ﾉ 再怎么找也没有啦</Text>
                     </View>
                     :
                     <Loading text="" size="small" themeColor={themeColor} />

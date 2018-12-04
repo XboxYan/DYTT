@@ -16,43 +16,12 @@ import {
 } from 'react-native';
 
 import Touchable from './Touchable';
+import { timeFormat } from '../../util/timeformat';
 import Video from 'react-native-video';
 import Icon from 'react-native-vector-icons/Feather';
 import IconF from 'react-native-vector-icons/FontAwesome5';
 
 const { UIManager } = NativeModules;
-
-const timeFormat =(timeSec, containHours) => {
-    function zeroPad(s) {
-      if (s.length === 1) {
-        return '0' + s;
-      }
-      return s;
-    }
-  
-    let hours = Math.floor(timeSec / 60.0 / 60.0).toFixed(0);
-    let minutes = containHours? Math.floor(timeSec / 60.0 % 60.0).toFixed(0):Math.floor(timeSec / 60.0).toFixed(0);
-    let seconds = Math.floor(timeSec % 60.0).toFixed(0);
-  
-    if(hours < 0) {
-      hours = 0;
-    }
-    if (minutes < 0) {
-      minutes = 0;
-    }
-    if(seconds < 0) {
-      seconds = 0;
-    }
-  
-    hours = zeroPad(hours);
-    minutes = zeroPad(minutes);
-    seconds = zeroPad(seconds);
-  
-    if (containHours) {
-      return hours + ':' + minutes + ':' + seconds;
-    }
-    return minutes + ':' + seconds;
-  }
 
 const VideoBar = ({themeColor,toSeek,toPlay,playableDuration,currentTime,duration,isFull,paused,toFull,isShowBar}) => (
     <View style={[styles.videobar,!isShowBar&&{bottom:-40}]}>
@@ -326,6 +295,7 @@ export default class extends PureComponent {
         if (this.props.uri !== prevProps.uri) {
             this.setState({
                 isReady:false,
+                isError:false,
                 duration:0,
                 currentTime:0,
                 playableDuration:0
@@ -371,7 +341,7 @@ export default class extends PureComponent {
                     :
                     null
                 }
-                <View pointerEvents={(isShowBar||paused)?"auto":"none"} style={[styles.playbtnWrap,(!isShowBar&&!paused||!isReady)&&{opacity:0}]} ><TouchableOpacity style={styles.playbtn} activeOpacity={.8} onPress={this.toTogglePlay}><IconF name={paused?'play':'pause'} size={20} color={themeColor} /></TouchableOpacity></View>
+                <View pointerEvents={(isShowBar||paused)?"auto":"none"} style={[styles.playbtnWrap,(!isShowBar&&!paused||!isReady)&&{left:-50},isShowBar&&{bottom:60}]} ><TouchableOpacity style={styles.playbtn} activeOpacity={.8} onPress={this.toTogglePlay}><IconF name={paused?'play':'pause'} size={20} color={themeColor} /></TouchableOpacity></View>
                 <View {...this._panResponder.panHandlers} style={[styles.fullScreen,{zIndex:5}]}>
                     <ActivityIndicator pointerEvents="none" color={themeColor} size='small' style={!isBuffering&&{opacity:0,zIndex:-1}} />
                     <Text pointerEvents="none" style={[styles.tips,!isError&&{opacity:0}]}>╮(╯﹏╰）╭ 抱歉，视频播放失败</Text>
@@ -465,7 +435,7 @@ const styles = StyleSheet.create({
         borderRadius:5
     },
     tips:{
-        color:'#333',
+        color:'#000',
         position:'absolute'
     },
     progresscon:{
@@ -482,6 +452,8 @@ const styles = StyleSheet.create({
     },
     playbtnWrap:{
         position:'absolute',
+        left:20,
+        bottom:20,
         zIndex:15
     },
     playbtn:{

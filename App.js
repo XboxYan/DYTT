@@ -1,12 +1,12 @@
 /**
- * Sample React Native App
- * https://github.com/facebook/react-native
+ * DYTT 电影天堂
+ * https://github.com/XboxYan/DYTT
  *
- * @format
- * @flow
+ * @XboxYan
+ * @yanwenbin1991@live.com
  */
 import './util/global';
-import React,{ PureComponent,Fragment } from 'react';
+import React,{ PureComponent } from 'react';
 import { StatusBar } from 'react-native';
 import { createStackNavigator, createAppContainer, createDrawerNavigator } from "react-navigation";
 import StackViewStyleInterpolator from 'react-navigation-stack/dist/views/StackView/StackViewStyleInterpolator';
@@ -16,6 +16,7 @@ import Comment from './src/page/Comment';
 import DrawerContent from './src/page/DrawerContent';
 import History from './src/page/History';
 import Theme from './src/page/Theme';
+import { StoreProvider } from './util/store';
 
 const StackNavigatorConfig = {
 	headerMode: 'none',
@@ -37,8 +38,8 @@ const DrawerNavigatorConfig = {
 }
 
 const Drawer = createDrawerNavigator({
-	Index: Index,
 	History: History,
+	Index: Index,
 	Theme: Theme,
 },DrawerNavigatorConfig);
 
@@ -60,10 +61,10 @@ export default class extends PureComponent {
 	render(){
 		const { themeColor } = this.state;
 		return(
-			<Fragment>
+			<StoreProvider>
 				<StatusBar translucent={true} backgroundColor="transparent" />
 				<App screenProps={{themeColor:themeColor, setTheme:this.setTheme}} />
-			</Fragment>
+			</StoreProvider>
 		)
 	}
 }

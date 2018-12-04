@@ -22,6 +22,7 @@ import IconE from 'react-native-vector-icons/Entypo';
 import IconM from 'react-native-vector-icons/MaterialIcons';
 import Video from '../components/Video';
 import { GetVideoInfo,GetSameVideo,GetDoubanInterests } from '../../util/api';
+import { Store } from '../../util/store';
 
 const { UIManager } = NativeModules;
 
@@ -340,6 +341,7 @@ export default class MovieDetail extends PureComponent {
             isRender:false,
             movieInfo:{},
             sourceId:null,
+            sourceName:'',
             isPlaying:false,
             playUrl:null
         }
@@ -376,6 +378,7 @@ export default class MovieDetail extends PureComponent {
         if(item.ID){
             this.setState({
                 sourceId:item.ID,
+                sourceName:item.Name,
                 playUrl:item.PlayUrl,
             })
         }
@@ -391,6 +394,30 @@ export default class MovieDetail extends PureComponent {
             const { params: { movieId } } = this.props.navigation.state;
             this.GetVideoInfo(movieId);
         })
+    }
+
+    componentWillUnmount() {
+        const { addHistory } = this.context;
+        const { movieInfo:{ID,Name,Cover},isRender,sourceName } = this.state;
+        if(isRender){
+            const { currentTime,duration,isEnd } = this.video.state;
+            if(currentTime>=10){
+                //大于10s才保存历史记录
+                console.warn('保存')
+                const now = new Date();
+                addHistory({
+                    currentTime,
+                    duration,
+                    isEnd,
+                    id:ID,
+                    img:Cover,
+                    name:Name,
+                    sourceName,
+                    //date:new Date()
+                    date:[now.getFullYear(),now.getMonth()+1,now.getDate(),now.getHours(),now.getMinutes()]
+                })
+            }
+        }
     }
 
     render() {
@@ -461,6 +488,8 @@ export default class MovieDetail extends PureComponent {
         );
     }
 }
+
+MovieDetail.contextType = Store;
 
 const styles = StyleSheet.create({
     content: {

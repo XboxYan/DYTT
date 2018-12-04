@@ -37,7 +37,7 @@ const CommentItem = (props) => (
 export default class extends PureComponent {
 
 	renderItem = ({ item, index }) => {
-		return <CommentItem item={item} navigation={this.props.navigation} themeColor={this.props.themeColor} />
+		return <CommentItem item={item} themeColor={this.props.themeColor} />
 	}
 
 	renderFooter = () => {
@@ -53,7 +53,7 @@ export default class extends PureComponent {
 		if (!isRender) {
 			return <Loading size='small' text='' themeColor={themeColor} />
 		}
-		if(data.length==0){
+		if(data.length === 0){
 			return <CommentEmpty />
 		}
 		return (
