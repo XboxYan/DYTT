@@ -69,7 +69,7 @@ export default class extends PureComponent {
     static navigationOptions = {
         drawerLabel: '主题风格',
         drawerIcon: ({ tintColor }) => (
-            <Icon name='feather' size={16} color={tintColor} />
+            <Icon name='feather' size={18} color={tintColor} />
         ),
     };
 

@@ -30,7 +30,7 @@ export default class TabNavigator extends PureComponent {
     static navigationOptions = {
         drawerLabel: '首页',
         drawerIcon: ({ tintColor }) => (
-            <Icon name='home' size={16} color={tintColor} />
+            <Icon name='home' size={18} color={tintColor} />
         ),
     };
     render() {

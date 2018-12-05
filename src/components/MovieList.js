@@ -64,14 +64,14 @@ export default class extends PureComponent {
 		}
 	}
 	render() {
-		const { data, isRender,themeColor,onEndReached=()=>{} } = this.props;
+		const { data, isRender,themeColor,style,onEndReached=()=>{} } = this.props;
 		const height = ($.WIDTH - 40) / 2+40;
 		if (!isRender) {
 			return <Loading style={{height:100}} size='small' text='' themeColor={themeColor} />
 		}
 		return (
 			<FlatList
-				style={styles.content}
+				style={[styles.content,style]}
 				numColumns={3}
 				ListFooterComponent={this.renderFooter}
 				data={data}
@@ -116,20 +116,6 @@ const styles = StyleSheet.create({
 		color: '#333',
 		textAlign: 'center',
 		flex: 1
-	},
-	label: {
-		textAlign: 'center',
-		fontSize: 10,
-		marginTop: 3,
-	},
-	movieloadcontent: {
-		flex: 1,
-		paddingHorizontal: 5,
-		flexDirection: 'row',
-		flexWrap: 'wrap'
-	},
-	movieloadtext: {
-		height: 10,
 	},
 	flexcon:{
 		flex: 1,

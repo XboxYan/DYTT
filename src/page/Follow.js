@@ -13,52 +13,43 @@ import Icon from 'react-native-vector-icons/Feather';
 import AppTop from '../components/AppTop';
 import LoadView from '../components/LoadView';
 import Touchable from '../components/Touchable';
+import MovieList from '../components/MovieList';
 import { Store } from '../../util/store';
 import { timeFormat } from '../../util/timeformat';
 
 const { UIManager } = NativeModules;
 
 const CheckBox = ({themeColor,checked}) => (
-    <Icon style={{marginRight:10}} name={checked?'check-circle':'circle'} size={20} color={checked?themeColor:'#eee'} />
+    <Icon name={checked?'check-circle':'circle'} style={{marginRight:10}} size={20} color={checked?themeColor:'#eee'} />
 )
 
-const HistoryEmpty = () => (
+const FollowEmpty = () => (
 	<View style={styles.flexcon}>
-		<Text style={styles.empty}>╮(╯﹏╰）╭ 暂无历史记录</Text>
+		<Text style={styles.empty}>╮(╯﹏╰）╭ 暂无收藏影片</Text>
 	</View>
 )
 
-const HistoryItem = ({item:{img,currentTime,duration,isEnd,name,sourceName,date},themeColor,onPress,onLongPress,checked,isEdit}) => (
-    <TouchableOpacity activeOpacity={.8} style={styles.item} onPress={onPress} onLongPress={onLongPress}>
-        {
-            isEdit&&<CheckBox themeColor={themeColor} checked={checked} />
-        }    
-        <View style={styles.itemleft}>
-            <Image 
-                style={styles.itemimg}
-                resizeMode="cover"
-                source={{uri:img}}
-            />
-            <View style={styles.progresscon}>
-                <View style={[styles.progressbar,{backgroundColor:themeColor,flex:currentTime}]}/>
-                <View style={[styles.progressbar,{flex:duration-currentTime}]}/>
-            </View>
-            <Text style={styles.tips}>{ timeFormat(currentTime) + ' / ' + timeFormat(duration)}</Text>
-        </View>
-		<View style={styles.textcon}>
-			<Text style={styles.textname}>{name}</Text>
-			<Text style={styles.textsource}>上次观看{sourceName}</Text>
-			<Text style={styles.textdate}>{date}</Text>
-        </View>
+const FollowItem = ({item:{img,name},themeColor,onPress,onLongPress,checked,isEdit}) => (
+    <TouchableOpacity activeOpacity={.8} style={styles.movieitem} onPress={onPress} onLongPress={onLongPress}>  
+        <Image 
+			style={styles.movieimg}
+			source={{uri:img}}
+		/>
+        <View style={styles.movietext}>
+            {
+                isEdit&&<CheckBox themeColor={themeColor} checked={checked} />
+            }
+			<Text numberOfLines={1} style={styles.moviename}>{name}</Text>
+		</View>
 	</TouchableOpacity>
 )
 
-export default class History extends PureComponent {
+export default class Follow extends PureComponent {
 
     static navigationOptions = {
-        drawerLabel: '历史记录',
+        drawerLabel: '收藏',
         drawerIcon: ({ tintColor }) => (
-            <Icon name='clock' size={18} color={tintColor} />
+            <Icon name='heart' size={18} color={tintColor} />
         ),
     };
 
@@ -107,30 +98,30 @@ export default class History extends PureComponent {
     }
 
     selectAll = () => {
-        const { historyList } = this.context;
+        const { fllowList } = this.context;
         const { selected } = this.state;
-        if(selected.length===historyList.length){
+        if(selected.length===fllowList.length){
             this.setState({
                 selected:[]
             })
         }else{
             this.setState({
-                selected:historyList.map(el=>el.id)
+                selected:fllowList.map(el=>el.id)
             })
         }
     }
 
     delSelect = () => {
         const { selected } = this.state;
-        const { removeHistory } = this.context;
+        const { removeFollow } = this.context;
         this.setState({selected:[]});
-        removeHistory(selected);
+        removeFollow(selected);
     }
 
     renderItem = ({ item, index }) => {
         const {screenProps:{themeColor}} = this.props;
         const { selected,isEdit } = this.state;
-		return <HistoryItem item={item} onPress={this.onPress(item.id)} isEdit={isEdit} checked={selected.indexOf(item.id)>=0} onLongPress={this.onLongPress(item.id)} themeColor={themeColor} />
+		return <FollowItem item={item} onPress={this.onPress(item.id)} isEdit={isEdit} checked={selected.indexOf(item.id)>=0} onLongPress={this.onLongPress(item.id)} themeColor={themeColor} />
 	}
 
 	renderFooter = () => {
@@ -139,42 +130,42 @@ export default class History extends PureComponent {
     }
     
     componentWillReceiveProps(nextProps, nextContext) {
-        if(nextContext.historyList.length!==this.context.historyList.length){
+        if(nextContext.fllowList.length!==this.context.fllowList.length){
             LayoutAnimation.easeInEaseOut();
         }
     }
 
     render() {
         const {navigation,screenProps:{themeColor}} = this.props;
-        const { historyList } = this.context;
+        const { fllowList } = this.context;
         const { selected,isEdit } = this.state;
         return (
             <View style={styles.container}>
-                <AppTop title="历史记录" navigation={navigation} themeColor={themeColor}>
+                <AppTop title="收藏" navigation={navigation} themeColor={themeColor}>
                     {
-                        historyList.length>0&&
+                        fllowList.length>0&&
                         <TouchableOpacity onPress={this.onEdit} activeOpacity={.8} style={styles.btn}><Text style={styles.btntext}>{isEdit?'取消':'编辑'}</Text></TouchableOpacity>
                     }
                 </AppTop>
                 {
-                    historyList.length === 0?
-                    <HistoryEmpty/>
+                    fllowList.length === 0?
+                    <FollowEmpty/>
                     :
                     <FlatList 
                         style={[styles.content,isEdit&&{paddingBottom:48}]}
-                        numColumns={1}
+                        numColumns={3}
                         ListFooterComponent={this.renderFooter}
                         removeClippedSubviews={true}
-                        data={historyList}
+                        data={fllowList}
                         onEndReachedThreshold={0.1}
                         extraData={themeColor}
                         keyExtractor={(item) => item.id.toString()}
                         renderItem={this.renderItem}
                     />
                 }
-                <View style={[styles.footer,historyList.length>0&&isEdit&&{bottom:0}]}>
+                <View style={[styles.footer,fllowList.length>0&&isEdit&&{bottom:0}]}>
                     <Touchable style={styles.vbtn} onPress={this.selectAll}>
-                        <CheckBox themeColor={themeColor} checked={selected.length===historyList.length} />
+                        <CheckBox themeColor={themeColor} checked={selected.length===fllowList.length} />
                         <Text style={styles.vbtntext}>全选</Text>
                     </Touchable>
                     <Touchable style={styles.vbtn} disabled={selected.length===0} onPress={this.delSelect}>
@@ -187,7 +178,7 @@ export default class History extends PureComponent {
     }
 }
 
-History.contextType = Store;
+Follow.contextType = Store;
 
 const styles = StyleSheet.create({
     container: {
@@ -217,68 +208,9 @@ const styles = StyleSheet.create({
 		color: '#666'
 	},
     content: {
-		flex: 1,
-    },
-    item:{
-        marginTop:10,
-		marginHorizontal:10,
-		padding:10,
-		borderRadius:5,
-        backgroundColor:'#fff',
-        alignItems: 'center',
-		flexDirection:'row' 
-    },
-    itemleft:{
-        width:120,
-        height:80,
-        borderRadius:3,
-        overflow:'hidden',
-        zIndex:1
-    },
-    itemimg:{
-        width:'100%',
-        height:'100%'
-    },
-    textcon:{
-        height:'100%',
-        marginHorizontal:10,
-        flex:1,
-        zIndex:1,
-    },
-    progresscon:{
-        position:'absolute',
-        bottom:0,
-        left:0,
-        right:0,
-        height:2,
-        flexDirection:'row',
-        backgroundColor:'rgba(255,255,255,.7)'
-    },
-    progressbar:{
-        height:3,
-    },
-    tips:{
-        position:'absolute',
-        right:5,
-        bottom:5,
-        fontSize:10,
-        borderRadius:3,
+        flex: 1,
+        paddingTop:10,
         paddingHorizontal: 5,
-        paddingVertical: 2,
-        color: '#fff',
-        backgroundColor: 'rgba(0,0,0,.7)'
-    },
-    textname:{
-        fontSize:15,
-    },
-    textsource:{
-        fontSize:12,
-        color:'#666',
-        paddingVertical:5
-    },
-    textdate:{
-        fontSize:12,
-        color:'#999'
     },
     footer:{
         position:'absolute',
@@ -299,5 +231,49 @@ const styles = StyleSheet.create({
     },
     vbtntext:{
         fontSize:16,
+    },
+    movieitem: {
+		width: ($.WIDTH - 40) / 3,
+		marginHorizontal: 5,
+		borderRadius:3,
+		overflow:'hidden',
+		backgroundColor:'#fff',
+		marginBottom:10,
+	},
+	movieimg: {
+		width: '100%',
+		height:($.WIDTH - 40) / 2,
+		flex: 1,
+		resizeMode: 'cover'
+	},
+	movietext: {
+		alignItems: 'center',
+		height: 30,
+		paddingHorizontal: 5,
+		flexDirection: 'row'
+	},
+	moviename: {
+		fontSize: 14,
+		color: '#333',
+		textAlign: 'left',
+		flex: 1
+	},
+	flexcon:{
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+    },
+    chcekbox:{
+        position:'absolute',
+        backgroundColor:'#fff',
+        width:60,
+        height:60,
+        justifyContent: 'center',
+		alignItems: 'center',
+        borderBottomLeftRadius:30,
+        right:-30,
+        top:-30,
+        opacity:0,
+        zIndex:5
     }
 });

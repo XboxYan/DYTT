@@ -16,6 +16,7 @@ import Comment from './src/page/Comment';
 import DrawerContent from './src/page/DrawerContent';
 import History from './src/page/History';
 import Theme from './src/page/Theme';
+import Follow from './src/page/Follow';
 import { StoreProvider } from './util/store';
 
 const StackNavigatorConfig = {
@@ -41,6 +42,7 @@ const Drawer = createDrawerNavigator({
 	History: History,
 	Index: Index,
 	Theme: Theme,
+	Follow: Follow,
 },DrawerNavigatorConfig);
 
 const App = createAppContainer(createStackNavigator({

@@ -76,7 +76,7 @@ export default class extends PureComponent {
             playableDuration: 0,
             currentTime: 0,
             $currentTime: 0,
-            paused: false,
+            paused: true,
             isBuffering:true,
             isFull:false,
             isError:false,
@@ -162,7 +162,7 @@ export default class extends PureComponent {
         this.setState({
             isReady: true,
             duration: data.duration,
-            paused:false
+            //paused:false
         });
         //this.toShowBar(true);
     }

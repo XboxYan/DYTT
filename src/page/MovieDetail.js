@@ -26,33 +26,28 @@ import { Store } from '../../util/store';
 
 const { UIManager } = NativeModules;
 
-class Appbar extends PureComponent {
-    render() {
-        const {themeColor,scrollTop,name} = this.props;
-        return (
-            <View style={styles.appbar}>
-                <Touchable
-                    style={styles.btn}
-                //onPress={this.goBack}
-                >
-                    <Icon name='chevron-left' size={24} color='#fff' />
-                </Touchable>
-                <View style={styles.apptitle}>
-                    <Text style={styles.apptitletext}>{name||'影视详情'}</Text>
-                </View>
-                <Touchable style={styles.btn}>
-                    <IconM name='favorite-border' size={20} color='#fff' />
-                </Touchable>
-                <Animated.View style={[styles.fullcon, { backgroundColor: themeColor }, {
-                    opacity: scrollTop.interpolate({
-                        inputRange: [$.STATUS_HEIGHT, $.STATUS_HEIGHT + 50],
-                        outputRange: [0, 1]
-                    })
-                }]} />
-            </View>
-        )
-    }
-}
+const Appbar = ({themeColor,scrollTop,name,hasFollow,isRender,setFollow}) => (
+    <View style={styles.appbar}>
+        <Touchable
+            style={styles.btn}
+        //onPress={this.goBack}
+        >
+            <Icon name='chevron-left' size={24} color='#fff' />
+        </Touchable>
+        <View style={styles.apptitle}>
+            <Text style={styles.apptitletext}>{name||'影视详情'}</Text>
+        </View>
+        <Touchable style={styles.btn} disabled={!isRender} onPress={setFollow} >
+            <IconM name={hasFollow?'favorite':'favorite-border'} size={20} color='#fff' />
+        </Touchable>
+        <Animated.View style={[styles.fullcon, { backgroundColor: themeColor }, {
+            opacity: scrollTop.interpolate({
+                inputRange: [$.STATUS_HEIGHT, $.STATUS_HEIGHT + 50],
+                outputRange: [0, 1]
+            })
+        }]} />
+    </View>
+)
 
 const MovieInfo = ({movieInfo,themeColor,isPlaying,onPlay,isRender}) => (
     <View style={styles.videosInfo}>
@@ -343,9 +338,9 @@ export default class MovieDetail extends PureComponent {
             movieInfo:{},
             sourceId:null,
             sourceName:'',
+            hasFollow:false,
             isPlaying:false,
             playUrl:null,
-            lastPlayTime:0
         }
     }
 
@@ -354,9 +349,10 @@ export default class MovieDetail extends PureComponent {
     scrollRotate = new Animated.Value(0);
 
     GetVideoInfo = async (movieId) => {
-        const { findHistory } = this.context;
+        const { findHistory,findFollow } = this.context;
         const data = await GetVideoInfo(movieId)||{};
         const historyItem = findHistory(movieId);
+        const hasFollow = findFollow(movieId);
         let _sourceId = null;
         if(historyItem){
             this.lastPlayTime = historyItem.currentTime-3;
@@ -369,9 +365,21 @@ export default class MovieDetail extends PureComponent {
             movieInfo:data,
             isRender:true,
             sourceId:_sourceId,
-            playUrl:item.PlayUrl
+            playUrl:item.PlayUrl,
+            hasFollow:hasFollow
         })
         LayoutAnimation.easeInEaseOut();
+    }
+
+    setFollow = () => {
+        const { setFollow } = this.context;
+        const { movieInfo:{ID,Name,Cover} } = this.state;
+        this.setState({hasFollow:!this.state.hasFollow});
+        setFollow({
+            id:ID,
+            name:Name,
+            img:Cover
+        })
     }
 
     onplayRotate = (bool) => {
@@ -395,7 +403,7 @@ export default class MovieDetail extends PureComponent {
     onPlay = (ID,bool) => {
         if(bool){
             //跳转
-            const {sourceId,movieInfo} = this.state;
+            const {movieInfo} = this.state;
             const item = movieInfo.MoviePlayUrls.find(el=>el.ID==ID);
             this.setState({
                 sourceId:item.ID,
@@ -444,7 +452,7 @@ export default class MovieDetail extends PureComponent {
 
     render() {
         const {navigation,screenProps:{themeColor}} = this.props;
-        const { movieInfo,isRender,isPlaying,sourceId,playUrl } = this.state;
+        const { movieInfo,isRender,isPlaying,sourceId,playUrl,hasFollow } = this.state;
         return (
             <View style={styles.content}>
                 <Animated.ScrollView
@@ -457,7 +465,7 @@ export default class MovieDetail extends PureComponent {
                         { useNativeDriver: true }
                     )}
                 >
-                    <Appbar themeColor={themeColor} name={movieInfo.Name} scrollTop={this.scrollTop} />
+                    <Appbar themeColor={themeColor} hasFollow={hasFollow} name={movieInfo.Name} scrollTop={this.scrollTop} setFollow={this.setFollow} isRender={isRender} />
                     <Animated.Image
                         resizeMode='cover'
                         blurRadius={3.5}

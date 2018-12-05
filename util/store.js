@@ -1,4 +1,5 @@
 import React, {createContext, PureComponent} from 'react';
+import { ToastAndroid } from 'react-native';
 
 export const initialStore = {
     historyList:[
@@ -24,10 +25,21 @@ export const initialStore = {
             sourceName: "第522集",
         },
     ],
-    fllowList:[]
+    fllowList:[
+        {
+            id: 534926,
+            img: "http://img3.doubanio.com/view/photo/s_ratio_poster/public/p2100245550.jpg",
+            name: "新番哆啦A梦",
+        },
+        {
+            id: 534927,
+            img: "http://img3.doubanio.com/view/photo/s_ratio_poster/public/p2100245550.jpg",
+            name: "新番哆啦A梦222",
+        },
+    ]
 };
 
-export const Store = React.createContext(initialStore);
+export const Store = createContext(initialStore);
 
 export class StoreProvider extends PureComponent {
 
@@ -58,14 +70,49 @@ export class StoreProvider extends PureComponent {
         return historyList.find(el=>el.id===id);
     }
 
+    //添加收藏
+    addFollow = (item) => {
+        const {fllowList} = this.state;
+        this.setState({fllowList:[item,...fllowList]});
+    }
+
+    //取消收藏
+    removeFollow = (idList) => {
+        const {fllowList} = this.state;
+        const _fllowList = fllowList.filter(el=>!idList.find(d=>d===el.id));
+        this.setState({fllowList:_fllowList});
+    }
+
+    //查找收藏
+    findFollow = (id) => {
+        const {fllowList} = this.state;
+        return !!fllowList.find(el=>el.id===id);
+    }
+
+    //设置收藏
+    setFollow = (item) => {
+        if(this.findFollow(item.id)){
+            this.removeFollow([item.id]);
+            ToastAndroid.show(" ╮(╯﹏╰）╭ 已取消收藏 ", ToastAndroid.SHORT);
+        }else{
+            this.addFollow(item);
+            ToastAndroid.show("ヾ(ｏ･ω･)ﾉ 收藏成功", ToastAndroid.SHORT);
+        }
+    }
+
     render(){
-        const {historyList} = this.state;
+        const {historyList,fllowList} = this.state;
         return(
             <Store.Provider value={{
                 historyList:historyList,
                 addHistory:this.addHistory,
                 removeHistory:this.removeHistory,
                 findHistory:this.findHistory,
+                fllowList:fllowList,
+                addFollow:this.addFollow,
+                removeFollow:this.removeFollow,
+                findFollow:this.findFollow,
+                setFollow:this.setFollow,
             }}>
                 {this.props.children}
             </Store.Provider>
