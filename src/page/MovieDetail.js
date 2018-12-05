@@ -54,11 +54,11 @@ class Appbar extends PureComponent {
     }
 }
 
-const MovieInfo = ({movieInfo,themeColor,isPlaying,onPlay}) => (
+const MovieInfo = ({movieInfo,themeColor,isPlaying,onPlay,isRender}) => (
     <View style={styles.videosInfo}>
         <View style={styles.poster}>
             <Image source={{ uri: movieInfo.Cover }} style={[styles.fullcon, styles.borR]} />
-            <TouchableOpacity onPress={onPlay} activeOpacity={.8} style={[styles.playbtn, { backgroundColor: themeColor }]}>
+            <TouchableOpacity disabled={!isRender} onPress={onPlay} activeOpacity={.8} style={[styles.playbtn, { backgroundColor: themeColor }]}>
                 <IconE name='controller-play' style={{marginLeft:3}} size={24} color='#fff' />
             </TouchableOpacity>
         </View>
@@ -154,9 +154,10 @@ class MovieSource extends PureComponent {
 
     renderItem = ({ item, index }) => {
         const {sourceId,onPlay,themeColor} = this.props;
-        const current = sourceId===item.ID;
+        const current = sourceId==item.ID;
+        
         const play = () => {
-            onPlay(item);
+            onPlay(item.ID,true);
         }
         return (
             <TouchableOpacity disabled={current} style={styles.sourceitem} onPress={play} activeOpacity={.9}>
@@ -343,7 +344,8 @@ export default class MovieDetail extends PureComponent {
             sourceId:null,
             sourceName:'',
             isPlaying:false,
-            playUrl:null
+            playUrl:null,
+            lastPlayTime:0
         }
     }
 
@@ -352,10 +354,22 @@ export default class MovieDetail extends PureComponent {
     scrollRotate = new Animated.Value(0);
 
     GetVideoInfo = async (movieId) => {
+        const { findHistory } = this.context;
         const data = await GetVideoInfo(movieId)||{};
+        const historyItem = findHistory(movieId);
+        let _sourceId = null;
+        if(historyItem){
+            this.lastPlayTime = historyItem.currentTime-3;
+            _sourceId = historyItem.sourceId;
+        }else{
+            _sourceId = data.MoviePlayUrls[0].ID;
+        }
+        const item = data.MoviePlayUrls.find(el=>el.ID==_sourceId);
         this.setState({
             movieInfo:data,
             isRender:true,
+            sourceId:_sourceId,
+            playUrl:item.PlayUrl
         })
         LayoutAnimation.easeInEaseOut();
     }
@@ -370,12 +384,19 @@ export default class MovieDetail extends PureComponent {
             }                              
         ).start();
         this.video.toPlay(bool);
+        if(this.lastPlayTime){
+            this.video.toSeek(this.lastPlayTime,true);
+            this.lastPlayTime = null;
+        }
         this.setState({isPlaying:bool})
         LayoutAnimation.easeInEaseOut();
     }
 
-    onPlay = (item) => {
-        if(item.ID){
+    onPlay = (ID,bool) => {
+        if(bool){
+            //跳转
+            const {sourceId,movieInfo} = this.state;
+            const item = movieInfo.MoviePlayUrls.find(el=>el.ID==ID);
             this.setState({
                 sourceId:item.ID,
                 sourceName:item.Name,
@@ -398,12 +419,12 @@ export default class MovieDetail extends PureComponent {
 
     componentWillUnmount() {
         const { addHistory } = this.context;
-        const { movieInfo:{ID,Name,Cover},isRender,sourceName } = this.state;
+        const { movieInfo:{ID,Name,Cover},isRender,sourceName,sourceId } = this.state;
         if(isRender){
             const { currentTime,duration,isEnd } = this.video.state;
             if(currentTime>=10){
                 //大于10s才保存历史记录
-                console.warn('保存')
+                //console.warn('保存')
                 const now = new Date();
                 addHistory({
                     currentTime,
@@ -413,6 +434,7 @@ export default class MovieDetail extends PureComponent {
                     img:Cover,
                     name:Name,
                     sourceName,
+                    sourceId,
                     //date:new Date()
                     date:[now.getFullYear(),now.getMonth()+1,now.getDate(),now.getHours(),now.getMinutes()]
                 })
@@ -456,7 +478,7 @@ export default class MovieDetail extends PureComponent {
                             })
                         }]
                     }]}>
-                        <MovieInfo movieInfo={movieInfo} themeColor={themeColor} onPlay={this.onPlay} isPlaying={isPlaying} />
+                        <MovieInfo movieInfo={movieInfo} themeColor={themeColor} onPlay={this.onPlay} isPlaying={isPlaying} isRender={isRender} />
                         <Animated.View style={[styles.videoCon, {
                             zIndex: this.scrollRotate.interpolate({
                                 inputRange: [0,.499,.501, 1],

@@ -11,6 +11,7 @@ export const initialStore = {
             isEnd: false,
             name: "新番哆啦A梦",
             sourceName: "第521集",
+            sourceId: "3195811",
         },
         {
             currentTime: 106.247,
@@ -51,6 +52,12 @@ export class StoreProvider extends PureComponent {
         this.setState({historyList:_historyList});
     }
 
+    //查找历史记录
+    findHistory = (id) => {
+        const {historyList} = this.state;
+        return historyList.find(el=>el.id===id);
+    }
+
     render(){
         const {historyList} = this.state;
         return(
@@ -58,7 +65,7 @@ export class StoreProvider extends PureComponent {
                 historyList:historyList,
                 addHistory:this.addHistory,
                 removeHistory:this.removeHistory,
-                removeAllHistory:this.removeAllHistory,
+                findHistory:this.findHistory,
             }}>
                 {this.props.children}
             </Store.Provider>

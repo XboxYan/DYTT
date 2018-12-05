@@ -136,7 +136,13 @@ export default class History extends PureComponent {
 	renderFooter = () => {
 		const { themeColor } = this.props;
 		return <LoadView isEnding={true} themeColor={themeColor} />;
-	}
+    }
+    
+    componentWillReceiveProps(nextProps, nextContext) {
+        if(nextContext.historyList.length!==this.context.historyList.length){
+            LayoutAnimation.easeInEaseOut();
+        }
+    }
 
     render() {
         const {navigation,screenProps:{themeColor}} = this.props;
@@ -234,6 +240,7 @@ const styles = StyleSheet.create({
         height:'100%'
     },
     textcon:{
+        height:'100%',
         marginHorizontal:10,
         flex:1,
         zIndex:1,
@@ -262,7 +269,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0,0,0,.7)'
     },
     textname:{
-        fontSize:14,
+        fontSize:15,
     },
     textsource:{
         fontSize:12,
