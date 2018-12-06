@@ -435,7 +435,7 @@ const styles = StyleSheet.create({
         borderRadius:5
     },
     tips:{
-        color:'#000',
+        color:'#fff',
         position:'absolute'
     },
     progresscon:{

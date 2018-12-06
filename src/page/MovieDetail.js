@@ -5,6 +5,8 @@ import {
     ScrollView,
     TouchableOpacity,
     InteractionManager,
+    Platform,
+    BackHandler,
     FlatList,
     Animated,
     Image,
@@ -26,11 +28,11 @@ import { Store } from '../../util/store';
 
 const { UIManager } = NativeModules;
 
-const Appbar = ({themeColor,scrollTop,name,hasFollow,isRender,setFollow}) => (
+const Appbar = ({themeColor,scrollTop,name,hasFollow,isRender,setFollow,goBack}) => (
     <View style={styles.appbar}>
         <Touchable
             style={styles.btn}
-        //onPress={this.goBack}
+            onPress={goBack}
         >
             <Icon name='chevron-left' size={24} color='#fff' />
         </Touchable>
@@ -363,6 +365,7 @@ export default class MovieDetail extends PureComponent {
         const item = data.MoviePlayUrls.find(el=>el.ID==_sourceId);
         this.setState({
             movieInfo:data,
+            sourceName:item.Name,
             isRender:true,
             sourceId:_sourceId,
             playUrl:item.PlayUrl,
@@ -425,14 +428,34 @@ export default class MovieDetail extends PureComponent {
         })
     }
 
+    componentWillMount() {
+        if (Platform.OS === 'android') {
+            BackHandler.addEventListener('handwareBackPress', this.onBackAndroid)
+        }
+    }
+
+    componentWillUnmount() {
+        if (Platform.OS === 'android') {
+            BackHandler.removeEventListener('handwareBackPress', this.onBackAndroid)
+        }
+    }
+
+    onBackAndroid = () => {
+        const { isPlaying } = this.state;
+        if(isPlaying){
+            this.onClose();
+            this.scrollview.getNode().scrollTo({y:0});
+            return true;
+        }
+    }
+
     componentWillUnmount() {
         const { addHistory } = this.context;
         const { movieInfo:{ID,Name,Cover},isRender,sourceName,sourceId } = this.state;
         if(isRender){
             const { currentTime,duration,isEnd } = this.video.state;
-            if(currentTime>=10){
+            if(currentTime>=10||isEnd){
                 //大于10s才保存历史记录
-                //console.warn('保存')
                 const now = new Date();
                 addHistory({
                     currentTime,
@@ -456,6 +479,7 @@ export default class MovieDetail extends PureComponent {
         return (
             <View style={styles.content}>
                 <Animated.ScrollView
+                    ref={(ref) => this.scrollview = ref}
                     showsVerticalScrollIndicator={false}
                     style={{flex:1}}
                     stickyHeaderIndices={[0]}
@@ -465,7 +489,7 @@ export default class MovieDetail extends PureComponent {
                         { useNativeDriver: true }
                     )}
                 >
-                    <Appbar themeColor={themeColor} hasFollow={hasFollow} name={movieInfo.Name} scrollTop={this.scrollTop} setFollow={this.setFollow} isRender={isRender} />
+                    <Appbar themeColor={themeColor} hasFollow={hasFollow} name={movieInfo.Name} scrollTop={this.scrollTop} setFollow={this.setFollow} isRender={isRender} goBack={()=>navigation.goBack()} />
                     <Animated.Image
                         resizeMode='cover'
                         blurRadius={3.5}

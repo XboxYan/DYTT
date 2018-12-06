@@ -15,9 +15,10 @@ import MovieDetail from './src/page/MovieDetail';
 import Comment from './src/page/Comment';
 import DrawerContent from './src/page/DrawerContent';
 import History from './src/page/History';
-import Theme from './src/page/Theme';
+import Theme,{themes} from './src/page/Theme';
 import Follow from './src/page/Follow';
 import { StoreProvider } from './util/store';
+import Storage from './util/storage';
 
 const StackNavigatorConfig = {
 	headerMode: 'none',
@@ -34,15 +35,15 @@ const StackNavigatorConfig = {
 }
 
 const DrawerNavigatorConfig = {
-	//drawerType :'back',
+	drawerType :'back',
 	contentComponent: DrawerContent,
 }
 
 const Drawer = createDrawerNavigator({
-	History: History,
 	Index: Index,
-	Theme: Theme,
+	History: History,
 	Follow: Follow,
+	Theme: Theme,
 },DrawerNavigatorConfig);
 
 const App = createAppContainer(createStackNavigator({
@@ -52,12 +53,23 @@ const App = createAppContainer(createStackNavigator({
 }, StackNavigatorConfig));
 
 export default class extends PureComponent {
+
 	state = {
-		themeColor:'#db4437'
+		themeColor:themes[0].color
 	}
 
 	setTheme = (themeColor) => {
-		this.setState({themeColor})
+		this.setState({themeColor});
+		Storage.save('themeColor',{
+			themeColor:themeColor
+		});
+	}
+
+	async componentDidMount() {
+		const data = await Storage.get('themeColor');
+		if(data){
+			this.setState({themeColor:data.themeColor});
+		}
 	}
 
 	render(){

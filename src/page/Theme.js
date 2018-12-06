@@ -9,7 +9,7 @@ import {
 import Icon from 'react-native-vector-icons/Feather';
 import AppTop from '../components/AppTop';
 
-const themes = [
+export const themes = [
     {
         color:'#db4437',
         name:'姨妈红'

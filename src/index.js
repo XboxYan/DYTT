@@ -38,15 +38,17 @@ export default class TabNavigator extends PureComponent {
         return (
             <View style={styles.container}>
                 <AppTop title="电影天堂" navigation={navigation} themeColor={themeColor}>
-                    <Touchable
-                        style={styles.btn}
-                        onPress={()=>navigation.navigate('History')}
-                    >
-                        <Icon name='clock' size={20} color='#fff' />
-                    </Touchable>
-                    <Touchable
-                        style={styles.btn}
-                    >
+                    {
+                        /*
+                        <Touchable
+                            style={styles.btn}
+                            onPress={()=>navigation.navigate('History')}
+                        >
+                            <Icon name='clock' size={20} color='#fff' />
+                        </Touchable>
+                        */
+                    }
+                    <Touchable style={styles.btn}>
                         <Icon name='search' size={20} color='#fff' />
                     </Touchable>
                 </AppTop>
