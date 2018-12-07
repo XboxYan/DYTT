@@ -11,18 +11,12 @@ import {
 
 import Icon from 'react-native-vector-icons/Feather';
 
-export default class MovieTitle extends PureComponent {
-
-    render() {
-        const { icon, title, themeColor } = this.props;
-        return (
-            <View style={styles.view_hd}>
-                <Icon name={icon} size={16} color={themeColor} />
-                <Text style={styles.view_title}>{title}</Text>
-            </View>
-        )
-    }
-}
+export default ({ icon, title, themeColor }) => (
+    <View style={styles.view_hd}>
+        <Icon name={icon} size={16} color={themeColor} />
+        <Text style={styles.view_title}>{title}</Text>
+    </View>
+) 
 
 
 const styles = StyleSheet.create({
@@ -32,11 +26,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingHorizontal: 10,
         //backgroundColor:'#fff'
-    },
-    line:{
-        width:3,
-        borderRadius:2,
-        height:16
     },
     view_title: {
         marginLeft:5,

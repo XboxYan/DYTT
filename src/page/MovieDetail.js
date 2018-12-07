@@ -362,12 +362,12 @@ export default class MovieDetail extends PureComponent {
         }else{
             _sourceId = data.MoviePlayUrls[0].ID;
         }
-        const item = data.MoviePlayUrls.find(el=>el.ID==_sourceId);
+        const item = data.MoviePlayUrls.find(el=>el.ID==_sourceId||el.Name==historyItem.sourceName);
         this.setState({
             movieInfo:data,
             sourceName:item.Name,
             isRender:true,
-            sourceId:_sourceId,
+            sourceId:item.ID,
             playUrl:item.PlayUrl,
             hasFollow:hasFollow
         })
@@ -420,6 +420,15 @@ export default class MovieDetail extends PureComponent {
     onClose = () => {
         this.onplayRotate(false);
     }
+    
+    onBackAndroid = () => {
+        const { isPlaying } = this.state;
+        if(isPlaying){
+            this.onClose();
+            this.scrollview.getNode().scrollTo({y:0});
+            return true;
+        }
+    }
 
     componentDidMount() {
         InteractionManager.runAfterInteractions(() => {
@@ -434,22 +443,11 @@ export default class MovieDetail extends PureComponent {
         }
     }
 
+
     componentWillUnmount() {
         if (Platform.OS === 'android') {
             BackHandler.removeEventListener('handwareBackPress', this.onBackAndroid)
         }
-    }
-
-    onBackAndroid = () => {
-        const { isPlaying } = this.state;
-        if(isPlaying){
-            this.onClose();
-            this.scrollview.getNode().scrollTo({y:0});
-            return true;
-        }
-    }
-
-    componentWillUnmount() {
         const { addHistory } = this.context;
         const { movieInfo:{ID,Name,Cover},isRender,sourceName,sourceId } = this.state;
         if(isRender){

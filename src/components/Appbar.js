@@ -5,11 +5,11 @@
 import React, { PureComponent } from 'react';
 import {
 	StyleSheet,
+	TouchableOpacity,
 	Text,
 	View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
-import Touchable from './Touchable';
 
 export default class AppBar extends PureComponent {
 	goBack = () => {
@@ -21,12 +21,13 @@ export default class AppBar extends PureComponent {
 		const { title,themeColor } = this.props;
 		return (
 			<View style={[styles.appbar, { backgroundColor: themeColor }]}>
-				<Touchable
+				<TouchableOpacity
+					activeOpacity={.8}
 					style={styles.btn}
 					onPress={this.goBack}
 				>
 					<Icon name='chevron-left' size={24} color='#fff' />
-				</Touchable>
+				</TouchableOpacity>
 				<Text style={styles.apptitle} numberOfLines={1}>{title}</Text>
 				{
 					this.props.children || <View style={styles.btn}></View>

@@ -138,7 +138,7 @@ export default class Follow extends PureComponent {
     delSelect = () => {
         const { selected } = this.state;
         const { removeFollow } = this.context;
-        this.setState({ selected: [] });
+        this.setState({ selected: [], isEdit: false });
         removeFollow(selected);
     }
 

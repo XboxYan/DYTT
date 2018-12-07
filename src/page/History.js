@@ -148,7 +148,7 @@ export default class History extends PureComponent {
     delSelect = () => {
         const { selected } = this.state;
         const { removeHistory } = this.context;
-        this.setState({ selected: [] });
+        this.setState({ selected: [], isEdit:false });
         removeHistory(selected);
     }
 
@@ -196,7 +196,7 @@ export default class History extends PureComponent {
                             <HistoryEmpty />
                             :
                             <FlatList
-                                style={[styles.content, isEdit && { paddingBottom: 48 }]}
+                                style={[styles.content, isEdit && { marginBottom: 48 }]}
                                 numColumns={1}
                                 ListFooterComponent={this.renderFooter}
                                 removeClippedSubviews={true}

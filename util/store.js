@@ -80,19 +80,22 @@ export class StoreProvider extends PureComponent {
 
     componentWillUnmount() {
         //应用关闭时保存
-        const { historyList,fllowList } = this.state;
-        Storage.save('historyList',historyList);
-        Storage.save('fllowList',fllowList);
+        // const { historyList,fllowList } = this.state;
+        // Storage.save('historyList',historyList);
+        // Storage.save('fllowList',fllowList);
     }
 
-    // componentDidUpdate(prevProps, prevState) {
-    //     if (prevState.historyList.length !== this.state.historyList.length) {
-    //         Storage.save('historyList',this.state.historyList);
-    //     }
-    //     if (prevState.fllowList.length !== this.state.fllowList.length) {
-    //         Storage.save('fllowList',this.state.fllowList);
-    //     }
-    // }
+    componentDidUpdate(prevProps, prevState) {
+        //改变时保存
+        if (prevState.historyList !== this.state.historyList) {
+            Storage.save('historyList',this.state.historyList);
+            //console.warn('historyList save');
+        }
+        if (prevState.fllowList !== this.state.fllowList) {
+            Storage.save('fllowList',this.state.fllowList);
+            //console.warn('fllowList save');
+        }
+    }
 
     render(){
         const {historyList,fllowList} = this.state;

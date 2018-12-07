@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Scrollviewpager from './components/Scrollviewpager';
 import Touchable from './components/Touchable';
 import AppTop from './components/AppTop';
@@ -48,9 +48,9 @@ export default class TabNavigator extends PureComponent {
                         </Touchable>
                         */
                     }
-                    <Touchable style={styles.btn}>
+                    <TouchableOpacity activeOpacity={.8} style={styles.btn} onPress={()=>navigation.navigate('Search')} >
                         <Icon name='search' size={20} color='#fff' />
-                    </Touchable>
+                    </TouchableOpacity>
                 </AppTop>
                 <Scrollviewpager themeColor={themeColor}>
                     <Home tablabel="首页" {...this.props} />

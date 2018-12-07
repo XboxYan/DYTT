@@ -17,6 +17,7 @@ import DrawerContent from './src/page/DrawerContent';
 import History from './src/page/History';
 import Theme,{themes} from './src/page/Theme';
 import Follow from './src/page/Follow';
+import Search from './src/page/Search';
 import { StoreProvider } from './util/store';
 import Storage from './util/storage';
 
@@ -48,6 +49,7 @@ const Drawer = createDrawerNavigator({
 
 const App = createAppContainer(createStackNavigator({
 	Drawer: Drawer,
+	Search: Search,
 	MovieDetail: MovieDetail,
 	Comment: Comment,
 }, StackNavigatorConfig));

@@ -96,18 +96,21 @@ export default class extends PureComponent {
     }
 
     toPlay = (bool) => {
-        if(this.state.isReady){
+        const { isReady,currentTime } = this.state;
+        if( isReady ){
             this.toShowBar();
             this.setState({ 
                 paused: !bool,
                 isError: false,
-                isEnd:false
             });
+            if(currentTime){
+                this.setState({ isEnd:false });
+            }
         }
     }
 
     toTogglePlay = () => {
-        this.toPlay(this.state.paused)
+        this.toPlay(this.state.paused);
     }
 
     toPause = () => {
