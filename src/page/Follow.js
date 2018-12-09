@@ -15,8 +15,6 @@ import Icon from 'react-native-vector-icons/Feather';
 import AppTop from '../components/AppTop';
 import LoadView from '../components/LoadView';
 import Touchable from '../components/Touchable';
-import MovieList from '../components/MovieList';
-import Loading from '../components/Loading';
 import Storage from '../../util/storage';
 import { Store } from '../../util/store';
 
@@ -181,24 +179,20 @@ export default class Follow extends PureComponent {
                     }
                 </AppTop>
                 {
-                    isRender ? (
-                        fllowList.length === 0 ?
-                            <FollowEmpty />
-                            :
-                            <FlatList
-                                style={[styles.content, isEdit && { marginBottom: 48 }]}
-                                numColumns={3}
-                                ListFooterComponent={this.renderFooter}
-                                removeClippedSubviews={true}
-                                data={fllowList}
-                                onEndReachedThreshold={0.1}
-                                extraData={themeColor}
-                                keyExtractor={(item) => item.id.toString()}
-                                renderItem={this.renderItem}
-                            />
-                    )
-                        :
-                        <Loading themeColor={themeColor} />
+                    fllowList.length === 0 ?
+                    <FollowEmpty />
+                    :
+                    <FlatList
+                        style={[styles.content, isEdit && { marginBottom: 48 }]}
+                        numColumns={3}
+                        ListFooterComponent={this.renderFooter}
+                        //removeClippedSubviews={true}
+                        data={fllowList}
+                        onEndReachedThreshold={0.1}
+                        extraData={themeColor||isEdit}
+                        keyExtractor={(item) => item.id.toString()}
+                        renderItem={this.renderItem}
+                    />
                 }
                 <View style={[styles.footer, fllowList.length > 0 && isEdit && { bottom: 0 }]}>
                     <Touchable style={styles.vbtn} onPress={this.selectAll}>

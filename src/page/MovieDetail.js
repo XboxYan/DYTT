@@ -426,8 +426,11 @@ export default class MovieDetail extends PureComponent {
         if(isPlaying){
             this.onClose();
             this.scrollview.getNode().scrollTo({y:0});
-            return true;
+        }else{
+            const { navigation } = this.props;
+            navigation.goBack();
         }
+        return true;
     }
 
     componentDidMount() {

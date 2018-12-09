@@ -85,6 +85,14 @@ export class StoreProvider extends PureComponent {
         // Storage.save('fllowList',fllowList);
     }
 
+    async componentDidMount() {
+        const data_history = await Storage.get('historyList')||[];
+        this.setState({historyList:data_history});
+        const data_fllow = await Storage.get('fllowList')||[];
+        this.setState({fllowList:data_fllow});
+    }
+    
+
     componentDidUpdate(prevProps, prevState) {
         //改变时保存
         if (prevState.historyList !== this.state.historyList) {

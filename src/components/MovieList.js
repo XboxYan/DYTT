@@ -17,7 +17,7 @@ const {UIManager} = NativeModules;
 
 const MovieEmpty = () => (
 	<View style={styles.flexcon}>
-		<Text>没有找到影片！</Text>
+		<Text>╮(╯﹏╰）╭什么也没找到</Text>
 	</View>
 )
 

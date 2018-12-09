@@ -1,12 +1,12 @@
 /*
 *
-HomeMore
+Comment
 *
 */
 
 import React, { PureComponent } from 'react';
 import {
-    Text,
+    BackHandler,
     InteractionManager,
     StyleSheet,
     View,
@@ -31,9 +31,20 @@ export default class Comment extends PureComponent {
     }
 
     componentDidMount() {
+        BackHandler.addEventListener('hardwareBackPress', this.goBack);
         InteractionManager.runAfterInteractions(() => {
             this.getData();
         })
+    }
+
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.goBack); 
+    }
+
+    goBack = () => {
+        const { navigation } = this.props;
+        navigation.goBack();
+        return true;
     }
 
     getData = async () => {
