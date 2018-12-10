@@ -37,7 +37,9 @@ const StackNavigatorConfig = {
 }
 
 const DrawerNavigatorConfig = {
+	edgeWidth: 50,
 	drawerType :'back',
+	drawerWidth : $.WIDTH*.7,
 	contentComponent: DrawerContent,
 }
 

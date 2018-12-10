@@ -11,6 +11,7 @@ import {
     BackHandler,
     View,
 } from 'react-native';
+import { BorderlessButton } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Feather';
 import AppTop from '../components/AppTop';
 import LoadView from '../components/LoadView';
@@ -186,7 +187,7 @@ export default class History extends PureComponent {
                 <AppTop title="历史记录" navigation={navigation} themeColor={themeColor}>
                     {
                         historyList.length > 0 &&
-                        <TouchableOpacity onPress={this.onEdit} activeOpacity={.8} style={styles.btn}><Text style={styles.btntext}>{isEdit ? '取消' : '编辑'}</Text></TouchableOpacity>
+                        <BorderlessButton onPress={this.onEdit} activeOpacity={.8} style={styles.btn}><Text style={styles.btntext}>{isEdit ? '取消' : '编辑'}</Text></BorderlessButton>
                     }
                 </AppTop>
                 {

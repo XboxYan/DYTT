@@ -67,7 +67,7 @@ const ThemeItems = ({item:{color,name},themeColor,setTheme}) => (
 export default class extends PureComponent {
 
     static navigationOptions = {
-        drawerLabel: '主题风格',
+        drawerLabel: '主题颜色',
         drawerIcon: ({ tintColor }) => (
             <Icon name='feather' size={18} color={tintColor} />
         ),

@@ -20,7 +20,7 @@ import {
     ToastAndroid,
     View,
 } from 'react-native';
-
+import { BorderlessButton } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Feather';
 import Loading from '../components/Loading';
 import MovieList from '../components/MovieList';
@@ -135,7 +135,7 @@ class SearchHistory extends PureComponent {
                                 <Text style={styles.view_title}>搜索历史</Text>
                                 {
                                     searchList.length>0&&
-                                    <TouchableOpacity style={styles.editbtn} onPress={this.onEdit} activeOpacity={.8}><Text style={{color:'#666',fontSize: 14}}>{isEdit?'取消':'编辑'}</Text></TouchableOpacity>
+                                    <BorderlessButton style={styles.editbtn} onPress={this.onEdit} activeOpacity={.8}><Text style={{color:'#666',fontSize: 14}}>{isEdit?'取消':'编辑'}</Text></BorderlessButton>
                                 }
                             </View>
                             {
@@ -263,13 +263,13 @@ export default class Search extends PureComponent {
         return (
             <View style={[styles.content, styles.bg]}>
                 <View style={[styles.top, { backgroundColor: themeColor }]}>
-                    <TouchableOpacity
+                    <BorderlessButton
                         activeOpacity={.8}
                         style={styles.btn}
                         onPress={this.goBack}
                     >
                         <Icon name='chevron-left' size={24} color={'#fff'} />
-                    </TouchableOpacity>
+                    </BorderlessButton>
                     <View style={styles.searchcon}>
                         <TextInput
                             style={styles.searchtext}
@@ -283,13 +283,13 @@ export default class Search extends PureComponent {
                             placeholderTextColor='#909090'
                         />
                     </View>
-                    <TouchableOpacity
+                    <BorderlessButton
                         activeOpacity={.8}
                         style={styles.btn}
                         onPress={this.onSubmit}
                     >
                         <Icon name='search' size={20} color={'#fff'} />
-                    </TouchableOpacity>
+                    </BorderlessButton>
                 </View>
                 <View style={styles.content}>
                     <SearchHistory onSubmit={this.onSubmit} themeColor={themeColor} isRender={isRender} searchList={searchList} removeHistory={this.removeHistory} />

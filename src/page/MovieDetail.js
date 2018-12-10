@@ -14,7 +14,7 @@ import {
     View,
     NativeModules
 } from 'react-native';
-import Touchable from '../components/Touchable';
+import { BorderlessButton } from 'react-native-gesture-handler';
 import Star from '../components/Star';
 import Loading from '../components/Loading';
 import CommentList from '../components/CommentList';
@@ -30,18 +30,18 @@ const { UIManager } = NativeModules;
 
 const Appbar = ({themeColor,scrollTop,name,hasFollow,isRender,setFollow,goBack}) => (
     <View style={styles.appbar}>
-        <Touchable
+        <BorderlessButton
             style={styles.btn}
             onPress={goBack}
         >
             <Icon name='chevron-left' size={24} color='#fff' />
-        </Touchable>
+        </BorderlessButton>
         <View style={styles.apptitle}>
             <Text style={styles.apptitletext}>{name||'影视详情'}</Text>
         </View>
-        <Touchable style={styles.btn} disabled={!isRender} onPress={setFollow} >
+        <BorderlessButton style={styles.btn} disabled={!isRender} onPress={setFollow} >
             <IconM name={hasFollow?'favorite':'favorite-border'} size={20} color='#fff' />
-        </Touchable>
+        </BorderlessButton>
         <Animated.View style={[styles.fullcon, { backgroundColor: themeColor }, {
             opacity: scrollTop.interpolate({
                 inputRange: [$.STATUS_HEIGHT, $.STATUS_HEIGHT + 50],
