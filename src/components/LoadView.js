@@ -18,7 +18,7 @@ export default class extends PureComponent {
                         <Text style={styles.loadtext}>ヾ(ｏ･ω･)ﾉ 再怎么找也没有啦</Text>
                     </View>
                     :
-                    <Loading text="" size="small" themeColor={themeColor} />
+                    <Loading text="加载中..." style={{flexDirection:'row'}} size="small" themeColor={themeColor} />
                 }
             </View>
         )

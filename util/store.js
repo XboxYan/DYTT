@@ -71,10 +71,10 @@ export class StoreProvider extends PureComponent {
     setFollow = (item) => {
         if(this.findFollow(item.id)){
             this.removeFollow([item.id]);
-            ToastAndroid.show(" ╮(╯﹏╰）╭ 已取消收藏 ", ToastAndroid.SHORT);
+            ToastAndroid&&ToastAndroid.show(" ╮(╯﹏╰）╭ 已取消收藏 ", ToastAndroid.SHORT);
         }else{
             this.addFollow(item);
-            ToastAndroid.show("ヾ(ｏ･ω･)ﾉ 收藏成功", ToastAndroid.SHORT);
+            ToastAndroid&&ToastAndroid.show("ヾ(ｏ･ω･)ﾉ 收藏成功", ToastAndroid.SHORT);
         }
     }
 

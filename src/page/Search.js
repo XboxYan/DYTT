@@ -23,18 +23,12 @@ import {
 
 import Icon from 'react-native-vector-icons/Feather';
 import Loading from '../components/Loading';
-import LoadView from '../components/LoadView';
+import MovieList from '../components/MovieList';
 import AnimatedView from '../components/AnimatedView';
 import Storage from '../../util/storage';
 import { GetSearch } from '../../util/api';
 
 const { UIManager } = NativeModules;
-
-const MovieEmpty = () => (
-    <View style={styles.flexcon}>
-        <Text style={styles.empty}>╮(╯﹏╰）╭什么也没找到</Text>
-    </View>
-)
 
 class SearchResult extends PureComponent {
 
@@ -46,23 +40,6 @@ class SearchResult extends PureComponent {
         data: [],
         isRender: false,
         isEnding: false
-    }
-
-    renderItem = ({ item, index }) => {
-        return (
-            <TouchableOpacity
-                activeOpacity={.9}
-                onPress={() => this.props.navigation.navigate('MovieDetail', { movieId: item.ID })}
-                style={styles.movieitem}>
-                <Image
-                    style={styles.movieimg}
-                    source={{ uri: item.Cover }}
-                />
-                <View style={styles.movietext}>
-                    <Text numberOfLines={1} style={styles.moviename}>{item.Name}</Text>
-                </View>
-            </TouchableOpacity>
-        )
     }
 
     reSearch = (keywords) => {
@@ -104,32 +81,14 @@ class SearchResult extends PureComponent {
         }
     }
 
-    renderFooter = () => {
-        return <LoadView isEnding={this.state.isEnding} themeColor={this.props.themeColor} />;
-    }
-
     render() {
-        const { themeColor } = this.props;
-        const { isRender, data } = this.state;
+        const { themeColor,navigation } = this.props;
+        const { isRender, data, isEnding } = this.state;
         return (
             <AnimatedView style={[styles.content, styles.bg, styles.full]}>
                 {
                     isRender ?
-                        data.length === 0 ?
-                            <MovieEmpty />
-                            :
-                            <FlatList
-                                style={[styles.content, { paddingHorizontal: 5 }]}
-                                numColumns={3}
-                                ListFooterComponent={this.renderFooter}
-                                data={data}
-                                onEndReached={this.loadMore}
-                                removeClippedSubviews={true}
-                                onEndReachedThreshold={0.1}
-                                getItemLayout={(data, index) => ({ length: 140, offset: 140 * index, index })}
-                                keyExtractor={(item, index) => 'key' + item.movieId}
-                                renderItem={this.renderItem}
-                            />
+                        <MovieList style={{paddingHorizontal:5}} isRender={true} isEnding={isEnding} data={data} navigation={navigation} themeColor={themeColor} onEndReached={this.loadMore} />
                         :
                         <Loading size='small' text='正在努力搜索中...' themeColor={themeColor} />
                 }
@@ -437,32 +396,6 @@ const styles = StyleSheet.create({
         color: '#999',
         fontSize: 14,
         padding: 20,
-    },
-    movieitem: {
-        width: ($.WIDTH - 40) / 3,
-        marginHorizontal: 5,
-        borderRadius: 3,
-        overflow: 'hidden',
-        backgroundColor: '#fff',
-        marginTop: 10,
-    },
-    movieimg: {
-        width: '100%',
-        height: ($.WIDTH - 40) / 2,
-        flex: 1,
-        resizeMode: 'cover'
-    },
-    movietext: {
-        alignItems: 'center',
-        height: 30,
-        paddingHorizontal: 5,
-        flexDirection: 'row'
-    },
-    moviename: {
-        fontSize: 14,
-        color: '#333',
-        textAlign: 'center',
-        flex: 1
     },
     flexcon: {
         flex: 1,

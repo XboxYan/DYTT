@@ -264,6 +264,7 @@ const styles = StyleSheet.create({
     itemleft: {
         width: 120,
         height: 80,
+        alignSelf:'flex-start',
         borderRadius: 3,
         overflow: 'hidden',
         zIndex: 1

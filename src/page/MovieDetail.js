@@ -124,6 +124,8 @@ class MovieSummary extends PureComponent {
 
 class MovieSource extends PureComponent {
 
+    columns = [];
+
     constructor(props) {
         super(props);
         this.state = {
@@ -132,7 +134,10 @@ class MovieSource extends PureComponent {
         }
     }
 
-
+    onLayout = (index) => (ev) => {
+        const {width} = ev.nativeEvent.layout;
+        this.columns[index] = width;
+    }
 
     changeDir = () => {
         this.setState({
@@ -145,6 +150,11 @@ class MovieSource extends PureComponent {
         if (nextProps.isRender !== this.props.isRender) {
             this.setState({
                 source:nextProps.source,
+            },()=>{
+                setTimeout(()=>{
+                    const index = nextProps.source.findIndex(el=>el.ID==nextProps.sourceId);
+                    this.flatlist.scrollToIndex({index,viewPosition:.5});
+                },1000)
             })
         }
     }
@@ -157,12 +167,20 @@ class MovieSource extends PureComponent {
             onPlay(item.ID,true);
         }
         return (
-            <TouchableOpacity disabled={current} style={styles.sourceitem} onPress={play} activeOpacity={.9}>
+            <TouchableOpacity disabled={current} onLayout={this.onLayout(index)} style={styles.sourceitem} onPress={play} activeOpacity={.9}>
                 <Text numberOfLines={2} style={styles.castname}>{item.Name || '资源'+(index+1)}</Text>
                 <View style={[styles.sourcedot, { backgroundColor: themeColor }, current && { opacity: 1 }]} />
             </TouchableOpacity>
         )
     }
+
+    getItemLayout = (data, rowIndex) => {
+        let offset = 0;
+        for (let ii = 0; ii < rowIndex; ii += 1) {
+          offset += this.columns[ii]+10;
+        }
+        return { length: this.columns[rowIndex]+10, offset, index: rowIndex };
+    };
 
     renderFooter = () => (
         <View style={{width:20,height:10}} />
@@ -195,6 +213,7 @@ class MovieSource extends PureComponent {
                             ListFooterComponent={this.renderFooter}
                             horizontal={true}
                             //initialNumToRender={20}
+                            getItemLayout={this.getItemLayout}
                             removeClippedSubviews={false}
                             data={source}
                             extraData={sourceId}
@@ -324,7 +343,7 @@ class MovieComments extends PureComponent {
                             <Loading size='small' text='' themeColor={themeColor} />
                     }
                 </View>
-                <MovieMoreBtn show={data.length>=5} themeColor={themeColor} style={{backgroundColor:'#f1f1f1',marginTop:10,marginBottom:0}} text='查看更多评论' onPress={()=>navigation.navigate('Comment',{DBID})} />
+                <MovieMoreBtn show={data.length>=5} themeColor={themeColor} style={{backgroundColor:'#f1f1f1',marginBottom:0}} text='查看更多评论' onPress={()=>navigation.navigate('Comment',{DBID})} />
             </View>
         )
     }
@@ -572,7 +591,8 @@ const styles = StyleSheet.create({
     viewcon: {
         marginBottom: 10,
         backgroundColor: '#fff',
-        paddingVertical: 10,
+        paddingBottom: 10,
+        paddingTop:5,
         borderRadius: 5,
         marginHorizontal: 10,
     },

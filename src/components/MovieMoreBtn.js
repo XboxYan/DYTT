@@ -22,7 +22,6 @@ const styles = StyleSheet.create({
     btn:{
         margin:10,
         height:40,
-        marginTop:0,
         backgroundColor:'#fff',
         justifyContent: "center",
         alignItems: 'center',

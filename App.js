@@ -12,6 +12,7 @@ import { createStackNavigator, createAppContainer, createDrawerNavigator } from 
 import StackViewStyleInterpolator from 'react-navigation-stack/dist/views/StackView/StackViewStyleInterpolator';
 import Index from './src';
 import MovieDetail from './src/page/MovieDetail';
+import MovieContent from './src/page/MovieContent';
 import Comment from './src/page/Comment';
 import DrawerContent from './src/page/DrawerContent';
 import History from './src/page/History';
@@ -50,6 +51,7 @@ const Drawer = createDrawerNavigator({
 const App = createAppContainer(createStackNavigator({
 	Drawer: Drawer,
 	Search: Search,
+	MovieContent: MovieContent,
 	MovieDetail: MovieDetail,
 	Comment: Comment,
 }, StackNavigatorConfig));

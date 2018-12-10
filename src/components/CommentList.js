@@ -20,7 +20,7 @@ const CommentEmpty = () => (
 )
 
 const CommentItem = (props) => (
-	<View style={styles.commentitem}>
+	<View style={styles.commentitem} onLayout={props.onLayout}>
 		<Image 
 			style={styles.commentimg}
 			source={{uri:props.item.user.avatar}}
@@ -36,9 +36,16 @@ const CommentItem = (props) => (
 
 export default class extends PureComponent {
 
+	columns = [];
+
 	renderItem = ({ item, index }) => {
-		return <CommentItem item={item} themeColor={this.props.themeColor} />
+		return <CommentItem item={item} onLayout={this.onLayout(index)} themeColor={this.props.themeColor} />
 	}
+
+	onLayout = (index) => (ev) => {
+        const {height} = ev.nativeEvent.layout;
+        this.columns[index] = height;
+    }
 
 	renderFooter = () => {
 		const { onEndReached,themeColor,isEnding=false } = this.props;
@@ -48,6 +55,15 @@ export default class extends PureComponent {
 			return null;
 		}
 	}
+
+	getItemLayout = (data, rowIndex) => {
+        let offset = 0;
+        for (let ii = 0; ii < rowIndex; ii += 1) {
+          offset += this.columns[ii]+10;
+        }
+        return { length: this.columns[rowIndex]+10, offset, index: rowIndex };
+    };
+
 	render() {
 		const { data,style, isRender,onEndReached=()=>{},onLayout,themeColor } = this.props;
 		if (!isRender) {
@@ -63,6 +79,7 @@ export default class extends PureComponent {
 				numColumns={1}
 				ListFooterComponent={this.renderFooter}
 				removeClippedSubviews={true}
+				getItemLayout={this.getItemLayout}
 				data={data}
 				onEndReached={onEndReached}
 				onEndReachedThreshold={0.1}

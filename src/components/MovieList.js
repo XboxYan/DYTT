@@ -17,7 +17,7 @@ const {UIManager} = NativeModules;
 
 const MovieEmpty = () => (
 	<View style={styles.flexcon}>
-		<Text>╮(╯﹏╰）╭什么也没找到</Text>
+		<Text style={styles.empty}>╮(╯﹏╰）╭什么也没找到</Text>
 	</View>
 )
 
@@ -52,15 +52,11 @@ export default class extends PureComponent {
 
 	renderFooter = () => {
 		const { data } = this.props;
-		if(data.length>0){
-			const { onEndReached,themeColor,isEnding=false } = this.props;
-			if(onEndReached){
-				return <LoadView isEnding={isEnding} themeColor={themeColor} />;
-			}else{
-				return null;
-			}
+		const { onEndReached,themeColor,isEnding=false } = this.props;
+		if(onEndReached){
+			return <LoadView isEnding={isEnding} themeColor={themeColor} />;
 		}else{
-			return <MovieEmpty />;
+			return null;
 		}
 	}
 	render() {
@@ -68,6 +64,9 @@ export default class extends PureComponent {
 		const height = ($.WIDTH - 40) / 2+40;
 		if (!isRender) {
 			return <Loading style={{height:100}} size='small' text='' themeColor={themeColor} />
+		}
+		if(data.length==0){
+			return <MovieEmpty />;
 		}
 		return (
 			<FlatList
@@ -97,7 +96,7 @@ const styles = StyleSheet.create({
 		borderRadius:3,
 		overflow:'hidden',
 		backgroundColor:'#fff',
-		marginBottom:10,
+		marginTop:10,
 	},
 	movieimg: {
 		width: '100%',
@@ -122,4 +121,9 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 	},
+	empty: {
+        textAlign: 'center',
+        fontSize: 14,
+        color: '#666'
+    }
 });
