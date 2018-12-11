@@ -26,13 +26,25 @@ const StackNavigatorConfig = {
 	headerMode: 'none',
 	mode: 'card',
 	cardStyle:{
-		backgroundColor:'red'
+		//backgroundColor:'red'
 	},
 	defaultNavigationOptions: {
-		gesturesEnabled: true,
+		gesturesEnabled: false,
 	},
 	transitionConfig: () => ({
-        screenInterpolator: StackViewStyleInterpolator.forHorizontal,
+		screenInterpolator: StackViewStyleInterpolator.forHorizontal,
+		// screenInterpolator: (sceneProps) => {
+		// 	const { scene } = sceneProps;
+		// 	const { route } = scene;
+		// 	const params = route.params || {};
+		// 	const isModal = params.isModal;
+		// 	if (isModal){
+		// 	  //当为`true`时，采用`modal`效果
+		// 	  return StackViewStyleInterpolator.forVertical(sceneProps);
+		// 	}else {
+		// 	  return StackViewStyleInterpolator.forHorizontal(sceneProps);
+		// 	}
+		//   },
     })
 }
 

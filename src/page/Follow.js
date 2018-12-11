@@ -159,12 +159,12 @@ export default class Follow extends PureComponent {
     }
 
     async componentDidMount() {
-        const { initFollow } = this.context;
-        const data = await Storage.get('fllowList');
-        if (data) {
-            initFollow(data);
-        }
-        this.setState({ isRender: true });
+        // const { initFollow } = this.context;
+        // const data = await Storage.get('fllowList');
+        // if (data) {
+        //     initFollow(data);
+        // }
+        // this.setState({ isRender: true });
     }
 
     render() {

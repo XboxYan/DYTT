@@ -167,6 +167,9 @@ export default class extends PureComponent {
             duration: data.duration,
             //paused:false
         });
+        if(this.props.seekTime>0){
+            this.video.seek(this.props.seekTime);
+        }
         //this.toShowBar(true);
     }
 

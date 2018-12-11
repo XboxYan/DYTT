@@ -362,6 +362,7 @@ export default class MovieDetail extends PureComponent {
             hasFollow:false,
             isPlaying:false,
             playUrl:null,
+            seekTime:0
         }
     }
 
@@ -382,11 +383,13 @@ export default class MovieDetail extends PureComponent {
             _sourceId = data.MoviePlayUrls[0].ID;
         }
         const item = data.MoviePlayUrls.find(el=>el.ID==_sourceId||el.Name==historyItem.sourceName);
+        //this.PlayUrl = item.PlayUrl;
         this.setState({
             movieInfo:data,
             sourceName:item.Name,
             isRender:true,
             sourceId:item.ID,
+            seekTime:this.lastPlayTime||0,
             playUrl:item.PlayUrl,
             hasFollow:hasFollow
         })
@@ -413,26 +416,25 @@ export default class MovieDetail extends PureComponent {
                 //useNativeDriver: true
             }                              
         ).start();
-        this.video.toPlay(bool);
-        if(this.lastPlayTime){
-            this.video.toSeek(this.lastPlayTime,true);
-            this.lastPlayTime = null;
-        }
         this.setState({isPlaying:bool})
+        this.video.toPlay(bool);
         LayoutAnimation.easeInEaseOut();
     }
 
     onPlay = (ID,bool) => {
         if(bool){
             //跳转
+            this.lastPlayTime = null;
             const {movieInfo} = this.state;
             const item = movieInfo.MoviePlayUrls.find(el=>el.ID==ID);
             this.setState({
                 sourceId:item.ID,
                 sourceName:item.Name,
+                seekTime:0,
                 playUrl:item.PlayUrl,
             })
         }
+        this.hasPlay = true;
         this.onplayRotate(true);
     }
 
@@ -474,7 +476,7 @@ export default class MovieDetail extends PureComponent {
         const { movieInfo:{ID,Name,Cover},isRender,sourceName,sourceId } = this.state;
         if(isRender){
             const { currentTime,duration,isEnd } = this.video.state;
-            if(currentTime>=10||isEnd){
+            if(this.hasPlay && (currentTime>=10||isEnd)){
                 //大于10s才保存历史记录
                 const now = new Date();
                 addHistory({
@@ -495,7 +497,7 @@ export default class MovieDetail extends PureComponent {
 
     render() {
         const {navigation,screenProps:{themeColor}} = this.props;
-        const { movieInfo,isRender,isPlaying,sourceId,playUrl,hasFollow } = this.state;
+        const { movieInfo,isRender,isPlaying,sourceId,playUrl,hasFollow,seekTime } = this.state;
         return (
             <View style={styles.content}>
                 <Animated.ScrollView
@@ -546,6 +548,7 @@ export default class MovieDetail extends PureComponent {
                                 uri={playUrl}
                                 useTextureView={false}
                                 style={styles.backgroundVideo}
+                                seekTime={seekTime}
                                 themeColor={themeColor}
                             />
                             <TouchableOpacity style={styles.closebtn} onPress={this.onClose} >

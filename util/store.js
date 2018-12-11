@@ -110,12 +110,12 @@ export class StoreProvider extends PureComponent {
         return(
             <Store.Provider value={{
                 historyList:historyList,
-                initHistory:this.initHistory,
+                //initHistory:this.initHistory,
                 addHistory:this.addHistory,
                 removeHistory:this.removeHistory,
                 findHistory:this.findHistory,
                 fllowList:fllowList,
-                initFollow:this.initFollow,
+                //initFollow:this.initFollow,
                 addFollow:this.addFollow,
                 removeFollow:this.removeFollow,
                 findFollow:this.findFollow,

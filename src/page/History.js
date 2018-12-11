@@ -170,12 +170,12 @@ export default class History extends PureComponent {
     }
 
     async componentDidMount() {
-        const { initHistory } = this.context;
-        const data = await Storage.get('historyList');
-        if (data) {
-            initHistory(data);
-        }
-        this.setState({ isRender: true });
+        // const { initHistory } = this.context;
+        // const data = await Storage.get('historyList');
+        // if (data) {
+        //     initHistory(data);
+        // }
+        // this.setState({ isRender: true });
     }
 
     render() {
