@@ -88,17 +88,30 @@ const Categories = {
 }
 
 class DrawerContent extends PureComponent {
-    state = {
-        Channel:'',
-        Plot:'',
-        Area:'',
-        Year:''
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            Channel:props.state.Channel,
+            Plot:props.state.Plot,
+            Area:props.state.Area,
+            Year:props.state.Year
+        }
     }
+
+    setType = (cate,value) => {
+        LayoutAnimation.easeInEaseOut();
+        this.setState({
+            [cate]:value
+        })
+    }
+
     componentDidMount() {
         //console.warn(this.props.drawer)
     }
+
     render(){
-        const {themeColor,closeDrawer,type,setType,state} = this.props;
+        const {themeColor,closeDrawer,type} = this.props;
         const typeList = [...Categories[type],...CommonList];
         return (
             <Fragment>
@@ -121,10 +134,10 @@ class DrawerContent extends PureComponent {
                                     <Text style={[styles.typetitletxt,{color:themeColor}]}>{d.name}</Text>
                                 </View>
                                 <View style={styles.typecon}>
-                                    <BorderlessButton disabled={state[d.cate]==''} onPress={()=>setType(d.cate,'')} style={styles.typeitem}><Text style={[styles.typeitemtxt,state[d.cate]==''&&{color:themeColor}]}>全部</Text></BorderlessButton>
+                                    <BorderlessButton disabled={this.state[d.cate]==''} onPress={()=>setType(d.cate,'')} style={styles.typeitem}><Text style={[styles.typeitemtxt,this.state[d.cate]==''&&{color:themeColor}]}>全部</Text></BorderlessButton>
                                     {
                                         d.type.map((el,j)=>(
-                                            <BorderlessButton disabled={state[d.cate]===el} onPress={()=>setType(d.cate,el)} key={j} style={styles.typeitem}><Text style={[styles.typeitemtxt,el==state[d.cate]&&{color:themeColor}]}>{el}</Text></BorderlessButton>
+                                            <BorderlessButton disabled={this.state[d.cate]===el} onPress={()=>this.setType(d.cate,el)} key={j} style={styles.typeitem}><Text style={[styles.typeitemtxt,el==this.state[d.cate]&&{color:themeColor}]}>{el}</Text></BorderlessButton>
                                         ))
                                     }
                                 </View>
@@ -132,6 +145,10 @@ class DrawerContent extends PureComponent {
                         ))
                     }
                 </ScrollView>
+                <View style={styles.typeaction}>
+                    <TouchableOpacity activeOpacity={.8} style={[styles.typebtn,{backgroundColor:themeColor,borderColor:themeColor}]}><Text style={styles.typebtns}>确定</Text></TouchableOpacity>
+                    <TouchableOpacity activeOpacity={.8} style={[styles.typebtn,{borderColor:themeColor}]}><Text style={[styles.typebtns,{color:themeColor}]}>取消</Text></TouchableOpacity>
+                </View>
             </Fragment>
         )
     }
@@ -151,18 +168,18 @@ export default class extends PureComponent {
     }
 
     openDrawer = () => {
+        const {Channel,Plot,Area,Year} = this.state;
         this.drawer.openDrawer();
+        this.drawerContent.setState({Channel,Plot,Area,Year});
     }
     
     closeDrawer = () => {
         this.drawer.closeDrawer();
     }
 
-    setType = (cate,value) => {
+    setType = (options) => {
         LayoutAnimation.easeInEaseOut();
-        this.setState({
-            [cate]:value
-        })
+        this.setState(options);
     }
     
     componentDidMount() {
@@ -184,7 +201,7 @@ export default class extends PureComponent {
                 drawerBackgroundColor="#fff"
                 edgeWidth={50}
                 drawerWidth={$.WIDTH*.8}
-                renderNavigationView={()=><DrawerContent themeColor={themeColor} closeDrawer={this.closeDrawer} type={type} state={{Channel,Plot,Area,Year}} setType={this.setType} />}
+                renderNavigationView={()=><DrawerContent ref={drawer => this.drawerContent = drawer} themeColor={themeColor} closeDrawer={this.closeDrawer} type={type} state={{Channel,Plot,Area,Year}} setType={this.setType} />}
             >
                 <View style={[styles.content,styles.bg]}>
                     <Appbar navigation={navigation} themeColor={themeColor} title={title} >
@@ -194,10 +211,10 @@ export default class extends PureComponent {
                     </Appbar>
                     <View style={styles.typetop}>
                         {
-                            Categories[type].map((d,i)=>(
-                                <BorderlessButton style={styles.typetopitem} key={i}>
+                            [...Categories[type],...CommonList].map((d,i)=>(
+                                <BorderlessButton onPress={this.openDrawer} style={styles.typetopitem} key={i}>
                                     <Icon name={d.icon} size={16} color={themeColor}/>
-                                    <Text style={[styles.typetoptxt,{color:themeColor}]}>{this.state[d.cate]||'全部'}</Text>
+                                    <Text style={[styles.typetoptxt,{color:themeColor}]}>{this.state[d.cate]||d.name}</Text>
                                 </BorderlessButton>
                             ))
                         }
@@ -272,10 +289,29 @@ const styles = StyleSheet.create({
     },
     typetopitem:{
         flexDirection:'row',
+        paddingHorizontal:10
     },
     typetoptxt:{
         fontSize:15,
         paddingLeft:5,
-        paddingRight:10
+    },
+    typeaction:{
+        paddingHorizontal:5,
+        paddingVertical:10,
+        flexDirection:'row',
+    },
+    typebtn:{
+        flex:1,
+        marginHorizontal:5,
+        borderRadius:5,
+        justifyContent: 'center',
+        alignItems: 'center',
+        height:40,
+        borderWidth:1,
+        borderColor:'transparent'
+    },
+    typebtns:{
+        fontSize:14,
+        color:'#fff'
     }
 })
