@@ -106,6 +106,13 @@ class DrawerContent extends PureComponent {
         })
     }
 
+    onSubmit = () => {
+        const {Channel,Plot,Area,Year} = this.state;
+        const {setType,closeDrawer} = this.props;
+        setType({Channel,Plot,Area,Year});
+        closeDrawer();
+    }
+
     componentDidMount() {
         //console.warn(this.props.drawer)
     }
@@ -146,8 +153,8 @@ class DrawerContent extends PureComponent {
                     }
                 </ScrollView>
                 <View style={styles.typeaction}>
-                    <TouchableOpacity activeOpacity={.8} style={[styles.typebtn,{backgroundColor:themeColor,borderColor:themeColor}]}><Text style={styles.typebtns}>确定</Text></TouchableOpacity>
-                    <TouchableOpacity activeOpacity={.8} style={[styles.typebtn,{borderColor:themeColor}]}><Text style={[styles.typebtns,{color:themeColor}]}>取消</Text></TouchableOpacity>
+                    <TouchableOpacity activeOpacity={.8} onPress={this.onSubmit} style={[styles.typebtn,{backgroundColor:themeColor,borderColor:themeColor}]}><Text style={styles.typebtns}>确定</Text></TouchableOpacity>
+                    <TouchableOpacity activeOpacity={.8} onPress={closeDrawer} style={[styles.typebtn,{borderColor:themeColor}]}><Text style={[styles.typebtns,{color:themeColor}]}>取消</Text></TouchableOpacity>
                 </View>
             </Fragment>
         )
