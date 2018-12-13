@@ -77,6 +77,7 @@ export default class extends PureComponent {
 				style={[styles.content,style]}
 				onLayout={onLayout}
 				numColumns={1}
+				ItemSeparatorComponent={() => <View style={{height:10}} />}
 				ListFooterComponent={this.renderFooter}
 				removeClippedSubviews={true}
 				getItemLayout={this.getItemLayout}
@@ -93,9 +94,10 @@ export default class extends PureComponent {
 const styles = StyleSheet.create({
 	content: {
 		flex: 1,
+		paddingTop:10,
 	},
 	commentitem: {
-		marginTop:10,
+		//marginTop:10,
 		marginHorizontal:10,
 		padding:10,
 		borderRadius:5,

@@ -4095,6 +4095,10 @@ react-native-scrollviewpager@^1.0.3:
   version "1.0.3"
   resolved "https://registry.npmjs.org/react-native-scrollviewpager/-/react-native-scrollviewpager-1.0.3.tgz#9d9202cf1c14448813ef07c145d4550fa1a6075a"
 
+react-native-splash-screen@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.npmjs.org/react-native-splash-screen/-/react-native-splash-screen-3.1.1.tgz#1a4e46c9fdce53ff52af2a2cb4181788c4e30b30"
+
 react-native-swiper@^1.5.14:
   version "1.5.14"
   resolved "https://registry.npmjs.org/react-native-swiper/-/react-native-swiper-1.5.14.tgz#1c6f949ca377186300f972bb0f30d24062c899aa"

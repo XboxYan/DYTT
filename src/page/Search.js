@@ -34,7 +34,7 @@ class SearchResult extends PureComponent {
 
     page = 1;
 
-    pageSize = 30;
+    pageSize = 50;
 
     state = {
         data: [],

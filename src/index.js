@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { BorderlessButton } from 'react-native-gesture-handler';
 import Scrollviewpager from './components/Scrollviewpager';
 import AppTop from './components/AppTop';

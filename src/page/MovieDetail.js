@@ -31,6 +31,7 @@ const { UIManager } = NativeModules;
 const Appbar = ({themeColor,scrollTop,name,hasFollow,isRender,setFollow,goBack}) => (
     <View style={styles.appbar}>
         <BorderlessButton
+            activeOpacity={.8}
             style={styles.btn}
             onPress={goBack}
         >
@@ -39,7 +40,7 @@ const Appbar = ({themeColor,scrollTop,name,hasFollow,isRender,setFollow,goBack})
         <View style={styles.apptitle}>
             <Text style={styles.apptitletext}>{name||'影视详情'}</Text>
         </View>
-        <BorderlessButton style={styles.btn} disabled={!isRender} onPress={setFollow} >
+        <BorderlessButton activeOpacity={.8} style={styles.btn} onPress={isRender?setFollow:null} >
             <IconM name={hasFollow?'favorite':'favorite-border'} size={20} color='#fff' />
         </BorderlessButton>
         <Animated.View style={[styles.fullcon, { backgroundColor: themeColor }, {
@@ -183,7 +184,7 @@ class MovieSource extends PureComponent {
     };
 
     renderFooter = () => (
-        <View style={{width:20,height:10}} />
+        <View style={{width:30,height:10}} />
     )
 
     render () {
@@ -198,7 +199,7 @@ class MovieSource extends PureComponent {
                         onPress={this.changeDir}
                         style={styles.view_more}
                     >
-                        <Text style={styles.view_moretext}>反向</Text>
+                        <Text style={styles.view_moretext}>{dir?'正常':'最新'}</Text>
                         <Icon name={dir ? 'chevron-right' : 'chevron-left'} size={16} color={themeColor} />
                     </TouchableOpacity>
                 }
@@ -212,6 +213,7 @@ class MovieSource extends PureComponent {
                             showsHorizontalScrollIndicator={false}
                             ListFooterComponent={this.renderFooter}
                             horizontal={true}
+                            ItemSeparatorComponent={() => <View style={{width:10}} />}
                             //initialNumToRender={20}
                             getItemLayout={this.getItemLayout}
                             removeClippedSubviews={false}
@@ -652,7 +654,7 @@ const styles = StyleSheet.create({
     btn: {
         width: 48,
         height: 48,
-        zIndex: 1,
+        zIndex: 5,
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -749,7 +751,7 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 10,
         justifyContent: 'center',
         marginVertical: 5,
-        marginRight: 10,
+        //marginRight: 10,
         padding: 10,
         overflow: 'hidden',
         alignItems: 'center',

@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import {
 	StyleSheet,
 	Text,
@@ -28,7 +28,7 @@ const MovieItem = (props) => (
 		style={styles.movieitem}>
 		<Image 
 			style={styles.movieimg}
-			source={{uri:props.item.Cover}}
+			source={{uri:props.item.Cover||'http'}}
 		/>
 		<View style={styles.movietext}>
 			<Text numberOfLines={1} style={styles.moviename}>{props.item.Name}</Text>
@@ -36,7 +36,7 @@ const MovieItem = (props) => (
 	</TouchableOpacity>
 )
 
-export default class extends PureComponent {
+export default class extends Component {
 
 	constructor(props) {
 		super(props);
@@ -59,6 +59,11 @@ export default class extends PureComponent {
 			return null;
 		}
 	}
+
+	shouldComponentUpdate(nextProps,nextState){
+        return (this.props.data.length != nextProps.data.length || this.props.isRender != nextProps.isRender || this.props.isEnding != nextProps.isEnding);
+    }
+
 	render() {
 		const { data, isRender,themeColor,style,onEndReached=()=>{} } = this.props;
 		const height = ($.WIDTH - 40) / 2+40;
@@ -72,12 +77,13 @@ export default class extends PureComponent {
 			<FlatList
 				style={[styles.content,style]}
 				numColumns={3}
+				ItemSeparatorComponent={() => <View style={{height:10}} />}
 				ListFooterComponent={this.renderFooter}
 				data={data}
 				getItemLayout={(data, index) => ( {length: height, offset: height * index, index} )}
 				onEndReached={onEndReached}
-				onEndReachedThreshold={0.2}
-				keyExtractor={(item, index) => index}
+				onEndReachedThreshold={0.1}
+				keyExtractor={(item, index) => item.ID.toString()}
 				renderItem={this.renderItem}
 			/>
 		)
@@ -88,7 +94,7 @@ const styles = StyleSheet.create({
 	content: {
 		flex: 1,
 		paddingHorizontal: 5,
-		//paddingTop:10,
+		paddingTop:10,
 	},
 	movieitem: {
 		width: ($.WIDTH - 40) / 3,
@@ -96,7 +102,7 @@ const styles = StyleSheet.create({
 		borderRadius:3,
 		overflow:'hidden',
 		backgroundColor:'#fff',
-		marginTop:10,
+		//marginTop:10,
 	},
 	movieimg: {
 		width: '100%',

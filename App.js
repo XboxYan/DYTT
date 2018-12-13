@@ -7,9 +7,10 @@
  */
 import './util/global';
 import React,{ PureComponent } from 'react';
-import { StatusBar } from 'react-native';
+import { StatusBar, BackHandler, Platform, ToastAndroid } from 'react-native';
 import { createStackNavigator, createAppContainer, createDrawerNavigator } from "react-navigation";
 import StackViewStyleInterpolator from 'react-navigation-stack/dist/views/StackView/StackViewStyleInterpolator';
+import SplashScreen from 'react-native-splash-screen';
 import Index from './src';
 import MovieDetail from './src/page/MovieDetail';
 import MovieContent from './src/page/MovieContent';
@@ -88,7 +89,31 @@ export default class extends PureComponent {
 		if(data){
 			this.setState({themeColor:data.themeColor});
 		}
+		setTimeout(() => {
+			SplashScreen.hide();
+		}, 500);
 	}
+
+	componentWillMount() {
+        if (Platform.OS === 'android') {
+            BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid);
+        }
+    }
+    componentWillUnmount() {
+        if (Platform.OS === 'android') {
+            BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid);
+        }
+    }
+    onBackAndroid = () => {
+        if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
+            //最近2秒内按过back键，可以退出应用。
+            //BackHandler.exitApp();
+            return false
+        }
+        this.lastBackPressed = Date.now();
+        ToastAndroid && ToastAndroid.show('(；′⌒`)再按就拜拜了', ToastAndroid.SHORT);
+        return true;
+    }
 
 	render(){
 		const { themeColor } = this.state;

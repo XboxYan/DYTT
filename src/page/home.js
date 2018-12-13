@@ -72,6 +72,10 @@ export default class Home extends PureComponent {
         this.GetHomeData();
     }
 
+    goDetail = (params) => () => {
+        this.props.navigation.navigate('MovieContent',params);
+    }
+
     render() {
         const {loading,data={}} = this.state;
         const {navigation,screenProps:{themeColor}} = this.props;
@@ -81,7 +85,7 @@ export default class Home extends PureComponent {
                 <View style={styles.links}>
                     {
                         maps.filter(el=>!el.isRender).map((d,i)=>(
-                            <TouchableOpacity key={i} style={styles.linkitem} activeOpacity={.9} onPress={()=>navigation.navigate('MovieContent',{type:d.listType,title:d.name})} ><View style={[styles.linkicon,{backgroundColor:themeColor}]}><Icon name={d.icon} color={'#fff'} size={16} /></View><Text style={styles.linktext}>{d.name}</Text></TouchableOpacity>
+                            <TouchableOpacity key={i} style={styles.linkitem} activeOpacity={.9} onPress={this.goDetail({type:d.listType,title:d.name})} ><View style={[styles.linkicon,{backgroundColor:themeColor}]}><Icon name={d.icon} color={'#fff'} size={16} /></View><Text style={styles.linktext}>{d.name}</Text></TouchableOpacity>
                         ))
                     }
                 </View>
@@ -90,7 +94,7 @@ export default class Home extends PureComponent {
                         <Fragment key={i}>
                             <MovieTitle title={d.name} icon={d.icon} themeColor={themeColor} />
                             <MovieList isRender={!loading} style={{marginTop:-10}} data={data[d.listType]?data[d.listType]['list']:[]} navigation={navigation} themeColor={themeColor} />
-                            <MovieMoreBtn show={!loading} text={"查看更多"+d.name} />
+                            <MovieMoreBtn show={!loading} text={"查看更多"+d.name} onPress={this.goDetail({type:d.listType,title:d.name})} />
                         </Fragment>
                     ))
                 }

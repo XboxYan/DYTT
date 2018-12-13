@@ -6,7 +6,15 @@ import {
     Dimensions
   } from 'react-native';
   
-  //import Storage from 'react-native-storage';
+  if (!__DEV__) {
+    global.console = {
+      info: () => {},
+      log: () => {},
+      warn: () => {},
+      debug: () => {},
+      error: () => {}
+    };
+  }
   
   const { width, height} = Dimensions.get('window');
   const STATUS_HEIGHT = Platform.OS==='ios'?20:(Platform.Version>19?StatusBar.currentHeight:0);
@@ -19,15 +27,5 @@ import {
     HEIGHT: height,
     PixelRatio: PixelRatio.get(),
   }
-  
-//   const storage = new Storage({
-//     size: 1000,
-//     storageBackend: AsyncStorage,
-//     defaultExpires: 1000 * 3600 * 24,
-//     enableCache: true,
-//   })
-  
-//   global.storage = storage;
-  
-  
+
   
