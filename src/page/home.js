@@ -1,11 +1,13 @@
 import React, { PureComponent,Fragment } from 'react';
-import { StyleSheet, ScrollView, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, ScrollView, Text, View, TouchableOpacity,LayoutAnimation,NativeModules } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import Swiper from '../components/Swiper';
 import MovieTitle from '../components/MovieTitle';
 import MovieList from '../components/MovieList';
 import MovieMoreBtn from '../components/MovieMoreBtn'
 import {GetHomeData} from '../../util/api';
+
+const {UIManager} = NativeModules;
 
 const maps = [
     {
@@ -54,22 +56,34 @@ const mapto = (list,maps) => {
 
 export default class Home extends PureComponent {
 
-    state = {
-        loading:true,
-        data:{}
-    }
+    constructor(props) {
+        super(props);
+        this.state = {
+            loading:true,
+            data:{}
+        }
+		UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
+	}
 
     GetHomeData = async () => {
         const _data = await GetHomeData();
         const data = mapto(_data,maps);
-        this.setState({
-            data,
-            loading:false
-        })
+        if(this.mounted){
+            LayoutAnimation.easeInEaseOut();
+            this.setState({
+                data,
+                loading:false
+            })
+        }
     }
 
     componentDidMount() {
+        this.mounted = true;
         this.GetHomeData();
+    }
+
+    componentWillUnmount() {
+        this.mounted = false;
     }
 
     goDetail = (params) => () => {

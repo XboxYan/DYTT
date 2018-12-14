@@ -47,12 +47,15 @@ export default class extends Component {
 		return <MovieItem item={item} navigation={this.props.navigation} />
 	}
 	componentDidUpdate(nextProps, nextState) {
-		LayoutAnimation.easeInEaseOut();
+		//LayoutAnimation.easeInEaseOut();
 	}
 
 	renderFooter = () => {
 		const { data } = this.props;
-		const { onEndReached,themeColor,isEnding=false } = this.props;
+		const { onEndReached,themeColor,isEnding=false,ListFooterComponent } = this.props;
+		if(ListFooterComponent){
+			return <ListFooterComponent/>;
+		}
 		if(onEndReached){
 			return <LoadView isEnding={isEnding} themeColor={themeColor} />;
 		}else{
@@ -61,7 +64,7 @@ export default class extends Component {
 	}
 
 	shouldComponentUpdate(nextProps,nextState){
-        return (this.props.data.length != nextProps.data.length || this.props.isRender != nextProps.isRender || this.props.isEnding != nextProps.isEnding);
+        return (this.props.data.length != nextProps.data.length || this.props.isRender != nextProps.isRender || this.props.isEnding != nextProps.isEnding || this.props.themeColor != nextProps.themeColor);
     }
 
 	render() {

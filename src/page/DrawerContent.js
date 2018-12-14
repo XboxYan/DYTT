@@ -8,10 +8,9 @@ import {
 	StyleSheet,
     Text,
     ScrollView,
+    Image,
 	View,
 } from 'react-native';
-//import Icon from 'react-native-vector-icons/Feather';
-//import Touchable from '../components/Touchable';
 
 const contentOptions = {
     itemsContainerStyle :{
@@ -36,7 +35,9 @@ export default class DrawerContent extends PureComponent {
 		const { themeColor } = this.props.screenProps;
 		return (
             <ScrollView style={{flex:1}}>
-                <View style={[styles.top,{backgroundColor:themeColor}]}></View>
+                <View style={[styles.top,{backgroundColor:themeColor}]}>
+                    <Image source={require('../img/photo.png')} style={styles.photo} />
+                </View>
                 <DrawerItems {...this.props} {...contentOptions} inactiveTintColor="#333" activeTintColor={themeColor} />
             </ScrollView>
 			
@@ -46,10 +47,15 @@ export default class DrawerContent extends PureComponent {
 
 const styles = StyleSheet.create({
 	top: {
-        paddingTop: $.STATUS_HEIGHT,
-        height:200,
+        height:$.WIDTH*.7,
 		flexDirection: 'row',
 		alignItems: 'center',
     },
-
+    photo:{
+        position:'absolute',
+        left:0,
+        top:0,
+        width:'100%',
+        height:'100%'
+    }
 });

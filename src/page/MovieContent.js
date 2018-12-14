@@ -10,6 +10,7 @@ import {
     InteractionManager,
     NativeModules,
     TouchableOpacity,
+    Platform,
     LayoutAnimation,
     Text,
     StyleSheet,
@@ -49,7 +50,7 @@ const Categories = {
             name: "分类",
             icon: 'layers',
             cate: 'Channel',
-            type: ["动作片", "喜剧片", "爱情片", "科幻片", "恐怖片", "剧情片", "战争片", "伦理"]
+            type: ["动作片", "喜剧片", "爱情片", "科幻片", "恐怖片", "剧情片", "战争片"]
         },
         {
             name: "剧情",
@@ -98,7 +99,8 @@ class DrawerContent extends PureComponent {
             Channel: props.state.Channel,
             Plot: props.state.Plot,
             Area: props.state.Area,
-            Year: props.state.Year
+            Year: props.state.Year,
+            isVisible:false
         }
     }
 
@@ -107,6 +109,10 @@ class DrawerContent extends PureComponent {
         this.setState({
             [cate]: value
         })
+    }
+
+    setVisibel = () => {
+        this.setType('isVisible',true);
     }
 
     onSubmit = () => {
@@ -123,6 +129,7 @@ class DrawerContent extends PureComponent {
     render() {
         const { themeColor, closeDrawer, type } = this.props;
         const typeList = [...Categories[type], ...CommonList];
+        const { isVisible } = this.state;
         return (
             <Fragment>
                 <View style={[styles.appbar, { backgroundColor: themeColor }]}>
@@ -133,7 +140,7 @@ class DrawerContent extends PureComponent {
                     >
                         <Icon name='x' size={22} color='#fff' />
                     </BorderlessButton>
-                    <Text style={styles.apptitle} numberOfLines={1}>高级筛选</Text>
+                    <Text style={styles.apptitle} numberOfLines={1} onLongPress={this.setVisibel}>高级筛选</Text>
                 </View>
                 <ScrollView style={styles.content}>
                     {
@@ -149,6 +156,9 @@ class DrawerContent extends PureComponent {
                                         d.type.map((el, j) => (
                                             <BorderlessButton disabled={this.state[d.cate] === el} onPress={() => this.setType(d.cate, el)} key={j} style={styles.typeitem}><Text style={[styles.typeitemtxt, el == this.state[d.cate] && { color: themeColor }]}>{el}</Text></BorderlessButton>
                                         ))
+                                    }
+                                    {
+                                        isVisible&&<BorderlessButton disabled={this.state[d.cate] == '伦理'} onPress={() => setType(d.cate, '伦理')} style={styles.typeitem}><Text style={[styles.typeitemtxt, this.state[d.cate] == '伦理' && { color: themeColor }]}>伦理</Text></BorderlessButton>
                                     }
                                 </View>
                             </View>
@@ -223,23 +233,48 @@ export default class extends PureComponent {
 
     getData = async () => {
         const { Channel, Plot, Area, Year } = this.state;
-        const data = await GetPageList({ pageIndex: this.page, pageSize: this.pageSize, Type:this.type, Channel, Area, Plot, Year });
-        this.setState({
-            data: [...this.state.data, ...data],
-            isRender: true,
-        })
-        if (data.length < this.pageSize) {
+        const data = await GetPageList({ pageIndex: this.page, pageSize: this.pageSize, Type:this.type, Channel, Area, Plot, Year,orderBy:'id' });
+        if(this.mounted){
+            LayoutAnimation.easeInEaseOut();
             this.setState({
-                isEnding: true
+                data: [...this.state.data, ...data],
+                isRender: true,
             })
-        } else {
-            this.page = this.page + 1;
+            if (data.length < this.pageSize) {
+                this.setState({
+                    isEnding: true
+                })
+            } else {
+                this.page = this.page + 1;
+            }
         }
     }
 
     loadMore = () => {
         if (!this.state.isEnding) {
             this.getData();
+        }
+    }
+
+    onDrawerOpen = () => {
+        this.open = true;
+    }
+
+    onDrawerClose = () => {
+        this.open = false;
+    }
+
+    onBackAndroid = () => {
+        if(this.open){
+            this.closeDrawer();
+            return true;
+        }
+    }
+
+    componentWillMount() {
+        this.mounted = true;
+        if (Platform.OS === 'android') {
+            BackHandler.addEventListener('handwareBackPress', this.onBackAndroid)
         }
     }
 
@@ -252,7 +287,10 @@ export default class extends PureComponent {
     }
 
     componentWillUnmount() {
-
+        this.mounted = false;
+        if (Platform.OS === 'android') {
+            BackHandler.removeEventListener('handwareBackPress', this.onBackAndroid)
+        }
     }
 
     render() {
@@ -265,6 +303,8 @@ export default class extends PureComponent {
                 ref={drawer => this.drawer = drawer}
                 drawerBackgroundColor="#fff"
                 edgeWidth={50}
+                onDrawerOpen={this.onDrawerOpen}
+                onDrawerClose={this.onDrawerClose}
                 drawerWidth={$.WIDTH * .8}
                 renderNavigationView={() => <DrawerContent ref={drawer => this.drawerContent = drawer} themeColor={themeColor} closeDrawer={this.closeDrawer} type={type} state={{ Channel, Plot, Area, Year }} setType={this.setType} />}
             >

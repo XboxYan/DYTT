@@ -375,27 +375,29 @@ export default class MovieDetail extends PureComponent {
     GetVideoInfo = async (movieId) => {
         const { findHistory,findFollow } = this.context;
         const data = await GetVideoInfo(movieId)||{};
-        const historyItem = findHistory(movieId);
-        const hasFollow = findFollow(movieId);
-        let _sourceId = null;
-        if(historyItem){
-            this.lastPlayTime = historyItem.currentTime-3;
-            _sourceId = historyItem.sourceId;
-        }else{
-            _sourceId = data.MoviePlayUrls[0].ID;
+        if(this.mounted){
+            const historyItem = findHistory(movieId);
+            const hasFollow = findFollow(movieId);
+            let _sourceId = null;
+            if(historyItem){
+                this.lastPlayTime = historyItem.currentTime-3;
+                _sourceId = historyItem.sourceId;
+            }else{
+                _sourceId = data.MoviePlayUrls[0].ID;
+            }
+            const item = data.MoviePlayUrls.find(el=>el.ID==_sourceId||el.Name==historyItem.sourceName);
+            //this.PlayUrl = item.PlayUrl;
+            this.setState({
+                movieInfo:data,
+                sourceName:item.Name,
+                isRender:true,
+                sourceId:item.ID,
+                seekTime:this.lastPlayTime||0,
+                playUrl:item.PlayUrl,
+                hasFollow:hasFollow
+            })
+            LayoutAnimation.easeInEaseOut();
         }
-        const item = data.MoviePlayUrls.find(el=>el.ID==_sourceId||el.Name==historyItem.sourceName);
-        //this.PlayUrl = item.PlayUrl;
-        this.setState({
-            movieInfo:data,
-            sourceName:item.Name,
-            isRender:true,
-            sourceId:item.ID,
-            seekTime:this.lastPlayTime||0,
-            playUrl:item.PlayUrl,
-            hasFollow:hasFollow
-        })
-        LayoutAnimation.easeInEaseOut();
     }
 
     setFollow = () => {
@@ -464,6 +466,7 @@ export default class MovieDetail extends PureComponent {
     }
 
     componentWillMount() {
+        this.mounted = true;
         if (Platform.OS === 'android') {
             BackHandler.addEventListener('handwareBackPress', this.onBackAndroid)
         }
@@ -471,6 +474,7 @@ export default class MovieDetail extends PureComponent {
 
 
     componentWillUnmount() {
+        this.mounted = false;
         if (Platform.OS === 'android') {
             BackHandler.removeEventListener('handwareBackPress', this.onBackAndroid)
         }

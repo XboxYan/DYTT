@@ -53,6 +53,7 @@ class SearchResult extends PureComponent {
     }
 
     componentDidMount() {
+        this.mounted = true;
         InteractionManager.runAfterInteractions(() => {
             const { keywords } = this.props;
             this.keywords = keywords;
@@ -60,18 +61,25 @@ class SearchResult extends PureComponent {
         })
     }
 
+    componentWillUnmount() {
+        this.mounted = false;
+    }
+
     getData = async () => {
         const data = await GetSearch({ SearchKey: this.keywords, pageIndex: this.page, pageSize: this.pageSize });
-        this.setState({
-            data: [...this.state.data, ...data],
-            isRender: true,
-        })
-        if (data.length < this.pageSize) {
+        if( this.mounted ){
+            LayoutAnimation.easeInEaseOut();
             this.setState({
-                isEnding: true
+                data: [...this.state.data, ...data],
+                isRender: true,
             })
-        } else {
-            this.page = this.page + 1;
+            if (data.length < this.pageSize) {
+                this.setState({
+                    isEnding: true
+                })
+            } else {
+                this.page = this.page + 1;
+            }
         }
     }
 
