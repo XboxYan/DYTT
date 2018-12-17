@@ -86,12 +86,12 @@ apply from: "../../node_modules/react-native/react.gradle"
  * Upload all the APKs to the Play Store and people will download
  * the correct one based on the CPU architecture of their device.
  */
-def enableSeparateBuildPerCPUArchitecture = false
+def enableSeparateBuildPerCPUArchitecture = true
 
 /**
  * Run Proguard to shrink the Java bytecode in release builds.
  */
-def enableProguardInReleaseBuilds = false
+def enableProguardInReleaseBuilds = true
 
 android {
     aaptOptions.cruncherEnabled = false
@@ -102,6 +102,11 @@ android {
     compileOptions {
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    // lintOptions {
+    //     checkReleaseBuilds false
+    //     abortOnError false
+    // }
     
     defaultConfig {
         applicationId "com.dytt"
@@ -109,9 +114,9 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 2
         versionName "2.0"
-        ndk {
-            abiFilters "armeabi-v7a", "x86"
-        }
+        // ndk {
+        //     abiFilters "armeabi-v7a", "x86"
+        // }
     }
     signingConfigs {
         release {

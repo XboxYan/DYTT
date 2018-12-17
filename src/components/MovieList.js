@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import {
 	StyleSheet,
 	Text,
@@ -36,7 +36,7 @@ const MovieItem = (props) => (
 	</TouchableOpacity>
 )
 
-export default class extends Component {
+export default class extends PureComponent {
 
 	constructor(props) {
 		super(props);
@@ -62,10 +62,6 @@ export default class extends Component {
 			return null;
 		}
 	}
-
-	shouldComponentUpdate(nextProps,nextState){
-        return (this.props.data.length != nextProps.data.length || this.props.isRender != nextProps.isRender || this.props.isEnding != nextProps.isEnding || this.props.themeColor != nextProps.themeColor);
-    }
 
 	render() {
 		const { data, isRender,themeColor,style,onEndReached=()=>{} } = this.props;

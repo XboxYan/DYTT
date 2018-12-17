@@ -151,14 +151,14 @@ class DrawerContent extends PureComponent {
                                     <Text style={[styles.typetitletxt, { color: themeColor }]}>{d.name}</Text>
                                 </View>
                                 <View style={styles.typecon}>
-                                    <BorderlessButton disabled={this.state[d.cate] == ''} onPress={() => setType(d.cate, '')} style={styles.typeitem}><Text style={[styles.typeitemtxt, this.state[d.cate] == '' && { color: themeColor }]}>全部</Text></BorderlessButton>
+                                    <BorderlessButton disabled={this.state[d.cate] == ''} onPress={() => this.setType(d.cate, '')} style={styles.typeitem}><Text style={[styles.typeitemtxt, this.state[d.cate] == '' && { color: themeColor }]}>全部</Text></BorderlessButton>
                                     {
                                         d.type.map((el, j) => (
                                             <BorderlessButton disabled={this.state[d.cate] === el} onPress={() => this.setType(d.cate, el)} key={j} style={styles.typeitem}><Text style={[styles.typeitemtxt, el == this.state[d.cate] && { color: themeColor }]}>{el}</Text></BorderlessButton>
                                         ))
                                     }
                                     {
-                                        isVisible&&<BorderlessButton disabled={this.state[d.cate] == '伦理'} onPress={() => setType(d.cate, '伦理')} style={styles.typeitem}><Text style={[styles.typeitemtxt, this.state[d.cate] == '伦理' && { color: themeColor }]}>伦理</Text></BorderlessButton>
+                                        isVisible&&<BorderlessButton disabled={this.state[d.cate] == '伦理'} onPress={() => this.setType(d.cate, '伦理')} style={styles.typeitem}><Text style={[styles.typeitemtxt, this.state[d.cate] == '伦理' && { color: themeColor }]}>伦理</Text></BorderlessButton>
                                     }
                                 </View>
                             </View>
