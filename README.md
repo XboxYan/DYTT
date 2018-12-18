@@ -36,7 +36,7 @@
 
 （见过很多类似的，功能算是出来了，但是界面一看就是程序员风格）
 
-[演示视频](./screenshot/dytt.mp4)
+[演示视频](https://web.codelabo.cn/demo/dytt.mp4)
 
 ## 项目依赖
 
