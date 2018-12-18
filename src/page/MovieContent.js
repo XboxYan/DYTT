@@ -240,7 +240,7 @@ export default class extends PureComponent {
                 data: [...this.state.data, ...data],
                 isRender: true,
             })
-            if (data.length < this.pageSize) {
+            if (data.length == 0) {
                 this.setState({
                     isEnding: true
                 })

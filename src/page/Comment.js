@@ -21,7 +21,7 @@ export default class Comment extends PureComponent {
 
     page = 1;
 
-    pageSize = 30;
+    pageSize = 50;
 
     state = {
         data : [],
@@ -55,7 +55,7 @@ export default class Comment extends PureComponent {
             isRender: true,
             total:data.total
         })
-        if(data.interests.length<this.pageSize){
+        if(data.interests.length == 0){
             this.setState({
                 isEnding:true
             })

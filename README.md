@@ -30,13 +30,17 @@
 
 ## 特色
 
-大概是全网个人影视类项目最漂亮、体验最好的了吧。
+大概是全网个人影视类项目最漂亮、体验最好的了吧（下方有截图~）。
 
 最为一名偏体验偏设计的前端开发者，对界面和用户体验都有极高的重视。
 
 （见过很多类似的，功能算是出来了，但是界面一看就是程序员风格）
 
+[演示视频](./screenshot/dytt.mp4)
+
 ## 项目依赖
+
+依赖项不多，大部分都是用原生自带组件完成
 
 ```json
 {
@@ -96,7 +100,7 @@ react-native run-android
 
 ~~（微信扫码可能不支持，建议用其他扫描工具或者直接用浏览器打开上面链接）~~
 
-考虑到安全问题，暂不提供安装包，可通过上述方式安装
+考虑到安全问题，暂不提供安装包，可通过上述方式安装，或者与我联系提供安装包
 
 ## 相关截图
 
@@ -161,6 +165,8 @@ yarn add react-native-gesture-handler
 
 react-native link react-native-gesture-handler
 ```
+
+整体导航结构如下
 
 ```js
 const Drawer = createDrawerNavigator({
@@ -290,7 +296,7 @@ scrollTop = new Animated.Value(0);
 
 `./App.js`、`./src/page/Theme.js`
 
-`react-navigation`内置属性`screenProps`
+`react-navigation`内置属性`screenProps`，其原理仍然使用的`context`特性
 
 ```jsx
 <App screenProps={{themeColor:themeColor, setTheme:this.setTheme}} />
@@ -471,15 +477,17 @@ gradlew installRelease
 * 没有适配`ios`，不过代码中没有使用安卓专有的库，理论上可以直接运行（可能有少部分需要适配），有兴趣的小伙伴可以`fork`下来自己适配一下
 * 会新增设置选项，进行网络设置，播放设置等（会参考其他视频软件的功能）
 * 目前历史记录和收藏均保存在本地，意味着如果卸载app将导致数据丢失，如果可能的话，将来把数据保存在自己的服务器上
-* `react-native`确实性能略显不足，特别是长列表的情况，还有一个`react-native-navigation`，如果可能的话，可以用来替代`react-navigation`
-* 如果谁有更好的设计和更好的`api`可以参考一下~
-* 学习`flutter`
+* `react-navigation`在页面切换时略微卡顿，还有一个`react-native-navigation`，如果可能的话，可以用来替代`react-navigation`
+* 目前在网上找的`api`可能不够理想，如果谁有更好的设计和更好的`api`可以参考一下~如果有提供后台服务的就更好了
+* `react-native`确实性能略显不足，特别是长列表的情况，准备学习`flutter`，一种新的渲染方式（类似于web中的`canvas`）
 
 ## 联系方式
 
 有什么问题可以与我联系
 
 yanwenbin1991@live.com
+
+或者直接提 `issue`
 
 ## 打赏
 
