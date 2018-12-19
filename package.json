@@ -7,6 +7,9 @@
     "test": "jest"
   },
   "dependencies": {
+    "buffer": "^5.2.1",
+    "cheerio": "0.22.0",
+    "events": "^3.0.0",
     "react": "16.6.1",
     "react-native": "0.57.5",
     "react-native-gesture-handler": "^1.0.9",
@@ -15,7 +18,8 @@
     "react-native-swiper": "^1.5.14",
     "react-native-vector-icons": "^6.1.0",
     "react-native-video": "^4.0.1",
-    "react-navigation": "^3.0.0"
+    "react-navigation": "^3.0.0",
+    "stream": "^0.0.2"
   },
   "devDependencies": {
     "babel-jest": "23.6.0",

@@ -80,7 +80,7 @@ github [项目地址](https://github.com/XboxYan/DYTT)
 
 本项目适用于相关技术人员学习交流，请自行编译安装
 
-```shell
+```sh
 git clone https://github.com/XboxYan/DYTT.git
 
 cd DYTT
@@ -160,7 +160,7 @@ react-native run-android
 
 由于新版导航用到了原生手势库，所以需要
 
-```shell
+```sh
 yarn add react-native-gesture-handler
 
 react-native link react-native-gesture-handler
@@ -193,7 +193,7 @@ tab切换使用的是本人封装导航器`react-native-scrollviewpager`
 
 使用方式比较简单
 
-```shell
+```sh
 yarn add react-native-scrollviewpager
 ```
 
@@ -457,7 +457,7 @@ allprojects {
 ```
 
 常用命令
-```shell
+```sh
 # 卸载安装包
 adb uninstall com.packgeName
 
@@ -470,6 +470,32 @@ gradlew installRelease
 
 > 注意：在 debug 和 release 版本间来回切换安装时可能会报错签名不匹配，此时需要先卸载前一个版本再尝试安装。
 > 可通过 adb uninstall com.packgeName 方式来卸载，直接通过长按桌面图标有可能卸载不干净
+
+### 20181219
+
+更换数据解析
+
+使用`cheerio`对`html`页面进行本地解析（爬虫）
+
+注意，一定是要 `v0.22.0`，是因为之后的版本，`cheerio` 引入了 `parse5`，而 `parse5` 依赖 `stream.Writable`，`npm` 安装的 `stream` 并不提供。
+
+```sh
+yarn add cheerio@0.22.0
+```
+
+`cheerio` 的依赖 `htmlparser2` 依赖一些 `node` 内置的库。不过这是可以被解决的，理论上，只要这些依赖库不依赖更底层的接口，那么就可以通过 `npm` 安装上这些依赖：
+
+```sh
+yarn add events stream buffer
+```
+
+使用方式
+
+```js
+import cheerio from 'cheerio';
+const $ = cheerio.load('<h2 class="title">Hello world</h2>');
+console.log($('h2').text()) //Hello world
+```
 
 ## 还未完成的还接下来要做的
 

@@ -34,7 +34,7 @@ class SearchResult extends PureComponent {
 
     page = 1;
 
-    pageSize = 50;
+    pageSize = 36;
 
     state = {
         data: [],
@@ -73,7 +73,7 @@ class SearchResult extends PureComponent {
                 data: [...this.state.data, ...data],
                 isRender: true,
             })
-            if (data.length == 0) {
+            if (data.length < this.pageSize) {
                 this.setState({
                     isEnding: true
                 })
