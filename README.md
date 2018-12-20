@@ -497,6 +497,25 @@ const $ = cheerio.load('<h2 class="title">Hello world</h2>');
 console.log($('h2').text()) //Hello world
 ```
 
+### 20181220
+
+完成影视列表、影视详情数据解析
+
+*注意*
+
+1. `cheerio`在使用`map`方法时，需要用`get`来获取数组，这点和`react`不同
+
+2. 参数和`jquery`相同，分别是 **序列（`i`）**、**每一项（`el`）**，这和`js`的`map`参数是相反的
+
+```js
+$('li').map((i, el)=>{
+    return ({
+        "ID": i,
+        //...
+    })
+}).get()//需要用get获取
+```
+
 ## 还未完成的还接下来要做的
 
 * 视频播放做全屏切换

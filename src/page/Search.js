@@ -26,7 +26,7 @@ import Loading from '../components/Loading';
 import MovieList from '../components/MovieList';
 import AnimatedView from '../components/AnimatedView';
 import Storage from '../../util/storage';
-import { GetSearch } from '../../util/api';
+import { GetPageList } from '../../util/api';
 
 const { UIManager } = NativeModules;
 
@@ -66,7 +66,7 @@ class SearchResult extends PureComponent {
     }
 
     getData = async () => {
-        const data = await GetSearch({ SearchKey: this.keywords, pageIndex: this.page, pageSize: this.pageSize });
+        const data = await GetPageList({ SearchKey: this.keywords, pageIndex: this.page, pageSize: this.pageSize });
         if( this.mounted ){
             LayoutAnimation.easeInEaseOut();
             this.setState({

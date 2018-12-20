@@ -233,7 +233,7 @@ export default class extends PureComponent {
 
     getData = async () => {
         const { Channel, Plot, Area, Year } = this.state;
-        const data = await GetPageList({ pageIndex: this.page, pageSize: this.pageSize, Type:this.type, Channel, Area, Plot, Year,orderBy:'id' });
+        const data = await GetPageList({ pageIndex: this.page, pageSize: this.pageSize, Type:this.type, Channel, Area, Plot, Year,orderBy:'new' });
         if(this.mounted){
             LayoutAnimation.easeInEaseOut();
             this.setState({

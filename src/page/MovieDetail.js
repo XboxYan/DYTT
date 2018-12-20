@@ -67,7 +67,7 @@ const MovieInfo = ({movieInfo,themeColor,isPlaying,onPlay,isRender}) => (
                 movieInfo.MovieTitle ? <Text style={styles.status}>{movieInfo.MovieTitle}</Text>:null
             }
             <Text style={styles.subtitle}>{movieInfo.Tags}</Text>
-            <Text style={styles.subtitle}>{movieInfo.UpdateTime} 更新</Text>
+            <Text style={styles.subtitle}>{movieInfo.ReleaseDate} 上映</Text>
         </View>
     </View>
 )
@@ -245,52 +245,63 @@ class MovieSame extends PureComponent {
         LayoutAnimation.easeInEaseOut();
     }
 
+    renderItem = ({ item, index }) => {
+        const {navigation} = this.props;
+
+        return (
+            <TouchableOpacity
+                activeOpacity={.9}
+                onPress={() => navigation.replace('MovieDetail',{movieId:item.ID})}
+                style={styles.movieitem}>
+                <Image 
+                    style={styles.movieimg}
+                    source={{uri:item.Cover}}
+                />
+                <View style={styles.movietext}>
+                    <Text numberOfLines={1} style={styles.moviename}>{item.Name}</Text>
+                </View>
+            </TouchableOpacity>
+        )
+    }
+
+    renderFooter = () => (
+        <View style={{width:20,height:100}} />
+    )
+
     componentWillReceiveProps(nextProps) {
-        if (nextProps.isRender !== this.props.isRender) {
-            const {Name,ID} = nextProps.movieInfo;
-            this.GetSameVideo(Name,ID);
-        }
+        // if (nextProps.isRender !== this.props.isRender) {
+        //     const {Name,ID} = nextProps.movieInfo;
+        //     this.GetSameVideo(Name,ID);
+        // }
     }
 
     render () {
-        const {isRender,themeColor,navigation} = this.props;
-        const {isFetch,sameVideo} = this.state;
+        const {isRender,themeColor,movieInfo:{RelateList}} = this.props;
+        //const {isFetch,sameVideo} = this.state;
         return (
             <View style={styles.viewcon}>
-                <SortTitle title='同名资源' icon="cast" themeColor={themeColor}/>
+                <SortTitle title='相关热播' icon="cast" themeColor={themeColor}/>
                 {
-                    isRender&&isFetch
+                    isRender
                         ?
                         (
-                            sameVideo.length>0?
+                            RelateList.length>0?
                             <View style={{height:180}}>
-                                <ScrollView 
-                                    horizontal={true}
-                                    contentContainerStyle={{paddingHorizontal:10}}
+                                <FlatList
+                                    style={{flex:1,paddingHorizontal:10}}
                                     showsHorizontalScrollIndicator={false}
-                                    style={{flex:1}}
-                                >
-                                    {
-                                        sameVideo.map(d=>(
-                                            <TouchableOpacity
-                                                key={d.ID}
-                                                activeOpacity={.9}
-                                                onPress={() => navigation.replace('MovieDetail',{movieId:d.ID})}
-                                                style={styles.movieitem}>
-                                                <Image 
-                                                    style={styles.movieimg}
-                                                    source={{uri:d.Cover}}
-                                                />
-                                                <View style={styles.movietext}>
-                                                    <Text numberOfLines={1} style={styles.moviename}>{d.Name}</Text>
-                                                </View>
-                                            </TouchableOpacity>
-                                        ))
-                                    }
-                                </ScrollView>
+                                    horizontal={true}
+                                    removeClippedSubviews={true}
+                                    ItemSeparatorComponent={() => <View style={{width:10}} />}
+                                    ListFooterComponent={this.renderFooter}
+                                    data={RelateList}
+                                    getItemLayout={(data, index) => ( {length: 110, offset: 110 * index, index} )}
+                                    keyExtractor={(item, index) => item.ID.toString()}
+                                    renderItem={this.renderItem}
+                                />
                             </View>
                             :
-                            <Text style={styles.empty}>╮(╯﹏╰）╭ 暂无同名视频</Text>
+                            <Text style={styles.empty}>╮(╯﹏╰）╭ 暂无相关热播</Text>
                         )
                         :
                         <Loading size='small' text='' themeColor={themeColor} />
@@ -802,7 +813,6 @@ const styles = StyleSheet.create({
     },
     movieitem: {
 		width: 100,
-		marginHorizontal: 5,
 		overflow:'hidden',
 	},
 	movieimg: {
