@@ -1,6 +1,5 @@
 import cheerio from 'cheerio';
 
-const URI = 'http://api.skyrj.com/Api2/Dy';
 const WEB = 'http://skydy.top';
 
 const fetchData = (uri,par={}) => {
@@ -30,7 +29,48 @@ const getBg = (s) => {
     return Cover;
 }
 
-const GetHomeData = ()=>fetchData(URI+'/GetHomeData');
+const GetHomeData = async () => {
+    const html = await fetch(WEB).then(d=>d.text());
+    const $ = cheerio.load(html);
+    const layout = $('.hy-layout');
+    const list = (index) => {
+        const selector = index === 1?'.hy-video-list.cleafix .videopic':'.hy-video-list.clearfix .videopic';
+        const data = layout.eq(index).find(selector).map((i, item)=>{
+            const score = $(item).children('.score');
+            return ({
+                "ID": getID($(item).attr('href')),
+                "Cover": $(item).data('original'),
+                "Name": $(item).attr('title'),
+                "MovieTitle": score.text().replace(/(^\s*)(\s*$)/g, ''),
+                "Tags": $(item).nextAll('.subtitle').text(),
+            })
+        }).get();
+        return data;
+    }
+    const data =  {
+        solling:{
+            name:'轮播图',
+            list:list(1)
+        },
+        movie:{
+            name:'电影',
+            list:list(2)
+        },
+        tv:{
+            name:'电视剧',
+            list:list(3)
+        },
+        comic:{
+            name:'动漫',
+            list:list(5)
+        },
+        variety:{
+            name:'娱乐',
+            list:list(4)
+        },
+    }
+    return data;
+};
 
 //影片详情
 const GetVideoInfo = async (ID)=> {
@@ -53,7 +93,7 @@ const GetVideoInfo = async (ID)=> {
             "ID": getID(videopic.attr('href')),
             "Cover": videopic.data('original'),
             "Name": videopic.attr('title'),
-            "MovieTitle": score.text(),
+            "MovieTitle": score.text().replace(/(^\s*)(\s*$)/g, ''),
         })
     }).get();
     const movieInfo = $('.tab-content');
@@ -75,7 +115,6 @@ const GetVideoInfo = async (ID)=> {
     return data;
 }
 
-const GetSameVideo = (vName,ID)=>fetchData(URI+`/GetSameVideo?vName=${vName}&CurrentVideoId=${ID}`);
 const GetDoubanInterests = ({DBID,start=0,count=5})=>fetchData(`https://frodo.douban.com/api/v2/movie/${DBID}/interests?start=${start}&count=${count}&status=done&order_by=latest&apikey=0b2bdeda43b5688921839c8ecb20399b`,{headers:{"User-Agent":"api-client/1 com.douban.movie"}});
 
 //获取列表
@@ -89,11 +128,11 @@ const GetPageList = async ({pageSize=36,pageIndex=1,Type='',Channel='',Area='',P
         return ({
             "ID": getID(videopic.attr('href')),
             "Name": videopic.attr('title'),
-            "MovieTitle": score.text(),
+            "MovieTitle": score.text().replace(/(^\s*)(\s*$)/g, ''),
             "Cover": videopic.data('original'),
         })
     }).get()
     return data;
 }
 
-export {fetchData,GetHomeData,GetVideoInfo,GetSameVideo,GetPageList,GetDoubanInterests}
+export {fetchData,GetHomeData,GetVideoInfo,GetPageList,GetDoubanInterests}

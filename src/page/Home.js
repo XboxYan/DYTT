@@ -66,8 +66,8 @@ export default class Home extends PureComponent {
 	}
 
     GetHomeData = async () => {
-        const _data = await GetHomeData();
-        const data = mapto(_data,maps);
+        const data = await GetHomeData();
+        //const data = mapto(_data,maps);
         if(this.mounted){
             LayoutAnimation.easeInEaseOut();
             this.setState({

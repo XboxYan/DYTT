@@ -32,9 +32,13 @@ class SwiperCon extends React.Component {
                                 <Image style={styles.itemimg} source={{uri:d.Cover}} />
                                 <View style={styles.iteminfo}>
                                     <Text style={styles.title}>{d.Name}</Text>
-                                    <Text style={styles.MovieTitle}>{d.MovieTitle}</Text>
+                                    {
+                                        !!d.MovieTitle&&<Text style={styles.MovieTitle}>{d.MovieTitle}</Text>
+                                    }
                                     <Text style={styles.Tags}>{d.Tags}</Text>
-                                    <Text style={styles.UpdateTime}>{d.UpdateTime}</Text>
+                                    {
+                                        //<Text style={styles.UpdateTime}>{d.UpdateTime}</Text>
+                                    }
                                 </View>
                             </ImageBackground>
                         </TouchableOpacity>
