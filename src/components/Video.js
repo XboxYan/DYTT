@@ -24,7 +24,7 @@ import IconF from 'react-native-vector-icons/FontAwesome5';
 const { UIManager } = NativeModules;
 
 const VideoBar = ({themeColor,toSeek,toPlay,playableDuration,currentTime,duration,isFull,paused,toFull,isShowBar}) => (
-    <View style={[styles.videobar,!isShowBar&&{bottom:-40}]}>
+    <View style={[styles.videobar,isFull&&styles.videobarFull,!isShowBar&&{bottom:isFull?-70:-40}]}>
         {
             /*
             <Touchable
@@ -39,7 +39,7 @@ const VideoBar = ({themeColor,toSeek,toPlay,playableDuration,currentTime,duratio
             */
         }
         <Text style={styles.videotime}><Text style={{color:themeColor}}>{timeFormat(currentTime)}</Text>{' / '+timeFormat(duration)}</Text>
-        <View style={styles.videoslider}>
+        <View style={[styles.videoslider,isFull&&{marginHorizontal:10}]}>
             <Slider
                 style={styles.videosliderbar}
                 value={currentTime}
@@ -59,7 +59,7 @@ const VideoBar = ({themeColor,toSeek,toPlay,playableDuration,currentTime,duratio
         >
             <Icon name={isFull?'minimize':'maximize'} size={20} color='#333' />
         </Touchable>
-        <View pointerEvents="none" style={[styles.progresscon,isShowBar&&{opacity:0}]}>
+        <View pointerEvents="none" style={[styles.progresscon,isFull&&styles.progressconFull,isShowBar&&{opacity:0}]}>
             <View style={[styles.progressbar,{backgroundColor:themeColor,flex:currentTime}]}/>
             <View style={[styles.progressbar,{backgroundColor:themeColor,opacity:.5,flex:playableDuration>currentTime?playableDuration-currentTime:0}]}/>
             <View style={[styles.progressbar,{flex:duration-(playableDuration>currentTime?playableDuration:currentTime)}]}/>
@@ -91,8 +91,10 @@ export default class extends PureComponent {
     * 主动调用方法
     */
     toFull = () => {
-        this.setState({isFull: !this.state.isFull})
-        this.video.presentFullscreenPlayer()
+        const {isFull} = this.state;
+        this.setState({isFull: !isFull})
+        this.props.onfullChanged&&this.props.onfullChanged(!isFull);
+        //this.video.presentFullscreenPlayer()
     }
 
     toPlay = (bool) => {
@@ -347,12 +349,12 @@ export default class extends PureComponent {
                     :
                     null
                 }
-                <View pointerEvents={(isShowBar||paused)?"auto":"none"} style={[styles.playbtnWrap,(!isShowBar&&!paused||!isReady)&&{left:-50},isShowBar&&{bottom:60}]} ><TouchableOpacity style={styles.playbtn} activeOpacity={.8} onPress={this.toTogglePlay}><IconF name={paused?'play':'pause'} size={20} color={themeColor} /></TouchableOpacity></View>
+                <View pointerEvents={(isShowBar||paused)?"auto":"none"} style={[styles.playbtnWrap,(!isShowBar&&!paused||!isReady)&&{left:-50},isShowBar&&{bottom:isFull?90:60}]} ><TouchableOpacity style={styles.playbtn} activeOpacity={.8} onPress={this.toTogglePlay}><IconF name={paused?'play':'pause'} size={20} color={themeColor} /></TouchableOpacity></View>
                 <View {...this._panResponder.panHandlers} style={[styles.fullScreen,{zIndex:5}]}>
-                    <ActivityIndicator pointerEvents="none" color={themeColor} size='small' style={!isBuffering&&{opacity:0,zIndex:-1}} />
+                    <ActivityIndicator pointerEvents="none" color={themeColor} size={isFull?'large':'small'} style={!isBuffering&&{opacity:0,zIndex:-1}} />
                     <Text pointerEvents="none" style={[styles.tips,!isError&&{opacity:0}]}>╮(╯﹏╰）╭ 抱歉，视频播放失败</Text>
                     <Text pointerEvents="none" style={[styles.tips,(!(isEnd&&!currentTime))&&{opacity:0}]}>播放完成</Text>
-                    <Text pointerEvents="none" style={[styles.showTime,!$isMove&&{opacity:0}]}>
+                    <Text pointerEvents="none" style={[styles.showTime,isFull&&styles.showTimeFull,!$isMove&&{opacity:0}]}>
                         <Text style={{color:themeColor}}>{timeFormat($currentTime)}</Text>
                         /{timeFormat(duration)}
                     </Text>
@@ -403,6 +405,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor:'rgba(255,255,255,.7)'
     },
+    videobarFull:{
+        left: 10,
+        bottom: 10,
+        right: 10,
+        borderRadius:50,
+        padding:10
+    },
     videobtn:{
         width:40,
         height:40,
@@ -440,6 +449,12 @@ const styles = StyleSheet.create({
         paddingVertical:5,
         borderRadius:5
     },
+    showTimeFull:{
+        fontSize:24,
+        paddingHorizontal:15,
+        paddingVertical:10,
+        borderRadius:10
+    },
     tips:{
         color:'#fff',
         position:'absolute'
@@ -453,8 +468,16 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         backgroundColor:'rgba(255,255,255,.7)'
     },
+    progressconFull:{
+        top:-23,
+        height:3,
+        left:10,
+        right:10,
+        borderRadius:3,
+        overflow:'hidden'
+    },
     progressbar:{
-        height:2,
+        height:'100%',
     },
     playbtnWrap:{
         position:'absolute',

@@ -14,6 +14,7 @@ import {
     View,
     NativeModules
 } from 'react-native';
+import Orientation from 'react-native-orientation';
 import { BorderlessButton } from 'react-native-gesture-handler';
 import Star from '../components/Star';
 import Loading from '../components/Loading';
@@ -28,7 +29,7 @@ import { Store } from '../../util/store';
 
 const { UIManager } = NativeModules;
 
-const Appbar = ({themeColor,scrollTop,name,hasFollow,isRender,setFollow,goBack}) => (
+const Appbar = ({themeColor,isFull,scrollTop,name,hasFollow,isRender,setFollow,goBack}) => (
     <View style={styles.appbar}>
         <BorderlessButton
             activeOpacity={.8}
@@ -48,7 +49,7 @@ const Appbar = ({themeColor,scrollTop,name,hasFollow,isRender,setFollow,goBack})
                 inputRange: [$.STATUS_HEIGHT, $.STATUS_HEIGHT + 50],
                 outputRange: [0, 1]
             })
-        }]} />
+        },isFull&&{backgroundColor:'transparent'}]} />
     </View>
 )
 
@@ -374,6 +375,7 @@ export default class MovieDetail extends PureComponent {
             sourceName:'',
             hasFollow:false,
             isPlaying:false,
+            isFull:false,
             playUrl:null,
             seekTime:0
         }
@@ -456,15 +458,30 @@ export default class MovieDetail extends PureComponent {
     onClose = () => {
         this.onplayRotate(false);
     }
+
+    onfullChanged = (isFull) => {
+        this.setState({isFull});
+        if(isFull){
+            this.scrollview.getNode().scrollTo({y:$.STATUS_HEIGHT+48});
+            Orientation.lockToLandscape();
+        }else{
+            this.scrollview.getNode().scrollTo({y:0});
+            Orientation.lockToPortrait();
+        }
+    }
     
     onBackAndroid = () => {
-        const { isPlaying } = this.state;
-        if(isPlaying){
-            this.onClose();
-            this.scrollview.getNode().scrollTo({y:0});
+        const { isPlaying,isFull } = this.state;
+        if(isFull){
+            this.video.toFull(false);
         }else{
-            const { navigation } = this.props;
-            navigation.goBack();
+            if(isPlaying){
+                this.onClose();
+                this.scrollview.getNode().scrollTo({y:0});
+            }else{
+                const { navigation } = this.props;
+                navigation.goBack();
+            }
         }
         return true;
     }
@@ -514,13 +531,14 @@ export default class MovieDetail extends PureComponent {
 
     render() {
         const {navigation,screenProps:{themeColor}} = this.props;
-        const { movieInfo,isRender,isPlaying,sourceId,playUrl,hasFollow,seekTime } = this.state;
+        const { movieInfo,isRender,isPlaying,sourceId,playUrl,hasFollow,seekTime,isFull } = this.state;
         return (
             <View style={styles.content}>
                 <Animated.ScrollView
                     ref={(ref) => this.scrollview = ref}
                     showsVerticalScrollIndicator={false}
                     style={{flex:1}}
+                    scrollEnabled={!isFull}
                     stickyHeaderIndices={[0]}
                     scrollEventThrottle={1}
                     onScroll={Animated.event(
@@ -528,7 +546,7 @@ export default class MovieDetail extends PureComponent {
                         { useNativeDriver: true }
                     )}
                 >
-                    <Appbar themeColor={themeColor} hasFollow={hasFollow} name={movieInfo.Name} scrollTop={this.scrollTop} setFollow={this.setFollow} isRender={isRender} goBack={()=>navigation.goBack()} />
+                    <Appbar themeColor={themeColor} isFull={isFull} hasFollow={hasFollow} name={movieInfo.Name} scrollTop={this.scrollTop} setFollow={this.setFollow} isRender={isRender} goBack={()=>navigation.goBack()} />
                     <Animated.Image
                         resizeMode='cover'
                         blurRadius={3.5}
@@ -541,7 +559,7 @@ export default class MovieDetail extends PureComponent {
                                 })
                             }]
                     }]} />
-                    <Animated.View style={[styles.videobox, {
+                    <Animated.View style={[styles.videobox,isFull&&{margin:0,height:$.WIDTH}, {
                         transform: [{ perspective: 850 }, {
                             rotateX: this.scrollRotate.interpolate({
                                 inputRange: [0, 1],
@@ -559,13 +577,14 @@ export default class MovieDetail extends PureComponent {
                                 inputRange: [0,.499,.501, 1],
                                 outputRange: [0,0,1, 1]
                             })
-                        }]}>
+                        },isFull&&styles.fullScreen]}>
                             <Video
                                 ref={(ref) => this.video = ref}
                                 uri={playUrl}
                                 useTextureView={false}
                                 style={styles.backgroundVideo}
                                 seekTime={seekTime}
+                                onfullChanged={this.onfullChanged}
                                 themeColor={themeColor}
                             />
                             <TouchableOpacity style={styles.closebtn} onPress={this.onClose} >
@@ -647,7 +666,7 @@ const styles = StyleSheet.create({
         top: 0,
         left: 0,
         right: 0,
-        height: $.WIDTH * 9 / 16
+        bottom:0
     },
     appbar: {
         paddingTop: $.STATUS_HEIGHT,
@@ -801,9 +820,7 @@ const styles = StyleSheet.create({
         zIndex:30
     },
     videobox: {
-        marginBottom: 10,
-        marginTop:10,
-        marginHorizontal: 10,
+        margin: 10,
     },
     videosInfo: {
         paddingVertical: 10,
