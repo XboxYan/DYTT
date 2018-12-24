@@ -30,7 +30,7 @@ import { Store } from '../../util/store';
 const { UIManager } = NativeModules;
 
 const Appbar = ({themeColor,isFull,scrollTop,name,hasFollow,isRender,setFollow,goBack}) => (
-    <View style={styles.appbar}>
+    <View pointerEvents={isFull?'none':'auto'} style={[styles.appbar,isFull&&{ opacity:0 }]}>
         <BorderlessButton
             activeOpacity={.8}
             style={styles.btn}
@@ -46,10 +46,10 @@ const Appbar = ({themeColor,isFull,scrollTop,name,hasFollow,isRender,setFollow,g
         </BorderlessButton>
         <Animated.View style={[styles.fullcon, { backgroundColor: themeColor }, {
             opacity: scrollTop.interpolate({
-                inputRange: [$.STATUS_HEIGHT, $.STATUS_HEIGHT + 50],
+                inputRange: [$.STATUS_HEIGHT, $.STATUS_HEIGHT + 150],
                 outputRange: [0, 1]
             })
-        },isFull&&{backgroundColor:'transparent'}]} />
+        }]} />
     </View>
 )
 
@@ -462,7 +462,7 @@ export default class MovieDetail extends PureComponent {
     onfullChanged = (isFull) => {
         this.setState({isFull});
         if(isFull){
-            this.scrollview.getNode().scrollTo({y:$.STATUS_HEIGHT+48});
+            this.scrollview.getNode().scrollTo({y:$.STATUS_HEIGHT + 48});
             Orientation.lockToLandscape();
         }else{
             this.scrollview.getNode().scrollTo({y:0});
@@ -546,7 +546,7 @@ export default class MovieDetail extends PureComponent {
                         { useNativeDriver: true }
                     )}
                 >
-                    <Appbar themeColor={themeColor} isFull={isFull} hasFollow={hasFollow} name={movieInfo.Name} scrollTop={this.scrollTop} setFollow={this.setFollow} isRender={isRender} goBack={()=>navigation.goBack()} />
+                    <Appbar themeColor={themeColor} isFull={isFull} hasFollow={hasFollow} name={movieInfo.Name} scrollTop={this.scrollTop} setFollow={this.setFollow} isRender={isRender} goBack={this.onBackAndroid} />
                     <Animated.Image
                         resizeMode='cover'
                         blurRadius={3.5}
@@ -587,7 +587,7 @@ export default class MovieDetail extends PureComponent {
                                 onfullChanged={this.onfullChanged}
                                 themeColor={themeColor}
                             />
-                            <TouchableOpacity style={styles.closebtn} onPress={this.onClose} >
+                            <TouchableOpacity style={[styles.closebtn,isFull&&{ opacity:0, top:-50 }]} onPress={this.onClose} >
                                 <Icon name='x' size={20} color='#fff' />
                             </TouchableOpacity>
                         </Animated.View>

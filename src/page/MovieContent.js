@@ -112,7 +112,9 @@ class DrawerContent extends PureComponent {
     }
 
     setVisibel = () => {
-        this.setType('isVisible',true);
+        if(this.props.type==='movie'){
+            this.setType('isVisible',true);
+        }
     }
 
     onSubmit = () => {
@@ -158,7 +160,8 @@ class DrawerContent extends PureComponent {
                                         ))
                                     }
                                     {
-                                        isVisible&&<BorderlessButton disabled={this.state[d.cate] == '伦理'} onPress={() => this.setType(d.cate, '伦理')} style={styles.typeitem}><Text style={[styles.typeitemtxt, this.state[d.cate] == '伦理' && { color: themeColor }]}>伦理</Text></BorderlessButton>
+                                        d.cate==='Channel'&&isVisible&&
+                                        <BorderlessButton disabled={this.state[d.cate] == '伦理'} onPress={() => this.setType(d.cate, '伦理')} style={styles.typeitem}><Text style={[styles.typeitemtxt, this.state[d.cate] == '伦理' && { color: themeColor }]}>伦理</Text></BorderlessButton>
                                     }
                                 </View>
                             </View>
