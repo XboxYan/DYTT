@@ -34,7 +34,7 @@ const GetHomeData = async () => {
     const $ = cheerio.load(html);
     const layout = $('.hy-layout');
     const list = (index) => {
-        const selector = index === 1?'.hy-video-list.cleafix .videopic':'.hy-video-list.clearfix .videopic';
+        const selector = index === 0?'.hy-video-list.cleafix .videopic':'.hy-video-list.clearfix .videopic';
         const data = layout.eq(index).find(selector).map((i, item)=>{
             const score = $(item).children('.score');
             return ({
@@ -50,23 +50,23 @@ const GetHomeData = async () => {
     const data =  {
         solling:{
             name:'轮播图',
-            list:list(1)
+            list:list(0)
         },
         movie:{
             name:'电影',
-            list:list(2)
+            list:list(1)
         },
         tv:{
             name:'电视剧',
-            list:list(3)
+            list:list(2)
         },
         comic:{
             name:'动漫',
-            list:list(5)
+            list:list(4)
         },
         variety:{
             name:'娱乐',
-            list:list(4)
+            list:list(3)
         },
     }
     return data;
@@ -86,8 +86,8 @@ const GetVideoInfo = async (ID)=> {
             "PlayUrl": PlayUrl,
         })
     }).get();
-    const RelateList = $('.swiper-wrapper .swiper-slide').map((i, el)=>{
-        const videopic = $(el).find('.videopic');
+    const RelateList = $('.hy-video-list .swiper-wrapper .videopic').map((i, el)=>{
+        const videopic = $(el);
         const score = videopic.children('.score');
         return ({
             "ID": getID(videopic.attr('href')),

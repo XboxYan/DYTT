@@ -20,6 +20,7 @@ import History from './src/page/History';
 import Theme,{themes} from './src/page/Theme';
 import Follow from './src/page/Follow';
 import Search from './src/page/Search';
+import Setting from './src/page/Setting.js';
 import { StoreProvider } from './util/store';
 import Storage from './util/storage';
 
@@ -61,6 +62,7 @@ const Drawer = createDrawerNavigator({
 	History: History,
 	Follow: Follow,
 	Theme: Theme,
+	Setting: Setting,
 },DrawerNavigatorConfig);
 
 const App = createAppContainer(createStackNavigator({

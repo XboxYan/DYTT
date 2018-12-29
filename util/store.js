@@ -4,7 +4,12 @@ import Storage from './storage';
 
 export const initialStore = {
     historyList:[],
-    fllowList:[]
+    fllowList:[],
+    settings:{
+        allowMoblieNetwork:false,
+        preLoad:false,
+        autoPlayNext:true,
+    }
 };
 
 export const Store = createContext(initialStore);
@@ -78,11 +83,24 @@ export class StoreProvider extends PureComponent {
         }
     }
 
+    //设置
+    setSettings = (type,value) => {
+        const _settings = Object.assign({}, this.state.settings, { [type]: value });
+        this.setState({
+            settings:_settings
+        })
+    }
+
+    //设置初始化
+    initSettings = (settings) => {
+        this.setState({settings:settings});
+    }
+
+
     componentWillUnmount() {
-        //应用关闭时保存
-        // const { historyList,fllowList } = this.state;
-        // Storage.save('historyList',historyList);
-        // Storage.save('fllowList',fllowList);
+        //应用关闭时保存设置
+        const { settings } = this.state;
+        Storage.save('settings',settings);
     }
 
     async componentDidMount() {
@@ -106,7 +124,7 @@ export class StoreProvider extends PureComponent {
     }
 
     render(){
-        const {historyList,fllowList} = this.state;
+        const {historyList,fllowList,settings} = this.state;
         return(
             <Store.Provider value={{
                 historyList:historyList,
@@ -120,6 +138,9 @@ export class StoreProvider extends PureComponent {
                 removeFollow:this.removeFollow,
                 findFollow:this.findFollow,
                 setFollow:this.setFollow,
+                settings:settings,
+                initSettings:this.initSettings,
+                setSettings:this.setSettings,
             }}>
                 {this.props.children}
             </Store.Provider>

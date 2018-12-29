@@ -256,7 +256,7 @@ class MovieSame extends PureComponent {
                 style={styles.movieitem}>
                 <Image 
                     style={styles.movieimg}
-                    source={{uri:item.Cover}}
+                    source={{uri:item.Cover||'http'}}
                 />
                 <View style={styles.movietext}>
                     <Text numberOfLines={1} style={styles.moviename}>{item.Name}</Text>

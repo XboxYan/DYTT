@@ -1,6 +1,6 @@
 # DYTT
 
-电影天堂RN客户端V2.0
+第三方电影天堂React Native客户端V2.0
 
 重新开始！
 
@@ -28,7 +28,13 @@
 
 ## 免责声明
 
-本项目仅供学习交流使用，不得用于其他商业行为，数据来源于第三方网站，与本人无关
+本项目仅供学习交流使用，不得用于其他商业行为，数据来源于第三方网站，与本人无关！
+本项目仅供学习交流使用，不得用于其他商业行为，数据来源于第三方网站，与本人无关！
+本项目仅供学习交流使用，不得用于其他商业行为，数据来源于第三方网站，与本人无关！
+
+重要的事情说三遍。
+
+重点是交流讨论`react native`技术，而不是资源为什么不全，因为这是第三方的。
 
 ## 为什么要重新开始呢
 
@@ -48,7 +54,7 @@
 
 最为一名偏体验偏设计的前端开发者，对界面和用户体验都有极高的重视。
 
-（见过很多类似的，功能算是出来了，但是界面一看就是程序员风格）
+（见过很多类似的第三方应用，功能算是出来了，但是界面一看就是程序员风格）
 
 [演示视频](https://web.codelabo.cn/demo/dytt.mp4)
 
@@ -117,57 +123,324 @@ react-native run-android
 
 考虑到安全问题，暂不提供安装包，可通过上述方式安装，或者与我联系提供安装包
 
-## 相关截图
-
-安卓
-
-### 欢迎页
-
-![欢迎页](./screenshot/0.png)
-
-### 首页
-
-![首页](./screenshot/1.png)
-
-### 功能菜单
-
-![功能菜单](./screenshot/2.png)
-
-### 历史记录
-
-![历史记录](./screenshot/3.png)
-
-### 收藏
-
-![收藏](./screenshot/4.png)
-
-### 主题颜色
-
-![主题颜色](./screenshot/5.png)
-
-### 搜索
-
-![搜索](./screenshot/6.png)
-
-### 搜索结果
-
-![搜索结果](./screenshot/7.png)
-
-### 影片筛选
-
-![影片筛选](./screenshot/8.png)
-
-### 影片详情
-
-![影片详情](./screenshot/9.png)
-
-### 影片播放
-
-![影片播放](./screenshot/10.png)
-
 ## 更新记录
 
 记录一些页面的关键点
+
+### 20181229
+
+现在更新采用倒序排序
+
+新增'设置'页面，目前只更新了UI，功能还未实现
+
+修复`API`解析错误（网站发生变动）
+
+为侧边封面图增加了隐藏的历史记录入口，可直接进入到上次观看的影片
+
+### 20181224
+
+完成全屏模式
+
+使用第三方库 `react-native-orientation`
+
+`react-native-orientation`打包`release`版本时报错，感谢[`singcl`](https://github.com/singcl)提供的修改
+
+[:bug: [bug fix] 修复react-native-orientation package 导致打包失败的问题 ](https://github.com/XboxYan/DYTT/pull/4)
+
+### 20181221
+
+完成首页数据解析，`API`解析更换完成，速度相比之前更快（缺点是更耗费流量，毕竟是下载整个网页~😄）
+
+*注意*
+
+`cheerio`的`next`方法只能获取到下一个相邻元素，如果想获取后面所有兄弟元素，需要使用`nextAll`
+
+### 20181220
+
+完成影视列表、影视详情数据解析
+
+*注意*
+
+1. `cheerio`在使用`map`方法时，需要用`get`来获取数组，这点和`react`不同
+
+2. 参数和`jquery`相同，分别是 **序列（`i`）**、**每一项（`el`）**，这和`js`的`map`参数是相反的
+
+```js
+$('li').map((i, el)=>{
+    return ({
+        "ID": i,
+        //...
+    })
+}).get()//需要用get获取
+```
+
+### 20181219
+
+更换数据解析
+
+使用`cheerio`对`html`页面进行本地解析（爬虫）
+
+注意，一定是要 `v0.22.0`，是因为之后的版本，`cheerio` 引入了 `parse5`，而 `parse5` 依赖 `stream.Writable`，`npm` 安装的 `stream` 并不提供。
+
+```sh
+yarn add cheerio@0.22.0
+```
+
+`cheerio` 的依赖 `htmlparser2` 依赖一些 `node` 内置的库。不过这是可以被解决的，理论上，只要这些依赖库不依赖更底层的接口，那么就可以通过 `npm` 安装上这些依赖：
+
+```sh
+yarn add events stream buffer
+```
+
+使用方式
+
+```js
+import cheerio from 'cheerio';
+const $ = cheerio.load('<h2 class="title">Hello world</h2>');
+console.log($('h2').text()) //Hello world
+```
+
+### 20181217
+
+安卓打包
+
+`./android/build.gradle`
+
+修改一下配置
+
+注释`jcenter()`，添加
+
+```groovy
+maven{ url 'http://maven.aliyun.com/nexus/content/groups/public/'}
+maven{ url 'https://jitpack.io' }
+```
+
+不然会卡在下载阶段
+
+```groovy
+...
+allprojects {
+    repositories {
+        mavenLocal()
+        google()
+        //jcenter()
+        //更换国内镜像
+        maven{ url 'http://maven.aliyun.com/nexus/content/groups/public/'}
+        maven{ url 'https://jitpack.io' }
+        maven {
+            // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
+            url "$rootDir/../node_modules/react-native/android"
+        }
+    }
+}
+...
+
+```
+
+常用命令
+```sh
+# 卸载安装包
+adb uninstall com.packgeName
+
+# 生成Release包
+gradlew assembleRelease
+
+# 安装Release包
+gradlew installRelease
+```
+
+> 注意：在 debug 和 release 版本间来回切换安装时可能会报错签名不匹配，此时需要先卸载前一个版本再尝试安装。
+> 可通过 adb uninstall com.packgeName 方式来卸载，直接通过长按桌面图标有可能卸载不干净
+
+### 20181214
+
+图标，启动图
+
+使用开源库`react-native-splash-screen`
+
+[https://github.com/crazycodeboy/react-native-splash-screen#readme](https://github.com/crazycodeboy/react-native-splash-screen#readme)
+
+如果需要白底深色的状态栏文字
+
+```xml
+<style name="SplashScreenTheme" parent="SplashScreen_SplashTheme">
+    <item name="android:windowIsTranslucent">true</item>
+    <item name="colorPrimaryDark">@color/status_bar_color</item>
+    <item name="android:windowLightStatusBar">true</item><!--加上这一句-->
+</style>
+```
+
+### 20181211
+
+影片筛选
+
+`./src/page/MovieContent.js`
+
+使用侧边导航栏，调用方式与原生`DrawerLayoutAndroid`一致
+
+```js
+import DrawerLayout from 'react-native-gesture-handler/DrawerLayout';
+```
+
+2.0 基本完成
+
+### 20181209
+
+搜索
+
+`./src/page/Search.js`
+
+### 20181206
+
+本地存储
+
+`./util/storage.js`
+
+使用原生`AsyncStorage`
+
+```js
+class Storage {
+    /**
+     * 获取
+     */
+
+    static get = async (key) => {
+        try {
+            const value = await AsyncStorage.getItem(key);
+            if (value !== null) {
+                // We have data!!
+                return JSON.parse(value)
+            } else {
+                return false
+            }
+        } catch (error) {
+            return false
+        }
+    }
+
+    /**
+     * 保存
+     */
+    static save = async (key, value) => {
+        try {
+            await AsyncStorage.setItem(key, JSON.stringify(value));
+            return true
+        } catch (error) {
+            // Error saving data
+            return false
+        }
+    }
+}
+
+export default Storage;
+```
+
+### 20181205
+
+收藏页面
+
+`./src/page/Follow.js`
+
+与'历史记录'基本一致
+
+### 20181204
+
+历史记录
+
+`./src/page/History.js`
+
+通过`context`传递数据，需设置`contextType`
+
+```js
+import { Store } from '../../util/store';
+export default class History extends PureComponent {
+    render() {
+        const { historyList } = this.context;
+        return (
+            //...
+        )
+    }
+}
+History.contextType = Store;
+```
+
+### 20181203
+
+主题颜色
+
+`./App.js`、`./src/page/Theme.js`
+
+`react-navigation`内置属性`screenProps`，其原理仍然使用的`context`特性
+
+```jsx
+<App screenProps={{themeColor:themeColor, setTheme:this.setTheme}} />
+```
+
+调用方式
+
+```js
+const {navigation,screenProps:{themeColor}} = this.props;
+```
+
+### 20181127
+
+影视详情页面
+
+`./src/page/MovieDetail.js`
+
+头部滚动跟随效果使用`Animated.ScrollView`实现
+
+```js
+scrollTop = new Animated.Value(0);
+
+//...
+<Animated.ScrollView
+    scrollEventThrottle={1}
+    onScroll={Animated.event(
+        [{ nativeEvent: { contentOffset: { y: this.scrollTop } } }],
+        { useNativeDriver: true }
+    )}
+>
+</Animated.ScrollView>
+//...
+
+```
+
+视频播放器自定义外观
+
+`./src/components/Video.js`
+
+使用开源播放器`react-native-video`
+
+[https://github.com/react-native-community/react-native-video](https://github.com/react-native-community/react-native-video)
+
+这里有一个`bug`
+
+`source={{uri:uri}}`，`uri`不能为空字符串，否则切换资源部生效
+
+支持手势快进快退，自动隐藏播放栏
+
+* 还未完成的功能
+
+~~全屏切换~~（已完成）
+
+### 20181125
+
+使用`context`管理全局数据
+
+`/util/store.js`
+
+历史记录，收藏，~~主题（废弃，下面有其他方式实现）~~
+
+```js
+export const Store = createContext(initialStore);
+
+<Store.Provider value={{
+    ...initialStore
+}}>
+    {this.props.children}
+</Store.Provider>
+```
 
 ### 20181123
 
@@ -246,312 +519,59 @@ const tabBarOptions = (themeColor) => ({
 //
 ```
 
-### 20181125
+## 相关截图
 
-使用`context`管理全局数据
+安卓
 
-`/util/store.js`
+### 欢迎页
 
-历史记录，收藏，~~主题（废弃，下面有其他方式实现）~~
+![欢迎页](./screenshot/0.png)
 
-```js
-export const Store = createContext(initialStore);
+### 首页
 
-<Store.Provider value={{
-    ...initialStore
-}}>
-    {this.props.children}
-</Store.Provider>
-```
+![首页](./screenshot/1.png)
 
-### 20181127
+### 功能菜单
 
-影视详情页面
+![功能菜单](./screenshot/2.png)
 
-`./src/page/MovieDetail.js`
+### 历史记录
 
-头部滚动跟随效果使用`Animated.ScrollView`实现
+![历史记录](./screenshot/3.png)
 
-```js
-scrollTop = new Animated.Value(0);
+### 收藏
 
-//...
-<Animated.ScrollView
-    scrollEventThrottle={1}
-    onScroll={Animated.event(
-        [{ nativeEvent: { contentOffset: { y: this.scrollTop } } }],
-        { useNativeDriver: true }
-    )}
->
-</Animated.ScrollView>
-//...
+![收藏](./screenshot/4.png)
 
-```
+### 主题颜色
 
-视频播放器自定义外观
+![主题颜色](./screenshot/5.png)
 
-`./src/components/Video.js`
+### 搜索
 
-使用开源播放器`react-native-video`
+![搜索](./screenshot/6.png)
 
-[https://github.com/react-native-community/react-native-video](https://github.com/react-native-community/react-native-video)
+### 搜索结果
 
-这里有一个`bug`
+![搜索结果](./screenshot/7.png)
 
-`source={{uri:uri}}`，`uri`不能为空字符串，否则切换资源部生效
+### 影片筛选
 
-支持手势快进快退，自动隐藏播放栏
+![影片筛选](./screenshot/8.png)
 
-* 还未完成的功能
+### 影片详情
 
-全屏切换
+![影片详情](./screenshot/9.png)
 
+### 影片播放
 
-### 20181203
-
-主题颜色
-
-`./App.js`、`./src/page/Theme.js`
-
-`react-navigation`内置属性`screenProps`，其原理仍然使用的`context`特性
-
-```jsx
-<App screenProps={{themeColor:themeColor, setTheme:this.setTheme}} />
-```
-
-调用方式
-
-```js
-const {navigation,screenProps:{themeColor}} = this.props;
-```
-### 20181204
-
-历史记录
-
-`./src/page/History.js`
-
-通过`context`传递数据，需设置`contextType`
-
-```js
-import { Store } from '../../util/store';
-export default class History extends PureComponent {
-    render() {
-        const { historyList } = this.context;
-        return (
-            //...
-        )
-    }
-}
-History.contextType = Store;
-```
-
-### 20181205
-
-收藏页面
-
-`./src/page/Follow.js`
-
-与'历史记录'基本一致
-
-### 20181206
-
-本地存储
-
-`./util/storage.js`
-
-使用原生`AsyncStorage`
-
-```js
-class Storage {
-    /**
-     * 获取
-     */
-
-    static get = async (key) => {
-        try {
-            const value = await AsyncStorage.getItem(key);
-            if (value !== null) {
-                // We have data!!
-                return JSON.parse(value)
-            } else {
-                return false
-            }
-        } catch (error) {
-            return false
-        }
-    }
-
-    /**
-     * 保存
-     */
-    static save = async (key, value) => {
-        try {
-            await AsyncStorage.setItem(key, JSON.stringify(value));
-            return true
-        } catch (error) {
-            // Error saving data
-            return false
-        }
-    }
-}
-
-export default Storage;
-```
-
-### 20181209
-
-搜索
-
-`./src/page/Search.js`
-
-### 20181211
-
-影片筛选
-
-`./src/page/MovieContent.js`
-
-使用侧边导航栏，调用方式与原生`DrawerLayoutAndroid`一致
-
-```js
-import DrawerLayout from 'react-native-gesture-handler/DrawerLayout';
-```
-
-### 20181214
-
-图标，启动图
-
-使用开源库`react-native-splash-screen`
-
-[https://github.com/crazycodeboy/react-native-splash-screen#readme](https://github.com/crazycodeboy/react-native-splash-screen#readme)
-
-如果需要白底深色的状态栏文字
-
-```xml
-<style name="SplashScreenTheme" parent="SplashScreen_SplashTheme">
-    <item name="android:windowIsTranslucent">true</item>
-    <item name="colorPrimaryDark">@color/status_bar_color</item>
-    <item name="android:windowLightStatusBar">true</item><!--加上这一句-->
-</style>
-```
-
-2.0 基本完成
-
-### 20181217
-
-安卓打包
-
-`./android/build.gradle`
-
-修改一下配置
-
-注释`jcenter()`，添加
-
-```groovy
-maven{ url 'http://maven.aliyun.com/nexus/content/groups/public/'}
-maven{ url 'https://jitpack.io' }
-```
-
-不然会卡在下载阶段
-
-```groovy
-...
-allprojects {
-    repositories {
-        mavenLocal()
-        google()
-        //jcenter()
-        //更换国内镜像
-        maven{ url 'http://maven.aliyun.com/nexus/content/groups/public/'}
-        maven{ url 'https://jitpack.io' }
-        maven {
-            // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
-            url "$rootDir/../node_modules/react-native/android"
-        }
-    }
-}
-...
-
-```
-
-常用命令
-```sh
-# 卸载安装包
-adb uninstall com.packgeName
-
-# 生成Release包
-gradlew assembleRelease
-
-# 安装Release包
-gradlew installRelease
-```
-
-> 注意：在 debug 和 release 版本间来回切换安装时可能会报错签名不匹配，此时需要先卸载前一个版本再尝试安装。
-> 可通过 adb uninstall com.packgeName 方式来卸载，直接通过长按桌面图标有可能卸载不干净
-
-### 20181219
-
-更换数据解析
-
-使用`cheerio`对`html`页面进行本地解析（爬虫）
-
-注意，一定是要 `v0.22.0`，是因为之后的版本，`cheerio` 引入了 `parse5`，而 `parse5` 依赖 `stream.Writable`，`npm` 安装的 `stream` 并不提供。
-
-```sh
-yarn add cheerio@0.22.0
-```
-
-`cheerio` 的依赖 `htmlparser2` 依赖一些 `node` 内置的库。不过这是可以被解决的，理论上，只要这些依赖库不依赖更底层的接口，那么就可以通过 `npm` 安装上这些依赖：
-
-```sh
-yarn add events stream buffer
-```
-
-使用方式
-
-```js
-import cheerio from 'cheerio';
-const $ = cheerio.load('<h2 class="title">Hello world</h2>');
-console.log($('h2').text()) //Hello world
-```
-
-### 20181220
-
-完成影视列表、影视详情数据解析
-
-*注意*
-
-1. `cheerio`在使用`map`方法时，需要用`get`来获取数组，这点和`react`不同
-
-2. 参数和`jquery`相同，分别是 **序列（`i`）**、**每一项（`el`）**，这和`js`的`map`参数是相反的
-
-```js
-$('li').map((i, el)=>{
-    return ({
-        "ID": i,
-        //...
-    })
-}).get()//需要用get获取
-```
-
-### 20181221
-
-完成首页数据解析，`API`解析更换完成，速度相比之前更快（缺点是更耗费流量，毕竟是下载整个网页~😄）
-
-*注意*
-
-`cheerio`的`next`方法只能获取到下一个相邻元素，如果想获取后面所有兄弟元素，需要使用`nextAll`
-
-### 20181224
-
-完成全屏模式
-
-使用第三方库 `react-native-orientation`
+![影片播放](./screenshot/10.png)
 
 ## 还未完成的还接下来要做的
 
 * ~~视频播放做全屏切换~~
 * 没有适配`ios`，不过代码中没有使用安卓专有的库，理论上可以直接运行（可能有少部分需要适配），有兴趣的小伙伴可以`fork`下来自己适配一下
-* 会新增设置选项，进行网络设置，播放设置等（会参考其他视频软件的功能）
+* 会新增设置选项，进行网络设置，播放设置等（正在进行中...会参考其他视频软件的功能）
 * 目前历史记录和收藏均保存在本地，意味着如果卸载app将导致数据丢失，如果可能的话，将来把数据保存在自己的服务器上
 * `react-navigation`在页面切换时略微卡顿，还有一个`react-native-navigation`，如果可能的话，可以用来替代`react-navigation`
 * ~~目前在网上找的`api`可能不够理想~~（已采用本地爬虫方式），如果谁有更好的设计和更好的`api`可以参考一下~如果有提供后台服务的就更好了
