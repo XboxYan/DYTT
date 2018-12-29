@@ -540,7 +540,7 @@ export default class MovieDetail extends PureComponent {
                     style={{flex:1}}
                     scrollEnabled={!isFull}
                     stickyHeaderIndices={[0]}
-                    scrollEventThrottle={1}
+                    //scrollEventThrottle={1}
                     onScroll={Animated.event(
                         [{ nativeEvent: { contentOffset: { y: this.scrollTop } } }],
                         { useNativeDriver: true }
