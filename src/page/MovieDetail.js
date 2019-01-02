@@ -12,6 +12,7 @@ import {
     Image,
     LayoutAnimation,
     View,
+    NetInfo,
     NativeModules
 } from 'react-native';
 import Orientation from 'react-native-orientation';
@@ -486,8 +487,14 @@ export default class MovieDetail extends PureComponent {
         return true;
     }
 
+    onNectivityChange = (connectionInfo) => {
+        console.warn(connectionInfo)
+    }
+
     componentDidMount() {
-        InteractionManager.runAfterInteractions(() => {
+        InteractionManager.runAfterInteractions( async () => {
+            const connectionInfo = await NetInfo.getConnectionInfo();
+            console.warn(connectionInfo)
             const { params: { movieId } } = this.props.navigation.state;
             this.GetVideoInfo(movieId);
         })
@@ -495,6 +502,7 @@ export default class MovieDetail extends PureComponent {
 
     componentWillMount() {
         this.mounted = true;
+        NetInfo.addEventListener('connectionChange',this.onNectivityChange);
         if (Platform.OS === 'android') {
             BackHandler.addEventListener('handwareBackPress', this.onBackAndroid)
         }
@@ -503,6 +511,7 @@ export default class MovieDetail extends PureComponent {
 
     componentWillUnmount() {
         this.mounted = false;
+        NetInfo.removeEventListener('connectionChange',this.onNectivityChange);
         if (Platform.OS === 'android') {
             BackHandler.removeEventListener('handwareBackPress', this.onBackAndroid)
         }
@@ -530,7 +539,8 @@ export default class MovieDetail extends PureComponent {
     }
 
     render() {
-        const {navigation,screenProps:{themeColor}} = this.props;
+        const { navigation,screenProps:{themeColor} } = this.props;
+        const { settings:{allowMoblieNetwork} } = this.context;
         const { movieInfo,isRender,isPlaying,sourceId,playUrl,hasFollow,seekTime,isFull } = this.state;
         return (
             <View style={styles.content}>
