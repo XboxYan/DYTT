@@ -525,49 +525,54 @@ const tabBarOptions = (themeColor) => ({
 
 安卓
 
-### 欢迎页
-
-![欢迎页](./screenshot/0.png)
-
-### 首页
-
-![首页](./screenshot/1.png)
-
-### 功能菜单
-
-![功能菜单](./screenshot/2.png)
-
-### 历史记录
-
-![历史记录](./screenshot/3.png)
-
-### 收藏
-
-![收藏](./screenshot/4.png)
-
-### 主题颜色
-
-![主题颜色](./screenshot/5.png)
-
-### 搜索
-
-![搜索](./screenshot/6.png)
-
-### 搜索结果
-
-![搜索结果](./screenshot/7.png)
-
-### 影片筛选
-
-![影片筛选](./screenshot/8.png)
-
-### 影片详情
-
-![影片详情](./screenshot/9.png)
-
-### 影片播放
-
-![影片播放](./screenshot/10.png)
+<table>
+    <tr>
+        <th>欢迎页</th>
+        <th>首页</th>
+    </tr>
+    <tr>
+        <td><img src="./screenshot/0.png"/></td>
+        <td><img src="./screenshot/1.png"/></td>
+    </tr>
+    <tr>
+        <th>功能菜单</th>
+        <th>历史记录</th>
+    </tr>
+    <tr>
+        <td><img src="./screenshot/2.png"/></td>
+        <td><img src="./screenshot/3.png"/></td>
+    </tr>
+    <tr>
+        <th>收藏</th>
+        <th>主题颜色</th>
+    </tr>
+    <tr>
+        <td><img src="./screenshot/4.png"/></td>
+        <td><img src="./screenshot/5.png"/></td>
+    </tr>
+    <tr>
+        <th>搜索</th>
+        <th>搜索结果</th>
+    </tr>
+    <tr>
+        <td><img src="./screenshot/6.png"/></td>
+        <td><img src="./screenshot/7.png"/></td>
+    </tr>
+    <tr>
+        <th>影片筛选</th>
+        <th>影片详情</th>
+    </tr>
+    <tr>
+        <td><img src="./screenshot/8.png"/></td>
+        <td><img src="./screenshot/9.png"/></td>
+    </tr>
+    <tr>
+        <th>影片播放</th>
+    </tr>
+    <tr>
+        <td><img src="./screenshot/10.png"/></td>
+    </tr>
+</table>
 
 ## 还未完成的还接下来要做的
 
