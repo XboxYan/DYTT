@@ -593,10 +593,4 @@ yanwenbin1991@live.com
 
 如果体验觉得还不错的话，大佬们可以随意打赏，金额不限
 
-微信
-
-![微信](./screenshot/wechat.jpg)
-
-支付宝
-
-![微信](./screenshot/alipay.jpg)
+![微信赞赏码](./screenshot/wx.png)
