@@ -472,6 +472,26 @@ export default class MovieDetail extends PureComponent {
         this.onplayRotate(false);
     }
 
+    onEnd = () => {
+        const {movieInfo,sourceId} = this.state;
+        const index = movieInfo.MoviePlayUrls.findIndex(el=>el.ID==sourceId);
+        if(index>=0&&index<movieInfo.MoviePlayUrls.length-1){
+            ToastAndroid && ToastAndroid.show('(oﾟ▽ﾟ)o  即将播放下一资源', ToastAndroid.SHORT);
+            const item = movieInfo.MoviePlayUrls[index+1];
+            this.PlayUrl = item.PlayUrl;
+            this.setState({
+                sourceId:item.ID,
+                sourceName:item.Name,
+                seekTime:0,
+                playUrl:this.PlayUrl
+            })
+            this.moviesource.flatlist.scrollToIndex({index:index+1,viewPosition:.5});
+        }else{
+            ToastAndroid && ToastAndroid.show('(oﾟ▽ﾟ)o  全部播放完毕~', ToastAndroid.SHORT);
+            this.video.toEnd();
+        }
+    }
+
     onfullChanged = (isFull) => {
         this.setState({isFull});
         if(isFull){
@@ -575,7 +595,7 @@ export default class MovieDetail extends PureComponent {
 
     render() {
         const { navigation,screenProps:{themeColor} } = this.props;
-        const { settings:{allowMoblieNetwork} } = this.context;
+        const { settings:{allowMoblieNetwork,autoPlayNext} } = this.context;
         const { movieInfo,isRender,isPlaying,sourceId,playUrl,hasFollow,seekTime,isFull,isWiFi } = this.state;
         return (
             <View style={styles.content}>
@@ -626,6 +646,7 @@ export default class MovieDetail extends PureComponent {
                             <Video
                                 ref={(ref) => this.video = ref}
                                 uri={playUrl}
+                                onEnd={autoPlayNext?this.onEnd:false}
                                 useTextureView={false}
                                 style={styles.backgroundVideo}
                                 seekTime={seekTime}
@@ -641,7 +662,7 @@ export default class MovieDetail extends PureComponent {
                             </TouchableOpacity>
                         </Animated.View>
                     </Animated.View>
-                    <MovieSource source={movieInfo.MoviePlayUrls} sourceId={sourceId} onPlay={this.onPlay} isRender={isRender} themeColor={themeColor} />
+                    <MovieSource ref={(ref) => this.moviesource = ref} source={movieInfo.MoviePlayUrls} sourceId={sourceId} onPlay={this.onPlay} isRender={isRender} themeColor={themeColor} />
                     <MovieSummary summary={movieInfo.Introduction} isRender={isRender} themeColor={themeColor} />
                     <MovieSame movieInfo={movieInfo} isRender={isRender} themeColor={themeColor} navigation={navigation} />
                     <MovieComments DBID={movieInfo.DBID} isRender={isRender} themeColor={themeColor} navigation={navigation} />
