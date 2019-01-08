@@ -131,6 +131,13 @@ react-native run-android
 
 记录一些页面的关键点
 
+### 20190108
+
+```shell
+# 生成bundle
+react-native bundle --platform android --entry-file index.js --bundle-output ./bundle/index.android.bundle --dev false
+```
+
 ### 20190104
 
 完成设置的三个功能，分别是
