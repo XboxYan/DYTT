@@ -157,7 +157,7 @@ class MovieSource extends PureComponent {
             },()=>{
                 setTimeout(()=>{
                     const index = nextProps.source.findIndex(el=>el.ID==nextProps.sourceId);
-                    this.flatlist.scrollToIndex({index,viewPosition:.5});
+                    this.flatlist&&this.flatlist.scrollToIndex({index,viewPosition:.5});
                 },1000)
             })
         }

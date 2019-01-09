@@ -11,7 +11,7 @@ const codePushOptions = {
     //ON_APP_RESUME APP恢复到前台的时候
     //ON_APP_START APP开启的时候
     //MANUAL 手动检查
-    checkFrequency: CodePush.CheckFrequency.ON_APP_RESUME
+    checkFrequency: CodePush.CheckFrequency.ON_APP_START
 };
 
 const CODE_PUSH_PRODUCTION_KEY = 'iP5vE4FFzkilVLeIfVDZ5LwjUvdg67842615-88ee-487c-ab21-9908f18597db';
@@ -38,6 +38,15 @@ class Dytt extends PureComponent {
             case CodePush.SyncStatus.UNKNOWN_ERROR:
                 console.warn("An unknown error occurred");
                 break;
+            case CodePush.SyncStatus.AWAITING_USER_ACTION:
+                console.warn("Awaiting user action.");
+                break;
+            case CodePush.SyncStatus.SYNC_IN_PROGRESS:
+                console.warn("There is an ongoing 'sync' operation in progress.");
+                break;
+            case CodePush.SyncStatus.UPDATE_IGNORED:
+                console.warn("The app had an optional update and the end-user chose to ignore it");
+                break;
         }
     }
 
@@ -56,18 +65,18 @@ class Dytt extends PureComponent {
         //     }
         
         // })
-        CodePush.getCurrentPackage()
-.then((update) => {
-    // If the current app "session" represents the first time
-    // this update has run, and it had a description provided
-    // with it upon release, let's show it to the end user
-    console.warn(update)
-});
+        // CodePush.getUpdateMetadata()
+        // .then((update) => {
+        //     // If the current app "session" represents the first time
+        //     // this update has run, and it had a description provided
+        //     // with it upon release, let's show it to the end user
+        //     console.warn(update)
+        // });
         CodePush.sync({
             updateDialog: {
                 appendReleaseDescription: true,// 是否显示更新description
-                descriptionPrefix: '\n更新内容：\n',//更新说明的前缀。 默认是” Description: 
-                title: '更新',//要显示的更新通知的标题. Defaults to “Update available”.
+                descriptionPrefix: '',//更新说明的前缀。 默认是” Description: 
+                title: '应用更新',//要显示的更新通知的标题. Defaults to “Update available”.
                 mandatoryUpdateMessage: '',//强制更新时，更新通知. Defaults to “An update is available that must be installed.”.
                 mandatoryContinueButtonLabel: '继续',//强制更新的按钮文字. 默认 to “Continue”.
                 optionalIgnoreButtonLabel:'忽略',
