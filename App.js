@@ -20,9 +20,12 @@ import History from './src/page/History';
 import Theme,{themes} from './src/page/Theme';
 import Follow from './src/page/Follow';
 import Search from './src/page/Search';
-import Setting from './src/page/Setting.js';
+import Setting from './src/page/Setting';
+import UpdateModal from './src/components/UpdateModal';
 import { StoreProvider } from './util/store';
 import Storage from './util/storage';
+import CodePush from "react-native-code-push";
+const CODE_PUSH_PRODUCTION_KEY = 'iP5vE4FFzkilVLeIfVDZ5LwjUvdg67842615-88ee-487c-ab21-9908f18597db';
 
 const StackNavigatorConfig = {
 	headerMode: 'none',
@@ -86,13 +89,23 @@ export default class extends PureComponent {
 		});
 	}
 
+	//如果有更新的提示
+    syncImmediate = async () => {
+		const RemotePackage = await CodePush.checkForUpdate(CODE_PUSH_PRODUCTION_KEY);
+		if(RemotePackage){
+			this.modal.init(RemotePackage);
+		}
+    }
+
 	async componentDidMount() {
+		CodePush.allowRestart();//在加载完了，允许重启
 		const data = await Storage.get('themeColor');
 		if(data){
 			this.setState({themeColor:data.themeColor});
 		}
 		setTimeout(() => {
 			SplashScreen.hide();
+			this.syncImmediate(); //开始检查更新
 		}, 500);
 	}
 
@@ -102,6 +115,7 @@ export default class extends PureComponent {
         }
     }
     componentWillUnmount() {
+		CodePush.disallowRestart();//禁止重启
         if (Platform.OS === 'android') {
             BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid);
         }
@@ -123,6 +137,7 @@ export default class extends PureComponent {
 			<StoreProvider>
 				<StatusBar translucent={true} backgroundColor="transparent" />
 				<App screenProps={{themeColor:themeColor, setTheme:this.setTheme}} />
+				<UpdateModal themeColor={themeColor} ref={ node => this.modal = node } />
 			</StoreProvider>
 		)
 	}

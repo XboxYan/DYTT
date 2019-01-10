@@ -32,12 +32,6 @@
 
 **本项目仅供学习交流使用，不得用于其他商业行为，数据来源于第三方网站，与本人无关！**
 
-**本项目仅供学习交流使用，不得用于其他商业行为，数据来源于第三方网站，与本人无关！**
-
-**本项目仅供学习交流使用，不得用于其他商业行为，数据来源于第三方网站，与本人无关！**
-
-重要的事情说三遍。
-
 重点是交流讨论`react native`技术，而不是资源为什么不全，因为这是第三方的。
 
 ## 为什么要重新开始呢
@@ -62,42 +56,6 @@
 
 [演示视频](https://web.codelabo.cn/demo/dytt.mp4)
 
-
-## 项目依赖
-
-依赖项不多，大部分都是用原生自带组件完成
-
-```json
-{
-  "name": "DYTT",
-  "version": "2.0.0",
-  "private": true,
-  "scripts": {
-    "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest"
-  },
-  "dependencies": {
-    "react": "16.6.1",
-    "react-native": "0.57.5",
-    "react-native-gesture-handler": "^1.0.9",
-    "react-native-scrollviewpager": "^1.0.3",
-    "react-native-splash-screen": "^3.1.1",
-    "react-native-swiper": "^1.5.14",
-    "react-native-vector-icons": "^6.1.0",
-    "react-native-video": "^4.0.1",
-    "react-navigation": "^3.0.0"
-  },
-  "devDependencies": {
-    "babel-jest": "23.6.0",
-    "jest": "23.6.0",
-    "metro-react-native-babel-preset": "0.49.2",
-    "react-test-renderer": "16.6.1"
-  },
-  "jest": {
-    "preset": "react-native"
-  }
-}
-```
 
 ## 安装
 
@@ -131,11 +89,23 @@ react-native run-android
 
 记录一些页面的关键点
 
-### 20190108
+### 20190110
+
+热更新完成
+
+采用方案是[react-native-code-push](https://github.com/Microsoft/react-native-code-push)
+
+![code-push](./screenshot/code-push.png)
+
+常用命令
 
 ```shell
-# 生成bundle
-react-native bundle --platform android --entry-file index.js --bundle-output ./bundle/index.android.bundle --dev false
+# 列出账号下的所有项目
+code-push app list
+# 列出应用的部署
+code-push deployment ls dyttAndroid
+# 发布更新
+code-push release-react dyttAndroid android --t 2.0.0 --dev false --d Production --des "1.修复了已知BUG\n 2.测试code push" --m true
 ```
 
 ### 20190104
