@@ -13,6 +13,7 @@ import {
 	ScrollView,
 	NativeModules,
 	TouchableOpacity,
+	ToastAndroid,
 	BackHandler,
 	View,
 } from 'react-native';
@@ -71,14 +72,17 @@ export default class UpdateModal extends PureComponent {
                 this.width,
                 {
 					toValue: parseFloat(progress.receivedBytes / progress.totalBytes).toFixed(2),
-					duration: 100
+					duration: 150
                 }
             ).start();
 		})
 		this.setState({status:2})//downloadComplete
-		await LocalPackage.install(LocalPackage.isMandatory?CodePush.InstallMode.IMMEDIATE:CodePush.InstallMode.ON_NEXT_RESTART);
-		this.setState({status:3})
-		this.setVisible(false);
+		await LocalPackage.install(LocalPackage.isMandatory?CodePush.InstallMode.IMMEDIATE:CodePush.InstallMode.ON_NEXT_RESUME);
+		if(!LocalPackage.isMandatory){
+			this.setState({status:3})
+			this.setVisible(false);
+			ToastAndroid && ToastAndroid.show('下次启动完成更新', ToastAndroid.SHORT);
+		}
 	}
 
 
@@ -148,7 +152,7 @@ export default class UpdateModal extends PureComponent {
 						<View style={styles.footer}>
 							{
 								!isMandatory&&
-								<TouchableOpacity onPress={this.ignore} activeOpacity={.8} style={[styles.btn_submit,{borderColor:themeColor}]}><Text style={[styles.btn_text,{color:themeColor}]}>稍后</Text></TouchableOpacity>
+								<TouchableOpacity onPress={this.ignore} activeOpacity={.8} style={[styles.btn_submit,{borderColor:themeColor}]}><Text style={[styles.btn_text,{color:themeColor}]}>下次</Text></TouchableOpacity>
 							}
 							<TouchableOpacity onPress={this.install} activeOpacity={.8} style={[styles.btn_submit,{borderColor:themeColor,backgroundColor:themeColor}]}><Text style={styles.btn_text}>更新</Text></TouchableOpacity>
 						</View>

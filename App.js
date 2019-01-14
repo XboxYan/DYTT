@@ -91,7 +91,7 @@ export default class extends PureComponent {
 
 	//如果有更新的提示
     syncImmediate = async () => {
-		const RemotePackage = await CodePush.checkForUpdate(CODE_PUSH_PRODUCTION_KEY);
+		const RemotePackage = await CodePush.checkForUpdate();
 		if(RemotePackage){
 			this.modal.init(RemotePackage);
 		}

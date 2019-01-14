@@ -104,6 +104,8 @@ react-native run-android
 code-push app list
 # 列出应用的部署
 code-push deployment ls dyttAndroid
+# 列出应用的版本历史
+code-push deployment history dyttAndroid Production
 # 发布更新
 code-push release-react dyttAndroid android --t 2.0.0 --dev false --d Production --des "1.修复了已知BUG\n 2.测试code push" --m true
 ```

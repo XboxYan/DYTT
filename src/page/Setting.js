@@ -47,7 +47,7 @@ export default class Setting extends PureComponent {
 
     async componentDidMount() {
         const { initSettings } = this.context;
-        const data = await Storage.get('settings')||{};
+        const data = await Storage.get('settings');
         if (data) {
             initSettings(data);
         }
@@ -66,7 +66,7 @@ export default class Setting extends PureComponent {
                     </View>
                     <Text style={styles.title}>播放</Text>
                     <View style={styles.wrap}>
-                        <SettingItem title="视频预加载" subtitle="可能会消耗更多流量（Wifi状态和土豪下起效）" themeColor={themeColor} value={preLoad} setSettings={this.setSettings('preLoad')} />
+                        <SettingItem title="视频预加载" subtitle="Wifi状态和移动网络关闭提示下有效" themeColor={themeColor} value={preLoad} setSettings={this.setSettings('preLoad')} />
                         <SettingItem title="自动播放下一集" subtitle="有多个资源时播放完成后自动播放下一资源" themeColor={themeColor} value={autoPlayNext} setSettings={this.setSettings('autoPlayNext')} />
                     </View>
                 </ScrollView>
