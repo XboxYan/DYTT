@@ -5,6 +5,7 @@ import {
     ScrollView,
     TouchableOpacity,
     InteractionManager,
+    ToastAndroid,
     Platform,
     BackHandler,
     FlatList,
@@ -156,7 +157,7 @@ class MovieSource extends PureComponent {
             },()=>{
                 setTimeout(()=>{
                     const index = nextProps.source.findIndex(el=>el.ID==nextProps.sourceId);
-                    this.flatlist.scrollToIndex({index,viewPosition:.5});
+                    this.flatlist&&this.flatlist.scrollToIndex({index,viewPosition:.5});
                 },1000)
             })
         }
@@ -378,7 +379,8 @@ export default class MovieDetail extends PureComponent {
             isPlaying:false,
             isFull:false,
             playUrl:null,
-            seekTime:0
+            seekTime:0,
+            isWiFi:true,
         }
     }
 
@@ -387,7 +389,7 @@ export default class MovieDetail extends PureComponent {
     scrollRotate = new Animated.Value(0);
 
     GetVideoInfo = async (movieId) => {
-        const { findHistory,findFollow } = this.context;
+        const { findHistory,findFollow,settings:{allowMoblieNetwork,preLoad} } = this.context;
         const data = await GetVideoInfo(movieId)||{};
         if(this.mounted){
             const historyItem = findHistory(movieId);
@@ -400,14 +402,14 @@ export default class MovieDetail extends PureComponent {
                 _sourceId = data.MoviePlayUrls[0].ID;
             }
             const item = data.MoviePlayUrls.find(el=>el.ID==_sourceId||el.Name==historyItem.sourceName);
-            //this.PlayUrl = item.PlayUrl;
+            this.PlayUrl = item.PlayUrl;
             this.setState({
                 movieInfo:data,
                 sourceName:item.Name,
                 isRender:true,
                 sourceId:item.ID,
                 seekTime:this.lastPlayTime||0,
-                playUrl:item.PlayUrl,
+                playUrl:((!allowMoblieNetwork||this.isWiFi)?preLoad:false)?this.PlayUrl:null,
                 hasFollow:hasFollow
             })
             LayoutAnimation.easeInEaseOut();
@@ -426,6 +428,7 @@ export default class MovieDetail extends PureComponent {
     }
 
     onplayRotate = (bool) => {
+        const { settings:{allowMoblieNetwork} } = this.context;
         Animated.timing(
             this.scrollRotate,
             {
@@ -434,22 +437,31 @@ export default class MovieDetail extends PureComponent {
                 //useNativeDriver: true
             }                              
         ).start();
-        this.setState({isPlaying:bool})
-        this.video.toPlay(bool);
+        this.setState({
+            isPlaying:bool,
+        })
+        if(!allowMoblieNetwork||this.isWiFi){
+            this.setState({
+                playUrl:(!allowMoblieNetwork||this.isWiFi)?this.PlayUrl:null,
+            })
+        }
+
+        this.video.toPlay((this.isWiFi||!allowMoblieNetwork)?bool:false);
         LayoutAnimation.easeInEaseOut();
     }
 
     onPlay = (ID,bool) => {
         if(bool){
             //跳转
+            const { settings:{allowMoblieNetwork} } = this.context;
             this.lastPlayTime = null;
             const {movieInfo} = this.state;
             const item = movieInfo.MoviePlayUrls.find(el=>el.ID==ID);
+            this.PlayUrl = item.PlayUrl;
             this.setState({
                 sourceId:item.ID,
                 sourceName:item.Name,
                 seekTime:0,
-                playUrl:item.PlayUrl,
             })
         }
         this.hasPlay = true;
@@ -458,6 +470,26 @@ export default class MovieDetail extends PureComponent {
 
     onClose = () => {
         this.onplayRotate(false);
+    }
+
+    onEnd = () => {
+        const {movieInfo,sourceId} = this.state;
+        const index = movieInfo.MoviePlayUrls.findIndex(el=>el.ID==sourceId);
+        if(index>=0&&index<movieInfo.MoviePlayUrls.length-1){
+            ToastAndroid && ToastAndroid.show('(oﾟ▽ﾟ)o  即将播放下一资源', ToastAndroid.SHORT);
+            const item = movieInfo.MoviePlayUrls[index+1];
+            this.PlayUrl = item.PlayUrl;
+            this.setState({
+                sourceId:item.ID,
+                sourceName:item.Name,
+                seekTime:0,
+                playUrl:this.PlayUrl
+            })
+            this.moviesource.flatlist.scrollToIndex({index:index+1,viewPosition:.5});
+        }else{
+            ToastAndroid && ToastAndroid.show('(oﾟ▽ﾟ)o  全部播放完毕~', ToastAndroid.SHORT);
+            this.video.toEnd();
+        }
     }
 
     onfullChanged = (isFull) => {
@@ -487,14 +519,37 @@ export default class MovieDetail extends PureComponent {
         return true;
     }
 
+    allowPlay = () => {
+        this.isWiFi = true;
+        this.setState({
+            playUrl:this.PlayUrl,
+            isWiFi:true
+        });
+        this.video.toPlay(true);
+        ToastAndroid && ToastAndroid.show('ヾ(ｏ･ω･)ﾉ  已允许本次使用移动网络播放', ToastAndroid.SHORT);
+    }
+
     onNectivityChange = (connectionInfo) => {
-        console.warn(connectionInfo)
+        const { settings:{allowMoblieNetwork} } = this.context;
+        this.isWiFi = connectionInfo.type==='wifi';
+        this.setState({
+            isWiFi:this.isWiFi
+        })
+        if(allowMoblieNetwork){
+            if(!this.isWiFi){
+                ToastAndroid && ToastAndroid.show('(oﾟ▽ﾟ)o  当前处于移动网络', ToastAndroid.SHORT);
+                this.video.toPlay(false);
+            }else{
+                ToastAndroid && ToastAndroid.show('ヾ(ｏ･ω･)ﾉ  当前处于WiFi网络', ToastAndroid.SHORT);
+                this.setState({playUrl:this.PlayUrl});
+            }
+        }
     }
 
     componentDidMount() {
         InteractionManager.runAfterInteractions( async () => {
             const connectionInfo = await NetInfo.getConnectionInfo();
-            console.warn(connectionInfo)
+            this.onNectivityChange(connectionInfo);
             const { params: { movieId } } = this.props.navigation.state;
             this.GetVideoInfo(movieId);
         })
@@ -540,8 +595,8 @@ export default class MovieDetail extends PureComponent {
 
     render() {
         const { navigation,screenProps:{themeColor} } = this.props;
-        const { settings:{allowMoblieNetwork} } = this.context;
-        const { movieInfo,isRender,isPlaying,sourceId,playUrl,hasFollow,seekTime,isFull } = this.state;
+        const { settings:{allowMoblieNetwork,autoPlayNext} } = this.context;
+        const { movieInfo,isRender,isPlaying,sourceId,playUrl,hasFollow,seekTime,isFull,isWiFi } = this.state;
         return (
             <View style={styles.content}>
                 <Animated.ScrollView
@@ -591,18 +646,23 @@ export default class MovieDetail extends PureComponent {
                             <Video
                                 ref={(ref) => this.video = ref}
                                 uri={playUrl}
+                                onEnd={autoPlayNext?this.onEnd:false}
                                 useTextureView={false}
                                 style={styles.backgroundVideo}
                                 seekTime={seekTime}
                                 onfullChanged={this.onfullChanged}
                                 themeColor={themeColor}
                             />
+                            <View pointerEvents={(isWiFi||!allowMoblieNetwork)?'none':'auto'} style={[styles.fullScreen,styles.center,{backgroundColor:'rgba(0,0,0,.5)'},(isWiFi||!allowMoblieNetwork)&&{opacity:0}]}>
+                                <Text style={styles.maskTip}>当前正处于移动网络环境</Text>
+                                <TouchableOpacity onPress={this.allowPlay} activeOpacity={.8} style={[styles.maskButton,{backgroundColor:themeColor}]}><Text style={styles.maskButtonText}>继续播放?</Text></TouchableOpacity>
+                            </View>
                             <TouchableOpacity style={[styles.closebtn,isFull&&{ opacity:0, top:-50 }]} onPress={this.onClose} >
                                 <Icon name='x' size={20} color='#fff' />
                             </TouchableOpacity>
                         </Animated.View>
                     </Animated.View>
-                    <MovieSource source={movieInfo.MoviePlayUrls} sourceId={sourceId} onPlay={this.onPlay} isRender={isRender} themeColor={themeColor} />
+                    <MovieSource ref={(ref) => this.moviesource = ref} source={movieInfo.MoviePlayUrls} sourceId={sourceId} onPlay={this.onPlay} isRender={isRender} themeColor={themeColor} />
                     <MovieSummary summary={movieInfo.Introduction} isRender={isRender} themeColor={themeColor} />
                     <MovieSame movieInfo={movieInfo} isRender={isRender} themeColor={themeColor} navigation={navigation} />
                     <MovieComments DBID={movieInfo.DBID} isRender={isRender} themeColor={themeColor} navigation={navigation} />
@@ -699,6 +759,10 @@ const styles = StyleSheet.create({
         width: 48,
         height: 48,
         zIndex: 5,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    center:{
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -868,5 +932,19 @@ const styles = StyleSheet.create({
 		textAlign:'center',
 		fontSize: 14,
 		color: '#666'
-	}
+    },
+    maskTip:{
+        color:'#fff',
+        fontSize:16
+    },
+    maskButton:{
+        marginTop:15,
+        borderRadius:3,
+        height:30,
+        paddingHorizontal:10,
+        justifyContent: 'center',
+    },
+    maskButtonText:{
+        color:'#fff'
+    }
 })

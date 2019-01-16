@@ -6,7 +6,7 @@ export const initialStore = {
     historyList:[],
     fllowList:[],
     settings:{
-        allowMoblieNetwork:false,
+        allowMoblieNetwork:true,
         preLoad:false,
         autoPlayNext:true,
     }

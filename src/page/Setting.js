@@ -13,15 +13,16 @@ import Storage from '../../util/storage';
 import { Store } from '../../util/store';
 
 
-const  SettingItem = ({ title,subtitle,themeColor,value,setSettings }) => (
-    <View style={styles.item}>
+const  SettingItem = ({ title,subtitle,themeColor,value,setSettings,disabled=false }) => (
+    <View style={[styles.item,disabled&&{opacity:.6}]}>
         <View style={styles.itemtext}>
             <Text style={styles.itemtitle}>{title}</Text>
             {
                 !!subtitle&&<Text style={styles.itemsubtitle}>{subtitle}</Text>
             }
         </View>
-        <Switch 
+        <Switch
+            disabled={disabled}
             value={value}
             trackColor={{false: '#ccc', true: themeColor+'80'}}  //开关打开关闭时的背景颜色
             thumbColor={value?themeColor:'#f1f1f1'} //开关上原形按钮的颜色
@@ -46,7 +47,7 @@ export default class Setting extends PureComponent {
 
     async componentDidMount() {
         const { initSettings } = this.context;
-        const data = await Storage.get('settings')||{};
+        const data = await Storage.get('settings');
         if (data) {
             initSettings(data);
         }
@@ -61,11 +62,11 @@ export default class Setting extends PureComponent {
                 <ScrollView style={{flex:1}} contentContainerStyle={{paddingBottom:10}}>
                     <Text style={styles.title}>网络</Text>
                     <View style={styles.wrap}>
-                        <SettingItem title="允许移动网络播放视频" themeColor={themeColor} value={allowMoblieNetwork} setSettings={this.setSettings('allowMoblieNetwork')} />
+                        <SettingItem title="移动网络播放视频提示" subtitle="土豪可以关闭此提醒" themeColor={themeColor} value={allowMoblieNetwork} setSettings={this.setSettings('allowMoblieNetwork')} />
                     </View>
                     <Text style={styles.title}>播放</Text>
                     <View style={styles.wrap}>
-                        <SettingItem title="视频预加载" subtitle="进入详情页后自动加载视频" themeColor={themeColor} value={preLoad} setSettings={this.setSettings('preLoad')} />
+                        <SettingItem title="视频预加载" subtitle="Wifi状态和移动网络关闭提示下有效" themeColor={themeColor} value={preLoad} setSettings={this.setSettings('preLoad')} />
                         <SettingItem title="自动播放下一集" subtitle="有多个资源时播放完成后自动播放下一资源" themeColor={themeColor} value={autoPlayNext} setSettings={this.setSettings('autoPlayNext')} />
                     </View>
                 </ScrollView>

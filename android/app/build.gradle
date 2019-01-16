@@ -77,6 +77,7 @@ project.ext.react = [
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
+apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"
 
 /**
  * Set this to true to create two separate APKs instead of one:
@@ -113,7 +114,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 2
-        versionName "2.0"
+        versionName "2.1.0"
         // ndk {
         //     abiFilters "armeabi-v7a", "x86"
         // }
@@ -137,8 +138,24 @@ android {
         }
     }
     buildTypes {
+
+        debug {
+            // Note: CodePush updates should not be tested in Debug mode as they are overriden by the RN packager. However, because CodePush checks for updates in all modes, we must supply a key.
+            buildConfigField "String", "CODEPUSH_KEY", '""'
+        }
+
+        releaseStaging {
+            minifyEnabled enableProguardInReleaseBuilds
+            matchingFallbacks = ['release', 'debug']
+            buildConfigField "String", "CODEPUSH_KEY", '"Ec3vaG7cpA6emP7A6s8VynhGFkdx67842615-88ee-487c-ab21-9908f18597db"'
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            signingConfig signingConfigs.release
+        }
+
         release {
             minifyEnabled enableProguardInReleaseBuilds
+            matchingFallbacks = ['release', 'debug']
+            buildConfigField "String", "CODEPUSH_KEY", '"iP5vE4FFzkilVLeIfVDZ5LwjUvdg67842615-88ee-487c-ab21-9908f18597db"'
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             signingConfig signingConfigs.release
         }
@@ -159,6 +176,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-code-push')
     compile project(':react-native-orientation')
     compile project(':react-native-splash-screen')
     compile project(':react-native-video')

@@ -20,7 +20,7 @@ import {
 import { BorderlessButton } from 'react-native-gesture-handler';
 import DrawerLayout from 'react-native-gesture-handler/DrawerLayout';
 import Icon from 'react-native-vector-icons/Feather';
-import Appbar from '../components/Appbar';
+import AppTop from '../components/AppTop';
 import Loading from '../components/Loading';
 import MovieList from '../components/MovieList';
 import { GetPageList } from '../../util/api';
@@ -312,11 +312,11 @@ export default class extends PureComponent {
                 renderNavigationView={() => <DrawerContent ref={drawer => this.drawerContent = drawer} themeColor={themeColor} closeDrawer={this.closeDrawer} type={type} state={{ Channel, Plot, Area, Year }} setType={this.setType} />}
             >
                 <View style={[styles.content, styles.bg]}>
-                    <Appbar navigation={navigation} themeColor={themeColor} title={title} >
+                    <AppTop navigation={navigation} themeColor={themeColor} title={title} isBack={true} >
                         <BorderlessButton activeOpacity={.8} style={styles.btn} onPress={this.openDrawer} >
                             <Icon name='filter' size={18} color='#fff' />
                         </BorderlessButton>
-                    </Appbar>
+                    </AppTop>
                     <CategoryTop openDrawer={this.openDrawer} type={type} state={{ Channel, Plot, Area, Year }} themeColor={themeColor} />
                     {
                         isRender ?

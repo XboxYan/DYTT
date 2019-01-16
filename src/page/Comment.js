@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 
 import { GetDoubanInterests } from '../../util/api';
-import Appbar from '../components/Appbar';
+import AppTop from '../components/AppTop';
 import CommentList from '../components/CommentList';
 
 
@@ -75,7 +75,7 @@ export default class Comment extends PureComponent {
         const { data,isRender,total,isEnding } = this.state;
         return (
             <View style={styles.content}>
-                <Appbar navigation={navigation} themeColor={themeColor} title={`全部${total}条热评`} />
+                <AppTop navigation={navigation} themeColor={themeColor} isBack={true} title={`全部${total}条热评`} />
                 <CommentList 
                     style={styles.commentview}
                     themeColor={themeColor}

@@ -142,6 +142,7 @@ export default class extends PureComponent {
     toHideBar = () => {
         this.timer&&clearTimeout(this.timer);
         LayoutAnimation.easeInEaseOut();
+        this.props.onHideBar&&this.props.onHideBar();
         this.setState({
             isShowBar:false
         })
@@ -150,12 +151,23 @@ export default class extends PureComponent {
     toShowBar = () => {
         this.timer&&clearTimeout(this.timer);
         LayoutAnimation.easeInEaseOut();
+        this.props.onShowBar&&this.props.onShowBar();
         this.setState({
             isShowBar:true
         })
         this.timer = setTimeout(()=>{
             this.toHideBar()
         },5000)
+    }
+
+    toEnd = () => {
+        this.toSeek(0,true);
+        this.timer&&clearTimeout(this.timer);
+        LayoutAnimation.easeInEaseOut();
+        this.setState({
+            paused:true,
+            isEnd:true
+        })
     }
 
     /*
@@ -181,13 +193,11 @@ export default class extends PureComponent {
     }
 
     onEnd = () => {
-        this.toSeek(0,true);
-        this.timer&&clearTimeout(this.timer);
-        LayoutAnimation.easeInEaseOut();
-        this.setState({
-            paused:true,
-            isEnd:true
-        })
+        if(this.props.onEnd&& (typeof this.props.onEnd === 'function')){
+            this.props.onEnd();
+        }else{
+            this.toEnd();
+        }
     }
 
     onBuffer = (event) => {

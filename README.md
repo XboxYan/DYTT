@@ -1,5 +1,7 @@
 # DYTT
 
+![电影天堂](./screenshot/logo.jpg)
+
 第三方电影天堂React Native客户端V2.0
 
 重新开始！
@@ -30,12 +32,6 @@
 
 **本项目仅供学习交流使用，不得用于其他商业行为，数据来源于第三方网站，与本人无关！**
 
-**本项目仅供学习交流使用，不得用于其他商业行为，数据来源于第三方网站，与本人无关！**
-
-**本项目仅供学习交流使用，不得用于其他商业行为，数据来源于第三方网站，与本人无关！**
-
-重要的事情说三遍。
-
 重点是交流讨论`react native`技术，而不是资源为什么不全，因为这是第三方的。
 
 ## 为什么要重新开始呢
@@ -52,50 +48,14 @@
 
 ## 特色
 
-大概是全网个人影视类项目最漂亮、体验最好的了吧（下方有截图~）。
+大概是全网个人影视类项目最漂亮、体验最好的了吧（下方有[截图](#相关截图)~）。
 
-最为一名偏体验偏设计的前端开发者，对界面和用户体验都有极高的重视。
+做为一名偏体验偏设计的前端开发者，对界面和用户体验都有极高的重视。
 
 （见过很多类似的第三方应用，功能算是出来了，但是界面一看就是程序员风格）
 
 [演示视频](https://web.codelabo.cn/demo/dytt.mp4)
 
-
-## 项目依赖
-
-依赖项不多，大部分都是用原生自带组件完成
-
-```json
-{
-  "name": "DYTT",
-  "version": "2.0.0",
-  "private": true,
-  "scripts": {
-    "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest"
-  },
-  "dependencies": {
-    "react": "16.6.1",
-    "react-native": "0.57.5",
-    "react-native-gesture-handler": "^1.0.9",
-    "react-native-scrollviewpager": "^1.0.3",
-    "react-native-splash-screen": "^3.1.1",
-    "react-native-swiper": "^1.5.14",
-    "react-native-vector-icons": "^6.1.0",
-    "react-native-video": "^4.0.1",
-    "react-navigation": "^3.0.0"
-  },
-  "devDependencies": {
-    "babel-jest": "23.6.0",
-    "jest": "23.6.0",
-    "metro-react-native-babel-preset": "0.49.2",
-    "react-test-renderer": "16.6.1"
-  },
-  "jest": {
-    "preset": "react-native"
-  }
-}
-```
 
 ## 安装
 
@@ -129,6 +89,45 @@ react-native run-android
 
 记录一些页面的关键点
 
+### 20190110
+
+热更新完成
+
+采用方案是[react-native-code-push](https://github.com/Microsoft/react-native-code-push)
+
+![code-push](./screenshot/code-push.png)
+
+常用命令
+
+```shell
+# 列出账号下的所有项目
+code-push app list
+# 列出应用的部署
+code-push deployment ls dyttAndroid
+# 列出应用的版本历史
+code-push deployment history dyttAndroid Production
+# 发布更新
+code-push release-react dyttAndroid android --t 2.0.0 --dev false --d Production --des "1.修复了已知BUG\n 2.测试code push" --m true
+```
+
+### 20190104
+
+完成设置的三个功能，分别是
+
+* 移动网络播放视频提示
+* 视频预加载
+* 自动播放下一集
+
+![网络设置](./screenshot/settings-1.jpg)
+
+此时点击`继续播放`可暂时允许使用移动网络播放
+
+网络变化监听使用原生`NetInfo`实现
+
+```js
+NetInfo.addEventListener('connectionChange',this.onNectivityChange);
+```
+
 ### 20181229
 
 现在更新采用倒序排序
@@ -138,6 +137,8 @@ react-native run-android
 修复`API`解析错误（网站发生变动）
 
 为侧边封面图增加了隐藏的历史记录入口，可直接进入到上次观看的影片
+
+![设置](./screenshot/settings.jpg)
 
 ### 20181224
 
@@ -571,13 +572,14 @@ const tabBarOptions = (themeColor) => ({
 
 ## 还未完成的还接下来要做的
 
-* ~~视频播放做全屏切换~~
+* ~~视频播放做全屏切换~~（已完成）
 * 没有适配`ios`，不过代码中没有使用安卓专有的库，理论上可以直接运行（可能有少部分需要适配），有兴趣的小伙伴可以`fork`下来自己适配一下
-* 会新增设置选项，进行网络设置，播放设置等（正在进行中...会参考其他视频软件的功能）
+* ~~会新增设置选项，进行网络设置，播放设置等（会参考其他视频软件的功能）~~（已完成）
 * 目前历史记录和收藏均保存在本地，意味着如果卸载app将导致数据丢失，如果可能的话，将来把数据保存在自己的服务器上
 * `react-navigation`在页面切换时略微卡顿，还有一个`react-native-navigation`，如果可能的话，可以用来替代`react-navigation`
 * ~~目前在网上找的`api`可能不够理想~~（已采用本地爬虫方式），如果谁有更好的设计和更好的`api`可以参考一下~如果有提供后台服务的就更好了
 * `react-native`确实性能略显不足，特别是长列表的情况，准备学习`flutter`，一种新的渲染方式（可以和web中的`canvas`类比）
+* 热更新功能
 
 ## 联系方式
 
@@ -589,14 +591,8 @@ yanwenbin1991@live.com
 
 ## 打赏
 
-精神支撑一下，给个 star 呗
+精神支撑一下，给个 star 
 
 如果体验觉得还不错的话，大佬们可以随意打赏，金额不限
 
-微信
-
-![微信](./screenshot/wechat.jpg)
-
-支付宝
-
-![微信](./screenshot/alipay.jpg)
+![微信赞赏码](./screenshot/wx.png)
