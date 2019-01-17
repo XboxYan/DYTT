@@ -18,6 +18,7 @@ import {
 } from 'react-native';
 import Orientation from 'react-native-orientation';
 import { BorderlessButton } from 'react-native-gesture-handler';
+import LinearGradient from 'react-native-linear-gradient';
 import Star from '../components/Star';
 import Loading from '../components/Loading';
 import CommentList from '../components/CommentList';
@@ -46,12 +47,12 @@ const Appbar = ({themeColor,isFull,scrollTop,name,hasFollow,isRender,setFollow,g
         <BorderlessButton activeOpacity={.8} style={styles.btn} onPress={isRender?setFollow:null} >
             <IconM name={hasFollow?'favorite':'favorite-border'} size={20} color='#fff' />
         </BorderlessButton>
-        <Animated.View style={[styles.fullcon, { backgroundColor: themeColor }, {
+        <Animated.View style={[styles.fullcon, {
             opacity: scrollTop.interpolate({
                 inputRange: [$.STATUS_HEIGHT, $.STATUS_HEIGHT + 150],
                 outputRange: [0, 1]
             })
-        }]} />
+        }]} ><LinearGradient colors={themeColor.length>1?themeColor:[...themeColor,...themeColor]} start={{x: 0, y: 0}} end={{x: 1, y: 0}} style={styles.fullcon} /></Animated.View>
     </View>
 )
 
@@ -616,7 +617,7 @@ export default class MovieDetail extends PureComponent {
                         resizeMode='cover'
                         blurRadius={3.5}
                         source={{ uri: movieInfo.Cover||'http' }}
-                        style={[styles.bg_place, {backgroundColor: themeColor,
+                        style={[styles.bg_place, {backgroundColor: themeColor[0],
                             transform: [{
                                 scale: this.scrollTop.interpolate({
                                     inputRange: [0, $.STATUS_HEIGHT + 50],
@@ -632,7 +633,7 @@ export default class MovieDetail extends PureComponent {
                             })
                         }]
                     }]}>
-                        <MovieInfo movieInfo={movieInfo} themeColor={themeColor} onPlay={this.onPlay} isPlaying={isPlaying} isRender={isRender} />
+                        <MovieInfo movieInfo={movieInfo} themeColor={themeColor[0]} onPlay={this.onPlay} isPlaying={isPlaying} isRender={isRender} />
                         <Animated.View style={[styles.videoCon, {
                             zIndex: this.scrollRotate.interpolate({
                                 inputRange: [0,.499,.501, 1],
@@ -651,21 +652,25 @@ export default class MovieDetail extends PureComponent {
                                 style={styles.backgroundVideo}
                                 seekTime={seekTime}
                                 onfullChanged={this.onfullChanged}
-                                themeColor={themeColor}
+                                themeColor={themeColor[0]}
                             />
                             <View pointerEvents={(isWiFi||!allowMoblieNetwork)?'none':'auto'} style={[styles.fullScreen,styles.center,{backgroundColor:'rgba(0,0,0,.5)'},(isWiFi||!allowMoblieNetwork)&&{opacity:0}]}>
                                 <Text style={styles.maskTip}>当前正处于移动网络环境</Text>
-                                <TouchableOpacity onPress={this.allowPlay} activeOpacity={.8} style={[styles.maskButton,{backgroundColor:themeColor}]}><Text style={styles.maskButtonText}>继续播放?</Text></TouchableOpacity>
+                                <TouchableOpacity onPress={this.allowPlay} activeOpacity={.8}>
+                                    <LinearGradient colors={themeColor.length>1?themeColor:[...themeColor,...themeColor]} start={{x: 0, y: 0}} end={{x: 1, y: 0}} style={styles.maskButton}>
+                                        <Text style={styles.maskButtonText}>继续播放?</Text>
+                                    </LinearGradient>
+                                </TouchableOpacity>
                             </View>
                             <TouchableOpacity style={[styles.closebtn,isFull&&{ opacity:0, top:-50 }]} onPress={this.onClose} >
                                 <Icon name='x' size={20} color='#fff' />
                             </TouchableOpacity>
                         </Animated.View>
                     </Animated.View>
-                    <MovieSource ref={(ref) => this.moviesource = ref} source={movieInfo.MoviePlayUrls} sourceId={sourceId} onPlay={this.onPlay} isRender={isRender} themeColor={themeColor} />
-                    <MovieSummary summary={movieInfo.Introduction} isRender={isRender} themeColor={themeColor} />
-                    <MovieSame movieInfo={movieInfo} isRender={isRender} themeColor={themeColor} navigation={navigation} />
-                    <MovieComments DBID={movieInfo.DBID} isRender={isRender} themeColor={themeColor} navigation={navigation} />
+                    <MovieSource ref={(ref) => this.moviesource = ref} source={movieInfo.MoviePlayUrls} sourceId={sourceId} onPlay={this.onPlay} isRender={isRender} themeColor={themeColor[0]} />
+                    <MovieSummary summary={movieInfo.Introduction} isRender={isRender} themeColor={themeColor[0]} />
+                    <MovieSame movieInfo={movieInfo} isRender={isRender} themeColor={themeColor[0]} navigation={navigation} />
+                    <MovieComments DBID={movieInfo.DBID} isRender={isRender} themeColor={themeColor[0]} navigation={navigation} />
                 </Animated.ScrollView>
             </View>
         );

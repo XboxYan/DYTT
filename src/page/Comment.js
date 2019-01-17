@@ -78,7 +78,7 @@ export default class Comment extends PureComponent {
                 <AppTop navigation={navigation} themeColor={themeColor} isBack={true} title={`全部${total}条热评`} />
                 <CommentList 
                     style={styles.commentview}
-                    themeColor={themeColor}
+                    themeColor={themeColor[0]}
                     isRender={isRender} 
                     data={data} 
                     navigation={navigation} 

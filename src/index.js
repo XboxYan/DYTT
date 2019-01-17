@@ -52,7 +52,7 @@ export default class TabNavigator extends PureComponent {
                         <Icon name='search' size={20} color='#fff' />
                     </BorderlessButton>
                 </AppTop>
-                <Scrollviewpager themeColor={themeColor}>
+                <Scrollviewpager themeColor={themeColor[0]}>
                     <Home tablabel="首页" {...this.props} />
                     {
                         tablist.map(el => <Screen key={el.type} type={el.type} tablabel={el.name} {...this.props} />)

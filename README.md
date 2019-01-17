@@ -89,6 +89,16 @@ react-native run-android
 
 记录一些页面的关键点
 
+### 20190117
+
+主题重新设计，新增线性渐变主题
+
+采用[https://github.com/react-native-community/react-native-linear-gradient](https://github.com/react-native-community/react-native-linear-gradient)
+
+![主题设置](./screenshot/theme-new-1.jpg)
+
+![主题效果](./screenshot/theme-new.jpg)
+
 ### 20190110
 
 热更新完成

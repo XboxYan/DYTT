@@ -62,12 +62,12 @@ export default class Setting extends PureComponent {
                 <ScrollView style={{flex:1}} contentContainerStyle={{paddingBottom:10}}>
                     <Text style={styles.title}>网络</Text>
                     <View style={styles.wrap}>
-                        <SettingItem title="移动网络播放视频提示" subtitle="土豪可以关闭此提醒" themeColor={themeColor} value={allowMoblieNetwork} setSettings={this.setSettings('allowMoblieNetwork')} />
+                        <SettingItem title="移动网络播放视频提示" subtitle="土豪可以关闭此提醒" themeColor={themeColor[0]} value={allowMoblieNetwork} setSettings={this.setSettings('allowMoblieNetwork')} />
                     </View>
                     <Text style={styles.title}>播放</Text>
                     <View style={styles.wrap}>
-                        <SettingItem title="视频预加载" subtitle="Wifi状态和移动网络关闭提示下有效" themeColor={themeColor} value={preLoad} setSettings={this.setSettings('preLoad')} />
-                        <SettingItem title="自动播放下一集" subtitle="有多个资源时播放完成后自动播放下一资源" themeColor={themeColor} value={autoPlayNext} setSettings={this.setSettings('autoPlayNext')} />
+                        <SettingItem title="视频预加载" subtitle="Wifi状态和移动网络关闭提示下有效" themeColor={themeColor[0]} value={preLoad} setSettings={this.setSettings('preLoad')} />
+                        <SettingItem title="自动播放下一集" subtitle="有多个资源时播放完成后自动播放下一资源" themeColor={themeColor[0]} value={autoPlayNext} setSettings={this.setSettings('autoPlayNext')} />
                     </View>
                 </ScrollView>
             </View>

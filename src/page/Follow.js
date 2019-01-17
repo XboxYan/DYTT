@@ -144,7 +144,7 @@ export default class Follow extends PureComponent {
     renderItem = ({ item, index }) => {
         const { screenProps: { themeColor } } = this.props;
         const { selected, isEdit } = this.state;
-        return <FollowItem item={item} onPress={this.onPress(item.id)} isEdit={isEdit} checked={selected.indexOf(item.id) >= 0} onLongPress={this.onLongPress(item.id)} themeColor={themeColor} />
+        return <FollowItem item={item} onPress={this.onPress(item.id)} isEdit={isEdit} checked={selected.indexOf(item.id) >= 0} onLongPress={this.onLongPress(item.id)} themeColor={themeColor[0]} />
     }
 
     renderFooter = () => {
@@ -197,11 +197,11 @@ export default class Follow extends PureComponent {
                 }
                 <View style={[styles.footer, fllowList.length > 0 && isEdit && { bottom: 0 }]}>
                     <Touchable style={styles.vbtn} onPress={this.selectAll}>
-                        <CheckBox themeColor={themeColor} checked={selected.length === fllowList.length} />
+                        <CheckBox themeColor={themeColor[0]} checked={selected.length === fllowList.length} />
                         <Text style={styles.vbtntext}>全选</Text>
                     </Touchable>
                     <Touchable style={styles.vbtn} disabled={selected.length === 0} onPress={this.delSelect}>
-                        <Icon name='trash-2' size={20} style={{ marginRight: 10 }} color={selected.length === 0 ? '#ccc' : themeColor} />
+                        <Icon name='trash-2' size={20} style={{ marginRight: 10 }} color={selected.length === 0 ? '#ccc' : themeColor[0]} />
                         <Text style={styles.vbtntext}>取消收藏({selected.length})</Text>
                     </Touchable>
                 </View>

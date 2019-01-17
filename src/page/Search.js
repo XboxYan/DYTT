@@ -21,6 +21,7 @@ import {
     View,
 } from 'react-native';
 import { BorderlessButton } from 'react-native-gesture-handler';
+import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Feather';
 import Loading from '../components/Loading';
 import MovieList from '../components/MovieList';
@@ -270,7 +271,7 @@ export default class Search extends PureComponent {
         const { isSearch, searchList, isRender, keywords } = this.state;
         return (
             <View style={[styles.content, styles.bg]}>
-                <View style={[styles.top, { backgroundColor: themeColor }]}>
+                <LinearGradient colors={themeColor.length>1?themeColor:[...themeColor,...themeColor]} start={{x: 0, y: 0}} end={{x: 1, y: 0}}  style={styles.top}>
                     <BorderlessButton
                         activeOpacity={.8}
                         style={styles.btn}
@@ -282,7 +283,7 @@ export default class Search extends PureComponent {
                         <TextInput
                             style={styles.searchtext}
                             value={keywords}
-                            selectionColor={themeColor}
+                            selectionColor={themeColor[0]}
                             underlineColorAndroid='transparent'
                             onSubmitEditing={this.onSubmit}
                             onChangeText={this.onChange}
@@ -298,12 +299,12 @@ export default class Search extends PureComponent {
                     >
                         <Icon name='search' size={20} color={'#fff'} />
                     </BorderlessButton>
-                </View>
+                </LinearGradient>
                 <View style={styles.content}>
-                    <SearchHistory onSubmit={this.onSubmit} themeColor={themeColor} isRender={isRender} searchList={searchList} removeHistory={this.removeHistory} />
+                    <SearchHistory onSubmit={this.onSubmit} themeColor={themeColor[0]} isRender={isRender} searchList={searchList} removeHistory={this.removeHistory} />
                     {
                         isSearch &&
-                        <SearchResult ref={node => this.searchcon = node} keywords={keywords} navigation={navigation} themeColor={themeColor} />
+                        <SearchResult ref={node => this.searchcon = node} keywords={keywords} navigation={navigation} themeColor={themeColor[0]} />
                     }
                 </View>
             </View>

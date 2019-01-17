@@ -61,9 +61,9 @@ export default class extends PureComponent {
             <View style={styles.container}>
                 {
                     isRender ?
-                        <MovieList style={{paddingHorizontal:5}} isRender={true} ListFooterComponent={this.ListFooterComponent} data={data} navigation={navigation} themeColor={themeColor} onEndReached={this.loadMore} />
+                        <MovieList style={{paddingHorizontal:5}} isRender={true} ListFooterComponent={this.ListFooterComponent} data={data} navigation={navigation} themeColor={themeColor[0]} onEndReached={this.loadMore} />
                         :
-                        <Loading size='small' text='正在努力加载中...' themeColor={themeColor} />
+                        <Loading size='small' text='正在努力加载中...' themeColor={themeColor[0]} />
                 }
             </View>
         );

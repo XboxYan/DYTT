@@ -19,6 +19,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
 import CodePush from "react-native-code-push";
+import LinearGradient from 'react-native-linear-gradient';
 const { UIManager } = NativeModules;
 
 export default class UpdateModal extends PureComponent {
@@ -133,16 +134,16 @@ export default class UpdateModal extends PureComponent {
 						})
 					}]
 				}]}>
-					<View style={[styles.header,{backgroundColor:themeColor}]}>
+					<LinearGradient colors={themeColor.length>1?themeColor:[...themeColor,...themeColor]} start={{x: 0, y: 0}} end={{x: 1, y: 0}} style={styles.header}>
 						<Icon name="rocket" color="#fff" size={30} />
 						<Text style={styles.new}>发现新版本{label}</Text>
 						<Image style={styles.header_bg} resizeMode="cover" source={require('../img/updata.png')} />
-					</View>
+					</LinearGradient>
 					{
 						status===0&&
 						<View style={styles.body} >
 							<ScrollView >
-								<Text style={[styles.packageSize,{color:themeColor}]}>[更新大小: {Size}KB]</Text>
+								<Text style={[styles.packageSize,{color:themeColor[0]}]}>[更新大小: {Size}KB]</Text>
 								<Text style={styles.description}>{description}</Text>
 							</ScrollView>
 						</View>
@@ -152,9 +153,13 @@ export default class UpdateModal extends PureComponent {
 						<View style={styles.footer}>
 							{
 								!isMandatory&&
-								<TouchableOpacity onPress={this.ignore} activeOpacity={.8} style={[styles.btn_submit,{borderColor:themeColor}]}><Text style={[styles.btn_text,{color:themeColor}]}>下次</Text></TouchableOpacity>
+								<TouchableOpacity onPress={this.ignore} activeOpacity={.8} style={[styles.btn_submit,{borderColor:themeColor[0]}]}><Text style={[styles.btn_text,{color:themeColor[0]}]}>下次</Text></TouchableOpacity>
 							}
-							<TouchableOpacity onPress={this.install} activeOpacity={.8} style={[styles.btn_submit,{borderColor:themeColor,backgroundColor:themeColor}]}><Text style={styles.btn_text}>更新</Text></TouchableOpacity>
+							<TouchableOpacity style={[styles.btn_submit,{borderWidth:0}]} onPress={this.install} activeOpacity={.8}>
+								<LinearGradient style={styles.btn_wrap} colors={themeColor.length>1?themeColor:[...themeColor,...themeColor]} start={{x: 0, y: 0}} end={{x: 1, y: 0}}>
+									<Text style={styles.btn_text}>更新</Text>
+								</LinearGradient>
+							</TouchableOpacity>
 						</View>
 					}
 					{
@@ -162,7 +167,7 @@ export default class UpdateModal extends PureComponent {
 						<View style={styles.download}>
 							<View style={styles.progress}>
 								<View style={styles.progresswrap}>
-									<Animated.View style={[styles.progresscon,{backgroundColor:themeColor,flex:this.width}]}></Animated.View>
+									<Animated.View style={[styles.progresscon,{backgroundColor:themeColor[0],flex:this.width}]}></Animated.View>
 								</View>
 								<Text style={styles.progresstext}>{receivedSize+'/'+Size+'KB'}</Text>
 							</View>
@@ -238,6 +243,13 @@ const styles = StyleSheet.create({
 		borderWidth:1,
 		margin:5,
 		flex:1,
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+	btn_wrap:{
+		width:'100%',
+		height:'100%',
+		borderRadius:3,
 		justifyContent: 'center',
 		alignItems: 'center',
 	},

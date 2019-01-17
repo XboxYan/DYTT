@@ -4498,6 +4498,10 @@ react-native-gesture-handler@^1.0.0, react-native-gesture-handler@^1.0.9:
     invariant "^2.2.2"
     prop-types "^15.5.10"
 
+react-native-linear-gradient@^2.5.3:
+  version "2.5.3"
+  resolved "https://registry.npmjs.org/react-native-linear-gradient/-/react-native-linear-gradient-2.5.3.tgz#d90cf19a13fcccfa8bb32025ac40a15ae1b49e99"
+
 react-native-orientation@^3.1.3:
   version "3.1.3"
   resolved "https://registry.npmjs.org/react-native-orientation/-/react-native-orientation-3.1.3.tgz#d45803841fe94b6cce9acbe904fd5ca191a3711e"

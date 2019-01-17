@@ -17,7 +17,7 @@ import MovieContent from './src/page/MovieContent';
 import Comment from './src/page/Comment';
 import DrawerContent from './src/page/DrawerContent';
 import History from './src/page/History';
-import Theme,{themes} from './src/page/Theme';
+import Theme,{themes,themesGradient} from './src/page/Theme';
 import Follow from './src/page/Follow';
 import Search from './src/page/Search';
 import Setting from './src/page/Setting';
@@ -79,7 +79,7 @@ const App = createAppContainer(createStackNavigator({
 export default class extends PureComponent {
 
 	state = {
-		themeColor:themes[0].color
+		themeColor:themesGradient[0].color
 	}
 
 	setTheme = (themeColor) => {

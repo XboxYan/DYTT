@@ -10,6 +10,7 @@ import {
     View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import LinearGradient from 'react-native-linear-gradient';
 import { BorderlessButton } from 'react-native-gesture-handler';
 
 export default class AppTop extends PureComponent {
@@ -25,7 +26,7 @@ export default class AppTop extends PureComponent {
     render() {
         const { title, themeColor, children, isBack = false } = this.props;
         return (
-            <View style={[styles.appbar, { backgroundColor: themeColor }]}>
+            <LinearGradient colors={themeColor.length>1?themeColor:[...themeColor,...themeColor]} start={{x: 0, y: 0}} end={{x: 1, y: 0}} style={styles.appbar}>
                 <BorderlessButton
                     activeOpacity={.8}
                     style={styles.btn}
@@ -35,7 +36,7 @@ export default class AppTop extends PureComponent {
                 </BorderlessButton>
                 <Text style={styles.apptitle} numberOfLines={1}>{title}</Text>
                 {children || null}
-            </View>
+            </LinearGradient>
         );
     }
 }

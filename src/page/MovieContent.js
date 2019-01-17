@@ -309,7 +309,7 @@ export default class extends PureComponent {
                 onDrawerOpen={this.onDrawerOpen}
                 onDrawerClose={this.onDrawerClose}
                 drawerWidth={$.WIDTH * .8}
-                renderNavigationView={() => <DrawerContent ref={drawer => this.drawerContent = drawer} themeColor={themeColor} closeDrawer={this.closeDrawer} type={type} state={{ Channel, Plot, Area, Year }} setType={this.setType} />}
+                renderNavigationView={() => <DrawerContent ref={drawer => this.drawerContent = drawer} themeColor={themeColor[0]} closeDrawer={this.closeDrawer} type={type} state={{ Channel, Plot, Area, Year }} setType={this.setType} />}
             >
                 <View style={[styles.content, styles.bg]}>
                     <AppTop navigation={navigation} themeColor={themeColor} title={title} isBack={true} >
@@ -317,10 +317,10 @@ export default class extends PureComponent {
                             <Icon name='filter' size={18} color='#fff' />
                         </BorderlessButton>
                     </AppTop>
-                    <CategoryTop openDrawer={this.openDrawer} type={type} state={{ Channel, Plot, Area, Year }} themeColor={themeColor} />
+                    <CategoryTop openDrawer={this.openDrawer} type={type} state={{ Channel, Plot, Area, Year }} themeColor={themeColor[0]} />
                     {
                         isRender ?
-                            <MovieList style={{paddingHorizontal:5}} isRender={true} isEnding={isEnding} data={data} navigation={navigation} themeColor={themeColor} onEndReached={this.loadMore} />
+                            <MovieList style={{paddingHorizontal:5}} isRender={true} isEnding={isEnding} data={data} navigation={navigation} themeColor={themeColor[0]} onEndReached={this.loadMore} />
                             :
                             <Loading size='small' text='正在努力加载中...' themeColor={themeColor} />
                     }

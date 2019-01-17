@@ -114,7 +114,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 2
-        versionName "2.1.0"
+        versionName "2.1.1"
         // ndk {
         //     abiFilters "armeabi-v7a", "x86"
         // }
@@ -176,6 +176,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-linear-gradient')
     compile project(':react-native-code-push')
     compile project(':react-native-orientation')
     compile project(':react-native-splash-screen')
