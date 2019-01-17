@@ -155,8 +155,8 @@ export default class UpdateModal extends PureComponent {
 								!isMandatory&&
 								<TouchableOpacity onPress={this.ignore} activeOpacity={.8} style={[styles.btn_submit,{borderColor:themeColor[0]}]}><Text style={[styles.btn_text,{color:themeColor[0]}]}>下次</Text></TouchableOpacity>
 							}
-							<TouchableOpacity style={[styles.btn_submit,{borderWidth:0}]} onPress={this.install} activeOpacity={.8}>
-								<LinearGradient style={styles.btn_wrap} colors={themeColor.length>1?themeColor:[...themeColor,...themeColor]} start={{x: 0, y: 0}} end={{x: 1, y: 0}}>
+							<TouchableOpacity style={{flex: 1}} onPress={this.install} activeOpacity={.8}>
+								<LinearGradient style={[styles.btn_submit,{borderWidth:0}]} colors={themeColor.length>1?themeColor:[...themeColor,...themeColor]} start={{x: 0, y: 0}} end={{x: 1, y: 0}}>
 									<Text style={styles.btn_text}>更新</Text>
 								</LinearGradient>
 							</TouchableOpacity>
@@ -243,13 +243,6 @@ const styles = StyleSheet.create({
 		borderWidth:1,
 		margin:5,
 		flex:1,
-		justifyContent: 'center',
-		alignItems: 'center',
-	},
-	btn_wrap:{
-		width:'100%',
-		height:'100%',
-		borderRadius:3,
 		justifyContent: 'center',
 		alignItems: 'center',
 	},

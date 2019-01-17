@@ -20,6 +20,7 @@ import {
 import { BorderlessButton } from 'react-native-gesture-handler';
 import DrawerLayout from 'react-native-gesture-handler/DrawerLayout';
 import Icon from 'react-native-vector-icons/Feather';
+import LinearGradient from 'react-native-linear-gradient';
 import AppTop from '../components/AppTop';
 import Loading from '../components/Loading';
 import MovieList from '../components/MovieList';
@@ -134,7 +135,7 @@ class DrawerContent extends PureComponent {
         const { isVisible } = this.state;
         return (
             <Fragment>
-                <View style={[styles.appbar, { backgroundColor: themeColor }]}>
+                <LinearGradient colors={themeColor.length>1?themeColor:[...themeColor,...themeColor]} start={{x: 0, y: 0}} end={{x: 1, y: 0}} style={styles.appbar}>
                     <BorderlessButton
                         activeOpacity={.8}
                         style={styles.btn}
@@ -143,25 +144,25 @@ class DrawerContent extends PureComponent {
                         <Icon name='x' size={22} color='#fff' />
                     </BorderlessButton>
                     <Text style={styles.apptitle} numberOfLines={1} onLongPress={this.setVisibel}>高级筛选</Text>
-                </View>
+                </LinearGradient>
                 <ScrollView style={styles.content}>
                     {
                         typeList.map((d, i) => (
                             <View key={i} style={styles.typewrap}>
                                 <View style={styles.typetitle}>
-                                    <Icon name={d.icon} size={16} color={themeColor} />
-                                    <Text style={[styles.typetitletxt, { color: themeColor }]}>{d.name}</Text>
+                                    <Icon name={d.icon} size={16} color={themeColor[0]} />
+                                    <Text style={[styles.typetitletxt, { color: themeColor[0] }]}>{d.name}</Text>
                                 </View>
                                 <View style={styles.typecon}>
-                                    <BorderlessButton disabled={this.state[d.cate] == ''} onPress={() => this.setType(d.cate, '')} style={styles.typeitem}><Text style={[styles.typeitemtxt, this.state[d.cate] == '' && { color: themeColor }]}>全部</Text></BorderlessButton>
+                                    <BorderlessButton disabled={this.state[d.cate] == ''} onPress={() => this.setType(d.cate, '')} style={styles.typeitem}><Text style={[styles.typeitemtxt, this.state[d.cate] == '' && { color: themeColor[0] }]}>全部</Text></BorderlessButton>
                                     {
                                         d.type.map((el, j) => (
-                                            <BorderlessButton disabled={this.state[d.cate] === el} onPress={() => this.setType(d.cate, el)} key={j} style={styles.typeitem}><Text style={[styles.typeitemtxt, el == this.state[d.cate] && { color: themeColor }]}>{el}</Text></BorderlessButton>
+                                            <BorderlessButton disabled={this.state[d.cate] === el} onPress={() => this.setType(d.cate, el)} key={j} style={styles.typeitem}><Text style={[styles.typeitemtxt, el == this.state[d.cate] && { color: themeColor[0] }]}>{el}</Text></BorderlessButton>
                                         ))
                                     }
                                     {
                                         d.cate==='Channel'&&isVisible&&
-                                        <BorderlessButton disabled={this.state[d.cate] == '伦理'} onPress={() => this.setType(d.cate, '伦理')} style={styles.typeitem}><Text style={[styles.typeitemtxt, this.state[d.cate] == '伦理' && { color: themeColor }]}>伦理</Text></BorderlessButton>
+                                        <BorderlessButton disabled={this.state[d.cate] == '伦理'} onPress={() => this.setType(d.cate, '伦理')} style={styles.typeitem}><Text style={[styles.typeitemtxt, this.state[d.cate] == '伦理' && { color: themeColor[0] }]}>伦理</Text></BorderlessButton>
                                     }
                                 </View>
                             </View>
@@ -169,8 +170,12 @@ class DrawerContent extends PureComponent {
                     }
                 </ScrollView>
                 <View style={styles.typeaction}>
-                    <TouchableOpacity activeOpacity={.8} onPress={this.onSubmit} style={[styles.typebtn, { backgroundColor: themeColor, borderColor: themeColor }]}><Text style={styles.typebtns}>确定</Text></TouchableOpacity>
-                    <TouchableOpacity activeOpacity={.8} onPress={closeDrawer} style={[styles.typebtn, { borderColor: themeColor }]}><Text style={[styles.typebtns, { color: themeColor }]}>取消</Text></TouchableOpacity>
+                    <TouchableOpacity activeOpacity={.8} onPress={this.onSubmit} style={{ flex: 1 }}>
+                        <LinearGradient style={[styles.typebtn,{borderWidth:0}]} colors={themeColor.length>1?themeColor:[...themeColor,...themeColor]} start={{x: 0, y: 0}} end={{x: 1, y: 0}}>
+                            <Text style={styles.typebtns}>确定</Text>
+                        </LinearGradient>
+                    </TouchableOpacity>
+                    <TouchableOpacity activeOpacity={.8} onPress={closeDrawer} style={[styles.typebtn, { borderColor: themeColor[0] }]}><Text style={[styles.typebtns, { color: themeColor[0] }]}>取消</Text></TouchableOpacity>
                 </View>
             </Fragment>
         )
@@ -182,8 +187,8 @@ const CategoryTop = ({state,type,openDrawer,themeColor}) => (
         {
             [...Categories[type], ...CommonList].map((d, i) => (
                 <BorderlessButton onPress={openDrawer} style={styles.typetopitem} key={i}>
-                    <Icon name={d.icon} size={16} color={themeColor} />
-                    <Text style={[styles.typetoptxt, { color: themeColor }]}>{state[d.cate] || d.name}</Text>
+                    <Icon name={d.icon} size={16} color={themeColor[0]} />
+                    <Text style={[styles.typetoptxt, { color: themeColor[0] }]}>{state[d.cate] || d.name}</Text>
                 </BorderlessButton>
             ))
         }
@@ -309,7 +314,7 @@ export default class extends PureComponent {
                 onDrawerOpen={this.onDrawerOpen}
                 onDrawerClose={this.onDrawerClose}
                 drawerWidth={$.WIDTH * .8}
-                renderNavigationView={() => <DrawerContent ref={drawer => this.drawerContent = drawer} themeColor={themeColor[0]} closeDrawer={this.closeDrawer} type={type} state={{ Channel, Plot, Area, Year }} setType={this.setType} />}
+                renderNavigationView={() => <DrawerContent ref={drawer => this.drawerContent = drawer} themeColor={themeColor} closeDrawer={this.closeDrawer} type={type} state={{ Channel, Plot, Area, Year }} setType={this.setType} />}
             >
                 <View style={[styles.content, styles.bg]}>
                     <AppTop navigation={navigation} themeColor={themeColor} title={title} isBack={true} >
@@ -317,12 +322,12 @@ export default class extends PureComponent {
                             <Icon name='filter' size={18} color='#fff' />
                         </BorderlessButton>
                     </AppTop>
-                    <CategoryTop openDrawer={this.openDrawer} type={type} state={{ Channel, Plot, Area, Year }} themeColor={themeColor[0]} />
+                    <CategoryTop openDrawer={this.openDrawer} type={type} state={{ Channel, Plot, Area, Year }} themeColor={themeColor} />
                     {
                         isRender ?
                             <MovieList style={{paddingHorizontal:5}} isRender={true} isEnding={isEnding} data={data} navigation={navigation} themeColor={themeColor[0]} onEndReached={this.loadMore} />
                             :
-                            <Loading size='small' text='正在努力加载中...' themeColor={themeColor} />
+                            <Loading size='small' text='正在努力加载中...' themeColor={themeColor[0]} />
                     }
                 </View>
             </DrawerLayout>
