@@ -95,6 +95,10 @@ react-native run-android
 
 采用[https://github.com/react-native-community/react-native-linear-gradient](https://github.com/react-native-community/react-native-linear-gradient)
 
+注意 `<LinearGradient colors={[color1,color2]} start={{x: 0, y: 0}} end={{x: 1, y: 0}} style={styles.appbar}>`
+
+`colors` 必须为长度大于 `2` 的数组。
+
 ![主题设置](./screenshot/theme-new-1.jpg)
 
 ![主题效果](./screenshot/theme-new.jpg)
