@@ -33,10 +33,10 @@ class SwiperCon extends React.Component {
                                 <View style={styles.iteminfo}>
                                     <Text style={styles.title}>{d.Name}</Text>
                                     {
-                                        !!d.MovieTitle&&<Text style={styles.MovieTitle}>{d.MovieTitle}</Text>
+                                        //!!d.MovieTitle&&<Text style={styles.MovieTitle}>{d.MovieTitle}</Text>
                                     }
-                                    <Text style={styles.Tags}>{d.Tags}</Text>
                                     {
+                                        //<Text style={styles.Tags}>{d.Tags}</Text>
                                         //<Text style={styles.UpdateTime}>{d.UpdateTime}</Text>
                                     }
                                 </View>
@@ -64,13 +64,14 @@ const styles = StyleSheet.create({
     },
     bg:{
         flex:1,
-        padding:15,
+        padding:20,
+        alignItems:'center'
         //borderRadius:5,
-        flexDirection:'row',
+        //flexDirection:'row',
     },
     itemimg:{
-        width:100,
-        height:150,
+        width:180,
+        height:180*180/447,
         borderRadius:3,
     },
     iteminfo:{
@@ -78,9 +79,9 @@ const styles = StyleSheet.create({
         paddingLeft:10
     },
     title:{
-        marginTop:5,
+        marginTop:10,
         color:'#fff',
-        fontSize:20
+        fontSize:16
     },
     MovieTitle:{
         marginTop:10,

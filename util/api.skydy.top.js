@@ -1,7 +1,6 @@
 import cheerio from 'cheerio';
 
-const WEBM = 'https://m.kankanwu.com';
-const WEB = 'https://www.kankanwu.com';
+const WEB = 'http://skydy.top';
 
 const fetchData = (uri,par={}) => {
     return fetch(uri,par)
@@ -31,25 +30,19 @@ const getBg = (s) => {
 }
 
 const GetHomeData = async () => {
-    const html = await fetch(WEBM).then(d=>d.text());
+    const html = await fetch(WEB).then(d=>d.text());
     const $ = cheerio.load(html);
-    const banner = $('.focusList>li').map((i,item)=>{
-        return ({
-            "ID": $(item).find('a').attr('href'),
-            "Cover": WEBM+$(item).find('img').attr('src'),
-            "Name": $(item).find('.sTxt').text(),
-        })
-    }).get();
-
-
+    const layout = $('.hy-layout');
     const list = (index) => {
-        const data = $('.all_tab>.list_tab_img').eq(index).find('li').map((i, item)=>{
+        const selector = index === 0?'.hy-video-list.cleafix .videopic':'.hy-video-list.clearfix .videopic';
+        const data = layout.eq(index).find(selector).map((i, item)=>{
+            const score = $(item).children('.score');
             return ({
-                "ID": $(item).find('a').attr('href'),
-                "Cover": 'http:'+$(item).find('img').attr('src'),
-                "Name": $(item).find('a').attr('title'),
-                "MovieTitle": $(item).find('.title').text(),
-                "Score": $(item).find('.score').text(),
+                "ID": getID($(item).attr('href')),
+                "Cover": $(item).data('original'),
+                "Name": $(item).attr('title'),
+                "MovieTitle": score.text().replace(/(^\s*)(\s*$)/g, ''),
+                "Tags": $(item).nextAll('.subtitle').text(),
             })
         }).get();
         return data;
@@ -57,19 +50,19 @@ const GetHomeData = async () => {
     const data =  {
         solling:{
             name:'轮播图',
-            list:banner
+            list:list(0)
         },
         movie:{
             name:'电影',
-            list:list(0)
+            list:list(1)
         },
         tv:{
             name:'电视剧',
-            list:list(1)
+            list:list(2)
         },
         comic:{
             name:'动漫',
-            list:list(2)
+            list:list(4)
         },
         variety:{
             name:'娱乐',
