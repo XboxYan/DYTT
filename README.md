@@ -101,7 +101,7 @@ react-native run-android
 
 由于源数据网站已停止运行，现寻找一个可替代方案。
 
-[www.kankanwu.com](www.kankanwu.com)
+[www.kankanwu.com](https://www.kankanwu.com)
 
 目前已完成首页数据解析。
 

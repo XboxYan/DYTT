@@ -81,45 +81,54 @@ const GetHomeData = async () => {
 
 //影片详情
 const GetVideoInfo = async (ID)=> {
-    const html = await fetch(WEB+`/dy/pplay/${ID}`).then(d=>d.text());
+    const html = await fetch(WEB+`/${ID}`).then(d=>d.text());
     const $ = cheerio.load(html);
-    const MoviePlayUrls = $('.playlistlink-1 li').map((i, el)=>{
-        const s = $(el).children('a').attr('onclick');
-        const {PlayUrl,Name} = getUrl(s);
+    const MoviePlayUrls = $('#detail-list .play-list').eq(0).children('a').map((i, el)=>{
         return ({
             "ID": 'play_'+i,
             "Index": i,
-            "Name": Name,
-            "PlayUrl": PlayUrl,
+            "Name": $(el).text(),
+            "PlayUrl": WEBM+$(el).attr('href'),
         })
     }).get();
-    const RelateList = $('.hy-video-list .swiper-wrapper .videopic').map((i, el)=>{
-        const videopic = $(el);
-        const score = videopic.children('.score');
+    const RelateList = $('#con_latest_1 .img-list li').map((i, el)=>{
         return ({
-            "ID": getID(videopic.attr('href')),
-            "Cover": videopic.data('original'),
-            "Name": videopic.attr('title'),
-            "MovieTitle": score.text().replace(/(^\s*)(\s*$)/g, ''),
+            "ID": $(el).find('.play-img').attr('href'),
+            "Cover": 'http:'+$(el).find('img').attr('src'),
+            "Name": $(el).find('h3').text(),
+            "MovieTitle": $(el).find('.text').text(),
         })
     }).get();
-    const movieInfo = $('.tab-content');
-    const info = movieInfo.find('li');
+    const movieInfo = $('#detail-box');
+    const info = movieInfo.find('.info dl');
+    const Introduction = 
+`${info.eq(0).text()}
+${info.eq(5).text()}
+${info.eq(2).text()}
+简介：${$('#detail-intro').text()}`
+
     const data =  {
         "MoviePlayUrls":MoviePlayUrls,
         "ID": ID,
-        "DBID": info.eq(3).children('a').text(),
-        "Name": movieInfo.find('.note').text(),
-        "MovieTitle": info.eq(4).text().replace('描述：',''),
-        "Cover": getBg(movieInfo.find('.videopic').attr('style')),
-        "Tags": info.eq(1).text().replace('类型：',''),
-        "Introduction": movieInfo.find('.plot').text(),
-        "ReleaseDate": info.eq(5).text().replace('发表时间：',''),
-        "Score": movieInfo.find('.branch').text(),
+        "DBID": 0,
+        "Name": movieInfo.find('h1').text(),
+        "MovieTitle": info.eq(1).find('span').text(),
+        "Cover": 'http:'+movieInfo.find('.detail-pic img').attr('src'),
+        "Tags": info.eq(2).find('a').map((i,el) => ($(el).text()+' ')).get(),
+        "Introduction": Introduction,
+        "ReleaseDate": info.eq(6).find('span').text(),
+        "Score": 0,
         //"UpdateTime": "2018-09-25T10:58:25",
         "RelateList": RelateList,
     }
     return data;
+}
+
+const GetPlayUrl = async (url)=> {
+    const html = await fetch(url).then(d=>d.text());
+    const $ = cheerio.load(html);
+    const playUrl = $('iframe').attr('src').split('=')[1];
+    return playUrl;
 }
 
 const GetDoubanInterests = ({DBID,start=0,count=5})=>fetchData(`https://frodo.douban.com/api/v2/movie/${DBID}/interests?start=${start}&count=${count}&status=done&order_by=latest&apikey=0b2bdeda43b5688921839c8ecb20399b`,{headers:{"User-Agent":"api-client/1 com.douban.movie"}});
@@ -142,4 +151,4 @@ const GetPageList = async ({pageSize=36,pageIndex=1,Type='',Channel='',Area='',P
     return data;
 }
 
-export {fetchData,GetHomeData,GetVideoInfo,GetPageList,GetDoubanInterests}
+export {fetchData,GetHomeData,GetVideoInfo,GetPageList,GetDoubanInterests,GetPlayUrl}

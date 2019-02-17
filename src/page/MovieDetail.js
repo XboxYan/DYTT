@@ -27,7 +27,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import IconE from 'react-native-vector-icons/Entypo';
 import IconM from 'react-native-vector-icons/MaterialIcons';
 import Video from '../components/Video';
-import { GetVideoInfo,GetSameVideo,GetDoubanInterests } from '../../util/api';
+import { GetVideoInfo,GetSameVideo,GetDoubanInterests,GetPlayUrl } from '../../util/api';
 import { Store } from '../../util/store';
 
 const { UIManager } = NativeModules;
@@ -66,7 +66,9 @@ const MovieInfo = ({movieInfo,themeColor,isPlaying,onPlay,isRender}) => (
         </View>
         <View style={[styles.postertext,isPlaying&&{height:($.WIDTH-40)*9/16}]}>
             <Text style={[styles.title, { color: themeColor }]}>{movieInfo.Name||'正在加载...'}</Text>
-            <Star style={styles.score} score={movieInfo.Score} themeColor={themeColor} />
+            {
+                //<Star style={styles.score} score={movieInfo.Score} themeColor={themeColor} />
+            }
             {
                 movieInfo.MovieTitle ? <Text style={styles.status}>{movieInfo.MovieTitle}</Text>:null
             }
@@ -211,21 +213,26 @@ class MovieSource extends PureComponent {
                 {
                     isRender
                         ?
-                        <FlatList
-                            ref={(ref) => this.flatlist = ref}
-                            style={styles.sourcelist}
-                            showsHorizontalScrollIndicator={false}
-                            ListFooterComponent={this.renderFooter}
-                            horizontal={true}
-                            ItemSeparatorComponent={() => <View style={{width:10}} />}
-                            //initialNumToRender={20}
-                            getItemLayout={this.getItemLayout}
-                            removeClippedSubviews={false}
-                            data={source}
-                            extraData={sourceId}
-                            keyExtractor={(item, index) => item.ID.toString()}
-                            renderItem={this.renderItem}
-                        />
+                        (
+                            source.length>0?
+                            <FlatList
+                                ref={(ref) => this.flatlist = ref}
+                                style={styles.sourcelist}
+                                showsHorizontalScrollIndicator={false}
+                                ListFooterComponent={this.renderFooter}
+                                horizontal={true}
+                                ItemSeparatorComponent={() => <View style={{width:10}} />}
+                                //initialNumToRender={20}
+                                getItemLayout={this.getItemLayout}
+                                removeClippedSubviews={false}
+                                data={source}
+                                extraData={sourceId}
+                                keyExtractor={(item, index) => item.ID.toString()}
+                                renderItem={this.renderItem}
+                            />
+                            :
+                            <Text style={styles.empty}>╮(╯﹏╰）╭ 暂无资源</Text>
+                        )
                         :
                         <Loading size='small' text='' themeColor={themeColor} />
                 }
@@ -400,10 +407,12 @@ export default class MovieDetail extends PureComponent {
                 this.lastPlayTime = historyItem.currentTime-3;
                 _sourceId = historyItem.sourceId;
             }else{
-                _sourceId = data.MoviePlayUrls[0].ID;
+                _sourceId = data.MoviePlayUrls[0]?data.MoviePlayUrls[0].ID:null;
             }
-            const item = data.MoviePlayUrls.find(el=>el.ID==_sourceId||el.Name==historyItem.sourceName);
-            this.PlayUrl = item.PlayUrl;
+            const item = data.MoviePlayUrls.find(el=>el.ID==_sourceId||el.Name==historyItem.sourceName)||{};
+            if(item.ID){
+                this.PlayUrl = await GetPlayUrl(item.PlayUrl);
+            }
             this.setState({
                 movieInfo:data,
                 sourceName:item.Name,
@@ -451,14 +460,14 @@ export default class MovieDetail extends PureComponent {
         LayoutAnimation.easeInEaseOut();
     }
 
-    onPlay = (ID,bool) => {
+    onPlay = async (ID,bool) => {
         if(bool){
             //跳转
             const { settings:{allowMoblieNetwork} } = this.context;
             this.lastPlayTime = null;
             const {movieInfo} = this.state;
             const item = movieInfo.MoviePlayUrls.find(el=>el.ID==ID);
-            this.PlayUrl = item.PlayUrl;
+            this.PlayUrl = await GetPlayUrl(item.PlayUrl);
             this.setState({
                 sourceId:item.ID,
                 sourceName:item.Name,
@@ -670,7 +679,9 @@ export default class MovieDetail extends PureComponent {
                     <MovieSource ref={(ref) => this.moviesource = ref} source={movieInfo.MoviePlayUrls} sourceId={sourceId} onPlay={this.onPlay} isRender={isRender} themeColor={themeColor[0]} />
                     <MovieSummary summary={movieInfo.Introduction} isRender={isRender} themeColor={themeColor[0]} />
                     <MovieSame movieInfo={movieInfo} isRender={isRender} themeColor={themeColor[0]} navigation={navigation} />
-                    <MovieComments DBID={movieInfo.DBID} isRender={isRender} themeColor={themeColor[0]} navigation={navigation} />
+                    {
+                        //<MovieComments DBID={movieInfo.DBID} isRender={isRender} themeColor={themeColor[0]} navigation={navigation} />
+                    }
                 </Animated.ScrollView>
             </View>
         );
