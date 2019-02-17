@@ -9,19 +9,19 @@ import Icon from 'react-native-vector-icons/Feather';
 
 const tablist = [
     {
-        type: 'movie',
+        type: 'dy',
         name: '电影'
     },
     {
-        type: 'tv',
+        type: 'dsj',
         name: '电视剧'
     },
     {
-        type: 'comic',
+        type: 'Animation',
         name: '动漫'
     },
     {
-        type: 'variety',
+        type: 'Arts',
         name: '综艺'
     }
 ]

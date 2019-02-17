@@ -125,27 +125,35 @@ ${info.eq(2).text()}
 }
 
 const GetPlayUrl = async (url)=> {
-    const html = await fetch(url).then(d=>d.text());
+    const u = url.replace('https://m','https://www');
+    const html = await fetch(u).then(d=>d.text());
     const $ = cheerio.load(html);
     const playUrl = $('iframe').attr('src').split('=')[1];
+    console.warn(playUrl)
     return playUrl;
 }
 
 const GetDoubanInterests = ({DBID,start=0,count=5})=>fetchData(`https://frodo.douban.com/api/v2/movie/${DBID}/interests?start=${start}&count=${count}&status=done&order_by=latest&apikey=0b2bdeda43b5688921839c8ecb20399b`,{headers:{"User-Agent":"api-client/1 com.douban.movie"}});
 
 //获取列表
-const GetPageList = async ({pageSize=36,pageIndex=1,Type='',Channel='',Area='',Plot='',Year='',SearchKey='',orderBy='time'}) => {
-    //orderBy：'time' | 'score' | 'new'
-    const html = await fetch(WEB+`/dy/list?t=${Type}&c=${Channel}&y=${Year}&j=${Plot}&a=${Area}&s=${SearchKey}&b=${orderBy}&p=${pageIndex}`).then(d=>d.text());
+const GetPageList = async ({pageSize=24,pageIndex=1,Type='',Status='',Area='',Plot='',Year='',orderBy='hits'}) => {
+    //orderBy：'addtime' | 'hits' | 'gold'
+    //https://m.kankanwu.com/Animation/index_1_______1.html
+    //https://m.kankanwu.com/Comedy/index_1_58_2_2018__hits_%E5%A4%A7%E9%99%86_1.html
+    //https://m.kankanwu.com/Comedy/index_1_58_2_2018__hits_%E6%97%A5%E6%9C%AC_1.html
+    //https://m.kankanwu.com/Comedy/index_1_58__2018__hits_%E5%A4%A7%E9%99%86_1.html
+    //https://m.kankanwu.com/Comedy/index_1_28_2_2019__hits_%E5%A4%A7%E9%99%86_1.html
+    //https://m.kankanwu.com/${Type}/index_${pageIndex}_${Plot}_${Status}_${Year}__${orderBy}_${Area}_1.html
+    //https://m.kankanwu.com/${Type}/index_${pageIndex}_${Plot}__${Year}__${orderBy}_${Area}_1.html
+    const html = await fetch(WEBM+`/${Type}/index_${pageIndex}_${Plot}_${Status}_${Year}__${orderBy}_${Area}_1.html`).then(d=>d.text());
     const $ = cheerio.load(html);
-    const data =  $('.hy-video-list li').map((i, el)=>{
-        const videopic = $(el).children('.videopic');
-        const score = videopic.children('.score');
+    const data =  $('#vod_list li').map((i, el)=>{
+        const video = $(el).find('a');
         return ({
-            "ID": getID(videopic.attr('href')),
-            "Name": videopic.attr('title'),
-            "MovieTitle": score.text().replace(/(^\s*)(\s*$)/g, ''),
-            "Cover": videopic.data('original'),
+            "ID": video.attr('href'),
+            "Name": video.attr('title'),
+            "MovieTitle": video.find('.title').text(),
+            "Cover": 'http:'+video.find('img').attr('src'),
         })
     }).get()
     return data;
