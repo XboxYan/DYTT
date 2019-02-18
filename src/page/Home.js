@@ -17,22 +17,22 @@ const maps = [
         isRender:true
     },
     {
-        listType:'movie',
+        listType:'dy',
         name:'电影',
         icon:'film'
     },
     {
-        listType:'tv',
+        listType:'dsj',
         name:'电视剧',
         icon:'tv'
     },
     {
-        listType:'comic',
+        listType:'Animation',
         name:'动漫',
         icon:'gitlab'
     },
     {
-        listType:'variety',
+        listType:'Arts',
         name:'娱乐',
         icon:'anchor'
     },

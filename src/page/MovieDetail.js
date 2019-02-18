@@ -73,7 +73,7 @@ const MovieInfo = ({movieInfo,themeColor,isPlaying,onPlay,isRender}) => (
                 movieInfo.MovieTitle ? <Text style={styles.status}>{movieInfo.MovieTitle}</Text>:null
             }
             <Text style={styles.subtitle}>{movieInfo.Tags}</Text>
-            <Text style={styles.subtitle}>{movieInfo.ReleaseDate} 上映</Text>
+            <Text style={styles.subtitle}>{movieInfo.ReleaseDate} 更新</Text>
         </View>
     </View>
 )
@@ -205,7 +205,7 @@ class MovieSource extends PureComponent {
                         onPress={this.changeDir}
                         style={styles.view_more}
                     >
-                        <Text style={styles.view_moretext}>{dir?'正常':'最新'}</Text>
+                        <Text style={styles.view_moretext}>{dir?'正常':'倒序'}</Text>
                         <Icon name={dir ? 'chevron-right' : 'chevron-left'} size={16} color={themeColor} />
                     </TouchableOpacity>
                 }

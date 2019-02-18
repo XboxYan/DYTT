@@ -35,59 +35,432 @@ const CommonList = [
         name: "地区",
         icon: 'map-pin',
         cate: 'Area',
-        type: ["大陆", "美国", "加拿大", "香港", "韩国", "日本", "台湾", "泰国", "西班牙", "法国", "印度", "英国"]
+        //大陆香港台湾美国韩国日本泰国新加坡马来西亚印度英国法国加拿大
+        type: [
+            {
+                name:"大陆",
+                id:"大陆"
+            },
+            {
+                name:"香港",
+                id:"香港"
+            },
+            {
+                name:"台湾",
+                id:"台湾"
+            },
+            {
+                name:"美国",
+                id:"美国"
+            },
+            {
+                name:"韩国",
+                id:"韩国"
+            },
+            {
+                name:"日本",
+                id:"日本"
+            },
+            {
+                name:"泰国",
+                id:"泰国"
+            },
+            {
+                name:"新加坡",
+                id:"新加坡"
+            },
+            {
+                name:"马来西亚",
+                id:"马来西亚"
+            },
+            {
+                name:"英国",
+                id:"英国"
+            },
+            {
+                name:"法国",
+                id:"法国"
+            },
+            {
+                name:"加拿大",
+                id:"加拿大"
+            },
+        ]
     },
     {
         name: "年份",
         icon: 'calendar',
         cate: 'Year',
-        type: [nowYear, nowYear - 1, nowYear - 2, nowYear - 3, nowYear - 4, nowYear - 5, nowYear - 6, nowYear - 7, nowYear - 8, nowYear - 9, nowYear - 10]
+        //nowYear, nowYear - 1, nowYear - 2, nowYear - 3, nowYear - 4, nowYear - 5, nowYear - 6, nowYear - 7, nowYear - 8, nowYear - 9, nowYear - 10
+        type: [
+            {
+                name:nowYear,
+                id:nowYear
+            },
+            {
+                name:nowYear-1,
+                id:nowYear-1
+            },
+            {
+                name:nowYear-2,
+                id:nowYear-2
+            },
+            {
+                name:nowYear-3,
+                id:nowYear-3
+            },
+            {
+                name:nowYear-4,
+                id:nowYear-4
+            },
+            {
+                name:nowYear-5,
+                id:nowYear-5
+            },
+            {
+                name:nowYear-6,
+                id:nowYear-6
+            },
+            {
+                name:nowYear-7,
+                id:nowYear-7
+            },
+            {
+                name:nowYear-8,
+                id:nowYear-8
+            },
+            {
+                name:nowYear-9,
+                id:nowYear-9
+            },
+            {
+                name:nowYear-10,
+                id:nowYear-10
+            }
+        ]
     }
 ]
 
 const Categories = {
-    movie: [
+    dy: [
         {
             name: "分类",
-            icon: 'layers',
-            cate: 'Channel',
-            type: ["动作片", "喜剧片", "爱情片", "科幻片", "恐怖片", "剧情片", "战争片"]
-        },
-        {
-            name: "剧情",
             icon: 'compass',
             cate: 'Plot',
-            type: ["惊悚", "悬疑", "魔幻", "犯罪", "灾难", "动画", "古装", "歌舞"]
-        }
+            type: [
+                {
+                    name:"动作",
+                    id:8
+                },
+                {
+                    name:"惊悚",
+                    id:43
+                },
+                {
+                    name:"犯罪",
+                    id:40
+                },
+                {
+                    name:"冒险",
+                    id:35
+                },
+                {
+                    name:"武侠",
+                    id:44
+                },
+                {
+                    name:"悬疑",
+                    id:42
+                },
+                {
+                    name:"科幻",
+                    id:11
+                },
+                {
+                    name:"恐怖",
+                    id:12
+                },
+                {
+                    name:"爱情",
+                    id:10
+                },
+                {
+                    name:"喜剧",
+                    id:9
+                },
+                {
+                    name:"战争",
+                    id:13
+                },
+                {
+                    name:"灾难",
+                    id:38
+                },
+                {
+                    name:"古装",
+                    id:37
+                },
+                {
+                    name:"警匪",
+                    id:39
+                },
+                {
+                    name:"历史",
+                    id:28
+                },
+                {
+                    name:"伦理",
+                    id:27
+                },
+                {
+                    name:"剧情",
+                    id:26
+                },
+                {
+                    name:"抗日",
+                    id:122
+                },
+                {
+                    name:"谍战",
+                    id:45
+                },
+                {
+                    name:"青春",
+                    id:31
+                }
+            ]
+        },
     ],
-    tv: [
+    dsj: [
         {
             name: "分类",
-            icon: 'layers',
-            cate: 'Channel',
-            type: ["韩剧", "剧情", "欧美剧", "日剧", "台剧", "泰剧"]
+            icon: 'compass',
+            cate: 'Plot',
+            type: [
+                {
+                    name:"动作",
+                    id:133
+                },
+                {
+                    name:"惊悚",
+                    id:134
+                },
+                {
+                    name:"犯罪",
+                    id:66
+                },
+                {
+                    name:"恐怖",
+                    id:112
+                },
+                {
+                    name:"言情",
+                    id:87
+                },
+                {
+                    name:"悬疑",
+                    id:67
+                },
+                {
+                    name:"搞笑",
+                    id:80
+                },
+                {
+                    name:"校园",
+                    id:69
+                },
+                {
+                    name:"战争",
+                    id:74
+                },
+                {
+                    name:"古装",
+                    id:78
+                },
+                {
+                    name:"抗日",
+                    id:123
+                },
+                {
+                    name:"谍战",
+                    id:71
+                },
+            ]
         },
         {
-            name: "剧情",
-            icon: 'compass',
-            cate: 'Plot',
-            type: ["言情", "都市", "家庭", "偶像", "喜剧", "古装", "武侠", "刑侦", "战争", "神话", "军旅", "校园", "悬疑"]
+            name: "状态",
+            icon: 'layers',
+            cate: 'Status',
+            type: [
+                {
+                    name:"连载中",
+                    id:1
+                },
+                {
+                    name:"已完结",
+                    id:2
+                },
+            ]
         }
     ],
-    comic: [
+    Animation: [
         {
-            name: "剧情",
+            name: "分类",
             icon: 'compass',
             cate: 'Plot',
-            type: ["冒险", "热血", "搞笑", "少女", "推理"]
+            type: [
+                {
+                    name:"热血",
+                    id:59
+                },
+                {
+                    name:"搞笑",
+                    id:58
+                },
+                {
+                    name:"冒险",
+                    id:60
+                },
+                {
+                    name:"惊悚",
+                    id:128
+                },
+                {
+                    name:"励志",
+                    id:64
+                },
+                {
+                    name:"恋爱",
+                    id:104
+                },
+                {
+                    name:"科幻",
+                    id:109
+                },
+                {
+                    name:"宠物",
+                    id:116
+                },
+                {
+                    name:"推理",
+                    id:54
+                },
+                {
+                    name:"校园",
+                    id:53
+                },
+                {
+                    name:"魔幻",
+                    id:56
+                },
+                {
+                    name:"益智",
+                    id:50
+                },
+                {
+                    name:"机战",
+                    id:55
+                },
+            ]
+        },
+        {
+            name: "状态",
+            icon: 'layers',
+            cate: 'Status',
+            type: [
+                {
+                    name:"连载中",
+                    id:1
+                },
+                {
+                    name:"已完结",
+                    id:2
+                },
+            ]
         }
     ],
-    variety: [
+    Arts: [
         {
-            name: "剧情",
+            name: "分类",
             icon: 'compass',
             cate: 'Plot',
-            type: ["喜剧", "家庭", "家庭", "运动", "真人秀", "脱口秀"]
+            type: [
+                {
+                    name:"搞笑",
+                    id:100
+                },
+                {
+                    name:"真人秀",
+                    id:101
+                },
+                {
+                    name:"脱口秀",
+                    id:102
+                },
+                {
+                    name:"晚会",
+                    id:16
+                },
+                {
+                    name:"财经",
+                    id:17
+                },
+                {
+                    name:"体育",
+                    id:18
+                },
+                {
+                    name:"纪实",
+                    id:19
+                },
+                {
+                    name:"益智",
+                    id:127
+                },
+                {
+                    name:"歌舞",
+                    id:21
+                },
+                {
+                    name:"军事",
+                    id:23
+                },
+                {
+                    name:"少儿",
+                    id:24
+                },
+                {
+                    name:"音乐",
+                    id:92
+                },
+                {
+                    name:"游戏",
+                    id:93
+                },
+                {
+                    name:"美食",
+                    id:94
+                },
+                {
+                    name:"娱乐",
+                    id:98
+                },
+            ]
+        },
+        {
+            name: "状态",
+            icon: 'layers',
+            cate: 'Status',
+            type: [
+                {
+                    name:"连载中",
+                    id:1
+                },
+                {
+                    name:"已完结",
+                    id:2
+                },
+            ]
         }
     ]
 }
@@ -97,8 +470,8 @@ class DrawerContent extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            Channel: props.state.Channel,
             Plot: props.state.Plot,
+            Status: props.state.Status,
             Area: props.state.Area,
             Year: props.state.Year,
             isVisible:false
@@ -113,16 +486,18 @@ class DrawerContent extends PureComponent {
     }
 
     setVisibel = () => {
+        /*
         if(this.props.type==='movie'){
             this.setType('isVisible',true);
         }
+        */
     }
 
     onSubmit = () => {
-        const { Channel, Plot, Area, Year } = this.state;
+        const { Status, Plot, Area, Year } = this.state;
         const { setType, closeDrawer } = this.props;
         closeDrawer();
-        setType({ Channel, Plot, Area, Year });
+        setType({ Status, Plot, Area, Year });
     }
 
     componentDidMount() {
@@ -154,15 +529,11 @@ class DrawerContent extends PureComponent {
                                     <Text style={[styles.typetitletxt, { color: themeColor[0] }]}>{d.name}</Text>
                                 </View>
                                 <View style={styles.typecon}>
-                                    <BorderlessButton disabled={this.state[d.cate] == ''} onPress={() => this.setType(d.cate, '')} style={styles.typeitem}><Text style={[styles.typeitemtxt, this.state[d.cate] == '' && { color: themeColor[0] }]}>全部</Text></BorderlessButton>
+                                    <BorderlessButton disabled={this.state[d.cate].id == ''} onPress={() => this.setType(d.cate, {name:'',id:''})} style={styles.typeitem}><Text style={[styles.typeitemtxt, this.state[d.cate].id == '' && { color: themeColor[0] }]}>全部</Text></BorderlessButton>
                                     {
                                         d.type.map((el, j) => (
-                                            <BorderlessButton disabled={this.state[d.cate] === el} onPress={() => this.setType(d.cate, el)} key={j} style={styles.typeitem}><Text style={[styles.typeitemtxt, el == this.state[d.cate] && { color: themeColor[0] }]}>{el}</Text></BorderlessButton>
+                                            <BorderlessButton disabled={this.state[d.cate].id === el.id} onPress={() => this.setType(d.cate, el)} key={j} style={styles.typeitem}><Text style={[styles.typeitemtxt, el.id == this.state[d.cate].id && { color: themeColor[0] }]}>{el.name}</Text></BorderlessButton>
                                         ))
-                                    }
-                                    {
-                                        d.cate==='Channel'&&isVisible&&
-                                        <BorderlessButton disabled={this.state[d.cate] == '伦理'} onPress={() => this.setType(d.cate, '伦理')} style={styles.typeitem}><Text style={[styles.typeitemtxt, this.state[d.cate] == '伦理' && { color: themeColor[0] }]}>伦理</Text></BorderlessButton>
                                     }
                                 </View>
                             </View>
@@ -188,7 +559,7 @@ const CategoryTop = ({state,type,openDrawer,themeColor}) => (
             [...Categories[type], ...CommonList].map((d, i) => (
                 <BorderlessButton onPress={openDrawer} style={styles.typetopitem} key={i}>
                     <Icon name={d.icon} size={16} color={themeColor[0]} />
-                    <Text style={[styles.typetoptxt, { color: themeColor[0] }]}>{state[d.cate] || d.name}</Text>
+                    <Text style={[styles.typetoptxt, { color: themeColor[0] }]}>{state[d.cate].name || d.name}</Text>
                 </BorderlessButton>
             ))
         }
@@ -208,17 +579,29 @@ export default class extends PureComponent {
             data: [],
             isRender: false,
             isEnding: false,
-            Channel: '',
-            Plot: '',
-            Area: '',
-            Year: ''
+            Status: {
+                name:'',
+                id:''
+            },
+            Plot: {
+                name:'',
+                id:''
+            },
+            Area: {
+                name:'',
+                id:''
+            },
+            Year: {
+                name:'',
+                id:''
+            }
         }
     }
 
     openDrawer = () => {
-        const { Channel, Plot, Area, Year } = this.state;
+        const { Status, Plot, Area, Year } = this.state;
         this.drawer.openDrawer();
-        this.drawerContent.setState({ Channel, Plot, Area, Year });
+        this.drawerContent.setState({ Status, Plot, Area, Year });
     }
 
     closeDrawer = () => {
@@ -240,15 +623,16 @@ export default class extends PureComponent {
     }
 
     getData = async () => {
-        const { Channel, Plot, Area, Year } = this.state;
-        const data = await GetPageList({ pageIndex: this.page, pageSize: this.pageSize, Type:this.type, Channel, Area, Plot, Year,orderBy:'new' });
+        const { Status, Plot, Area, Year } = this.state;
+        const data = await GetPageList({ pageIndex: this.page, pageSize: this.pageSize, Type:this.type, Status:Status.id, Area:Area.id, Plot:Plot.id, Year:Year.id,orderBy:'addtime' });
+        console.warn(data)
         if(this.mounted){
             LayoutAnimation.easeInEaseOut();
             this.setState({
                 data: [...this.state.data, ...data],
                 isRender: true,
             })
-            if (data.length == 0) {
+            if (data.length < 25) {
                 this.setState({
                     isEnding: true
                 })
@@ -304,7 +688,7 @@ export default class extends PureComponent {
     render() {
         const { navigation, screenProps: { themeColor } } = this.props;
         const { title, type } = navigation.state.params;
-        const { Channel, Plot, Area, Year, isRender, data, isEnding } = this.state;
+        const { Status, Plot, Area, Year, isRender, data, isEnding } = this.state;
         return (
             <DrawerLayout
                 drawerPosition={DrawerLayout.positions.Right}
@@ -314,7 +698,7 @@ export default class extends PureComponent {
                 onDrawerOpen={this.onDrawerOpen}
                 onDrawerClose={this.onDrawerClose}
                 drawerWidth={$.WIDTH * .8}
-                renderNavigationView={() => <DrawerContent ref={drawer => this.drawerContent = drawer} themeColor={themeColor} closeDrawer={this.closeDrawer} type={type} state={{ Channel, Plot, Area, Year }} setType={this.setType} />}
+                renderNavigationView={() => <DrawerContent ref={drawer => this.drawerContent = drawer} themeColor={themeColor} closeDrawer={this.closeDrawer} type={type} state={{ Status, Plot, Area, Year }} setType={this.setType} />}
             >
                 <View style={[styles.content, styles.bg]}>
                     <AppTop navigation={navigation} themeColor={themeColor} title={title} isBack={true} >
@@ -322,7 +706,7 @@ export default class extends PureComponent {
                             <Icon name='filter' size={18} color='#fff' />
                         </BorderlessButton>
                     </AppTop>
-                    <CategoryTop openDrawer={this.openDrawer} type={type} state={{ Channel, Plot, Area, Year }} themeColor={themeColor} />
+                    <CategoryTop openDrawer={this.openDrawer} type={type} state={{ Status, Plot, Area, Year }} themeColor={themeColor} />
                     {
                         isRender ?
                             <MovieList style={{paddingHorizontal:5}} isRender={true} isEnding={isEnding} data={data} navigation={navigation} themeColor={themeColor[0]} onEndReached={this.loadMore} />

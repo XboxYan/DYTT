@@ -24,10 +24,10 @@ import { BorderlessButton } from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Feather';
 import Loading from '../components/Loading';
-import MovieList from '../components/MovieList';
+import SearchList from '../components/SearchList';
 import AnimatedView from '../components/AnimatedView';
 import Storage from '../../util/storage';
-import { GetPageList } from '../../util/api';
+import { GetSearch } from '../../util/api';
 
 const { UIManager } = NativeModules;
 
@@ -35,7 +35,7 @@ class SearchResult extends PureComponent {
 
     page = 1;
 
-    pageSize = 36;
+    pageSize = 5;
 
     state = {
         data: [],
@@ -67,7 +67,7 @@ class SearchResult extends PureComponent {
     }
 
     getData = async () => {
-        const data = await GetPageList({ SearchKey: this.keywords, pageIndex: this.page, pageSize: this.pageSize });
+        const data = await GetSearch({ SearchKey: this.keywords, pageIndex: this.page, pageSize: this.pageSize });
         if( this.mounted ){
             LayoutAnimation.easeInEaseOut();
             this.setState({
@@ -97,7 +97,7 @@ class SearchResult extends PureComponent {
             <AnimatedView style={[styles.content, styles.bg, styles.full]}>
                 {
                     isRender ?
-                        <MovieList style={{paddingHorizontal:5}} isRender={true} isEnding={isEnding} data={data} navigation={navigation} themeColor={themeColor} onEndReached={this.loadMore} />
+                        <SearchList style={{paddingHorizontal:5}} isRender={true} isEnding={isEnding} data={data} navigation={navigation} themeColor={themeColor} onEndReached={this.loadMore} />
                         :
                         <Loading size='small' text='正在努力搜索中...' themeColor={themeColor} />
                 }
