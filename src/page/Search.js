@@ -218,7 +218,7 @@ export default class Search extends PureComponent {
             this.addHistory(keywords);
             this.searchcon && this.searchcon.reSearch(keywords);
         } else {
-            ToastAndroid.show('请输入内容!', ToastAndroid.SHORT);
+            ToastAndroid.show('请输入点什么吧~', ToastAndroid.SHORT);
         }
     }
 
@@ -287,7 +287,7 @@ export default class Search extends PureComponent {
                             underlineColorAndroid='transparent'
                             onSubmitEditing={this.onSubmit}
                             onChangeText={this.onChange}
-                            placeholder='搜索一下吧~'
+                            placeholder='搜索影片、演员~'
                             returnKeyLabel='搜索'
                             placeholderTextColor='#909090'
                         />
