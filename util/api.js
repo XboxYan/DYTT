@@ -53,19 +53,19 @@ const GetHomeData = async () => {
             name:'轮播图',
             list:banner
         },
-        dy:{
+        movie:{
             name:'电影',
             list:list(0)
         },
-        dsj:{
+        tv:{
             name:'电视剧',
             list:list(1)
         },
-        Animation:{
+        comic:{
             name:'动漫',
             list:list(2)
         },
-        Arts:{
+        variety:{
             name:'娱乐',
             list:list(3)
         },
@@ -132,10 +132,10 @@ const GetDoubanInterests = ({DBID,start=0,count=5})=>fetchData(`https://frodo.do
 //获取列表
 const GetPageList = async ({pageSize=25,pageIndex=1,Type='',Status='',Area='',Plot='',Year='',orderBy='hits'}) => {
     const mapType = {
-        dy:1,
-        dsj:2,
-        Animation:3,
-        Arts:4,
+        movie:1,
+        tv:2,
+        comic:3,
+        variety:4,
     }
     //orderBy：'addtime' | 'hits' | 'gold'
     //https://www.kankanwu.com/index.php?s=Showlist-show-id-${Type}-mcid-${Plot}-lz-${Status}-area-${Area}-year-${Year}-letter--order-${orderBy}-picm-1-p-${pageIndex}.html
@@ -186,7 +186,11 @@ const GetSearch = async ({pageSize=25,pageIndex=1, SearchKey}) => {
             }
         })
     }).get()
-    return data;
+    const isEnd = pageIndex>$('.ui-vpages span').text();
+    return {
+        list:data,
+        isEnd:isEnd
+    };
 }
 
 export {fetchData,GetHomeData,GetVideoInfo,GetPageList,GetDoubanInterests,GetPlayUrl,GetSearch}

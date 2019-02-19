@@ -70,15 +70,15 @@ class SearchResult extends PureComponent {
         const data = await GetSearch({ SearchKey: this.keywords, pageIndex: this.page, pageSize: this.pageSize });
         if( this.mounted ){
             LayoutAnimation.easeInEaseOut();
-            this.setState({
-                data: [...this.state.data, ...data],
-                isRender: true,
-            })
-            if (data.length < this.pageSize) {
+            if (data.isEnd) {
                 this.setState({
                     isEnding: true
                 })
             } else {
+                this.setState({
+                    data: [...this.state.data, ...data.list],
+                    isRender: true,
+                })
                 this.page = this.page + 1;
             }
         }
@@ -97,7 +97,7 @@ class SearchResult extends PureComponent {
             <AnimatedView style={[styles.content, styles.bg, styles.full]}>
                 {
                     isRender ?
-                        <SearchList style={{paddingHorizontal:5}} isRender={true} isEnding={isEnding} data={data} navigation={navigation} themeColor={themeColor} onEndReached={this.loadMore} />
+                        <SearchList isRender={true} isEnding={isEnding} data={data} navigation={navigation} themeColor={themeColor} onEndReached={this.loadMore} />
                         :
                         <Loading size='small' text='正在努力搜索中...' themeColor={themeColor} />
                 }

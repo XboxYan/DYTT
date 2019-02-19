@@ -71,7 +71,7 @@ export default class extends PureComponent {
 
 	render() {
 		const { data, isRender,themeColor,style,onEndReached=()=>{} } = this.props;
-		const height = ($.WIDTH - 40) / 2+40;
+		const height = 150;
 		if (!isRender) {
 			return <Loading style={{height:100}} size='small' text='' themeColor={themeColor} />
 		}
@@ -85,10 +85,10 @@ export default class extends PureComponent {
 				ItemSeparatorComponent={() => <View style={{height:10}} />}
 				ListFooterComponent={this.renderFooter}
 				data={data}
-				//getItemLayout={(data, index) => ( {length: height, offset: height * index, index} )}
+				getItemLayout={(data, index) => ( {length: height, offset: height * index, index} )}
 				onEndReached={onEndReached}
 				onEndReachedThreshold={0.1}
-				keyExtractor={(item, index) => item.ID.toString()}
+				keyExtractor={(item, index) => index+item.ID.toString()}
 				renderItem={this.renderItem}
 			/>
 		)
@@ -112,6 +112,7 @@ const styles = StyleSheet.create({
 		width:90,
 		height:120,
 		borderRadius:3,
+		backgroundColor:'#f1f1f1',
 		resizeMode: 'cover'
 	},
 	movietext: {

@@ -107,6 +107,7 @@ const styles = StyleSheet.create({
 		width: '100%',
 		height:($.WIDTH - 40) / 2,
 		flex: 1,
+		backgroundColor:'#f1f1f1',
 		resizeMode: 'cover'
 	},
 	movietext: {
