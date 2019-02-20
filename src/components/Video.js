@@ -4,6 +4,7 @@
 
 import React, { PureComponent } from 'react';
 import {
+    AppState,
     ActivityIndicator,
     TouchableOpacity,
     StyleSheet,
@@ -89,6 +90,8 @@ export default class extends PureComponent {
         };
         UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
     }
+
+    playState = false;
 
     /*
     * to + 方法名  
@@ -291,7 +294,19 @@ export default class extends PureComponent {
         }
     }
 
+    _handleAppStateChange = (nextAppState) => {
+        if(nextAppState === 'active'){
+            this.setState({paused:!this.prePlayState});
+        }else{
+            this.prePlayState = !this.state.paused;
+            if(this.prePlayState){
+                this.setState({paused:true})
+            }
+        }
+    }
+
     componentWillMount() {
+        AppState.addEventListener('change', this._handleAppStateChange);
         this._panResponder = PanResponder.create({
             // 要求成为响应者：
             onStartShouldSetPanResponder: (evt, gestureState) => true,
@@ -313,7 +328,7 @@ export default class extends PureComponent {
             },
         });
     }
-
+    
     componentDidUpdate(prevProps, prevState) {
         if (this.props.uri !== prevProps.uri) {
             this.setState({
@@ -327,6 +342,7 @@ export default class extends PureComponent {
     }
 
     componentWillUnmount(){
+        AppState.removeEventListener('change', this._handleAppStateChange);
         this.timer&&clearTimeout(this.timer);
     }
 
