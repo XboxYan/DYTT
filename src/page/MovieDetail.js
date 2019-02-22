@@ -482,13 +482,14 @@ export default class MovieDetail extends PureComponent {
         this.onplayRotate(false);
     }
 
-    onEnd = () => {
-        const {movieInfo,sourceId} = this.state;
-        const index = movieInfo.MoviePlayUrls.findIndex(el=>el.ID==sourceId);
-        if(index>=0&&index<movieInfo.MoviePlayUrls.length-1){
+    onEnd = async () => {
+        const {sourceId} = this.state;
+        const source = this.moviesource.state.source;
+        const index = source.findIndex(el=>el.ID==sourceId);
+        if(index>=0&&index<source.length-1){
             ToastAndroid && ToastAndroid.show('(oﾟ▽ﾟ)o  即将播放下一资源', ToastAndroid.SHORT);
-            const item = movieInfo.MoviePlayUrls[index+1];
-            this.PlayUrl = item.PlayUrl;
+            const item = source[index+1];
+            this.PlayUrl = await GetPlayUrl(item.PlayUrl);
             this.setState({
                 sourceId:item.ID,
                 sourceName:item.Name,
