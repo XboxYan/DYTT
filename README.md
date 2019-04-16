@@ -2,9 +2,9 @@
 
 ![电影天堂](./screenshot/logo.jpg)
 
-<a href="https://github.com/XboxYan/DYTT"><img alt="GitHub release" src="https://img.shields.io/github/release/XboxYan/DYTT.svg?color=blu"></a>
-<a href="https://github.com/XboxYan/DYTT"><img alt="GitHub stars" src="https://img.shields.io/github/stars/XboxYan/DYTT.svg"></a>
-<a href="https://github.com/XboxYan/DYTT"><img alt="GitHub forks" src="https://img.shields.io/github/forks/XboxYan/DYTT.svg"></a>
+<a href="https://github.com/XboxYan/DYTT/releases"><img alt="GitHub release" src="https://img.shields.io/github/release/XboxYan/DYTT.svg?color=blu"></a>
+<a href="https://github.com/XboxYan/DYTT/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/XboxYan/DYTT.svg"></a>
+<a href="https://github.com/XboxYan/DYTT/network/members><img alt="GitHub forks" src="https://img.shields.io/github/forks/XboxYan/DYTT.svg"></a>
 <a href="https://github.com/XboxYan/DYTT/releases"><img alt="GitHub All Releases" src="https://img.shields.io/github/downloads/XboxYan/DYTT/total.svg?color=yellow"></a>
 
 第三方电影天堂React Native客户端V2.0
