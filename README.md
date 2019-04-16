@@ -7,10 +7,17 @@
 <a href="https://github.com/XboxYan/DYTT"><img alt="GitHub forks" src="https://img.shields.io/github/forks/XboxYan/DYTT.svg"></a>
 <a href="https://github.com/XboxYan/DYTT/releases"><img alt="GitHub All Releases" src="https://img.shields.io/github/downloads/XboxYan/DYTT/total.svg?color=yellow"></a>
 
-
 第三方电影天堂React Native客户端V2.0
 
-#### [更新记录](./update.md)
+### [更新记录](./update.md)
+
+## 公告
+
+~~😢很抱歉，该项目的数据来源网站停止运行了，详细数据源可参考`api.js`，应该是受到了打击盗版网站的影响。~~
+
+~~不过业务逻辑对于`react native`学习交流没什么问题，如果有合适的接口数据我会尽快适配。~~
+
+😄已完成数据源更新解析，现在请求一切正常。
 
 ## 目录
 
@@ -24,14 +31,6 @@
 * [还未完成的还接下来要做的](#还未完成的还接下来要做的)
 * [联系方式](#联系方式)
 * [打赏](#打赏)
-
-## 公告
-
-~~😢很抱歉，该项目的数据来源网站停止运行了，详细数据源可参考`api.js`，应该是受到了打击盗版网站的影响。~~
-
-~~不过业务逻辑对于`react native`学习交流没什么问题，如果有合适的接口数据我会尽快适配。~~
-
-😄已完成数据源更新解析，现在请求一切正常。
 
 ## 免责声明
 
@@ -90,7 +89,7 @@ react-native run-android
 
 ~~考虑到安全问题，暂不提供安装包~~，可通过上述方式安装，或者与我联系提供安装包
 
-[dytt.apk.zip](https://github.com/XboxYan/DYTT/files/2878562/app-armeabi-v7a-release.zip)
+[dytt.apk](https://github.com/XboxYan/DYTT/releases/download/v2.2/app-armeabi-v7a-release.apk)
 
 `android`下载解压安装。`ios`自行编译安装。
 
