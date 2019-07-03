@@ -16,9 +16,10 @@ import Icon from 'react-native-vector-icons/Feather';
 import AppTop from '../components/AppTop';
 import LoadView from '../components/LoadView';
 import Touchable from '../components/Touchable';
-import Storage from '../../util/storage';
+
 import { Store } from '../../util/store';
 import { timeFormat } from '../../util/timeformat';
+import i18n from '../../util/i18n';
 
 const { UIManager } = NativeModules;
 
@@ -28,7 +29,7 @@ const CheckBox = ({ themeColor, checked }) => (
 
 const HistoryEmpty = () => (
     <View style={styles.flexcon}>
-        <Text style={styles.empty}>╮(╯﹏╰）╭ 暂无历史记录</Text>
+        <Text style={styles.empty}>╮(╯﹏╰）╭ {i18n.t('EMPTY_HISTORY')}</Text>
     </View>
 )
 
@@ -51,20 +52,13 @@ const HistoryItem = ({ item: { img, currentTime, duration, isEnd, name, sourceNa
         </View>
         <View style={styles.textcon}>
             <Text style={styles.textname}>{name}</Text>
-            <Text style={styles.textsource}>上次观看{sourceName}<Text style={{ color: themeColor }}>{isEnd ? 100 : parseInt(currentTime / duration * 100)}%</Text></Text>
+            <Text style={styles.textsource}>{i18n.t('LAST_WATCHED')}{sourceName}<Text style={{ color: themeColor }}>{isEnd ? 100 : parseInt(currentTime / duration * 100)}%</Text></Text>
             <Text style={styles.textdate}>{date}</Text>
         </View>
     </TouchableOpacity>
 )
 
 export default class History extends PureComponent {
-
-    static navigationOptions = {
-        drawerLabel: '历史记录',
-        drawerIcon: ({ tintColor }) => (
-            <Icon name='clock' size={18} color={tintColor} />
-        ),
-    };
 
     constructor(props) {
         super(props);
@@ -148,7 +142,7 @@ export default class History extends PureComponent {
     delSelect = () => {
         const { selected } = this.state;
         const { removeHistory } = this.context;
-        this.setState({ selected: [], isEdit:false });
+        this.setState({ selected: [], isEdit: false });
         removeHistory(selected);
     }
 
@@ -184,36 +178,36 @@ export default class History extends PureComponent {
         const { selected, isEdit, isRender } = this.state;
         return (
             <View style={styles.container}>
-                <AppTop title="历史记录" navigation={navigation} themeColor={themeColor}>
+                <AppTop title={i18n.t('HISTORY')} navigation={navigation} themeColor={themeColor}>
                     {
-                        historyList.length > 0 &&
-                        <BorderlessButton onPress={this.onEdit} activeOpacity={.8} style={styles.btn}><Text style={styles.btntext}>{isEdit ? '取消' : '编辑'}</Text></BorderlessButton>
+                        (historyList.length > 0) &&
+                        <BorderlessButton onPress={this.onEdit} activeOpacity={.8} style={styles.btn}><Text style={styles.btntext}>{isEdit ? i18n.t('CANCEL') : i18n.t('EDIT')}</Text></BorderlessButton>
                     }
                 </AppTop>
                 {
                     historyList.length === 0 ?
-                    <HistoryEmpty />
-                    :
-                    <FlatList
-                        style={[styles.content, isEdit && { marginBottom: 48 }]}
-                        numColumns={1}
-                        ListFooterComponent={this.renderFooter}
-                        //removeClippedSubviews={true}
-                        data={historyList}
-                        onEndReachedThreshold={0.1}
-                        extraData={themeColor||isEdit}
-                        keyExtractor={(item) => item.id.toString()}
-                        renderItem={this.renderItem}
-                    />
+                        <HistoryEmpty />
+                        :
+                        <FlatList
+                            style={[styles.content, isEdit && { marginBottom: 48 }]}
+                            numColumns={1}
+                            ListFooterComponent={this.renderFooter}
+                            //removeClippedSubviews={true}
+                            data={historyList}
+                            onEndReachedThreshold={0.1}
+                            extraData={themeColor || isEdit}
+                            keyExtractor={(item) => item.id.toString()}
+                            renderItem={this.renderItem}
+                        />
                 }
                 <View style={[styles.footer, historyList.length > 0 && isEdit && { bottom: 0 }]}>
                     <Touchable style={styles.vbtn} onPress={this.selectAll}>
                         <CheckBox themeColor={themeColor[0]} checked={selected.length === historyList.length} />
-                        <Text style={styles.vbtntext}>全选</Text>
+                        <Text style={styles.vbtntext}>{i18n.t('SELECT_ALL')}</Text>
                     </Touchable>
                     <Touchable style={styles.vbtn} disabled={selected.length === 0} onPress={this.delSelect}>
                         <Icon name='trash-2' size={20} style={{ marginRight: 10 }} color={selected.length === 0 ? '#ccc' : themeColor[0]} />
-                        <Text style={styles.vbtntext}>删除({selected.length})</Text>
+                        <Text style={styles.vbtntext}>{i18n.t('DELETE')}({selected.length})</Text>
                     </Touchable>
                 </View>
             </View>
@@ -265,7 +259,7 @@ const styles = StyleSheet.create({
     itemleft: {
         width: 120,
         height: 80,
-        alignSelf:'flex-start',
+        alignSelf: 'flex-start',
         borderRadius: 3,
         overflow: 'hidden',
         zIndex: 1

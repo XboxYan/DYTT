@@ -7,37 +7,38 @@ import Home from './page/Home';
 import Screen from './page/Screen';
 import Icon from 'react-native-vector-icons/Feather';
 
-const tablist = [
-    {
-        type: 'movie',
-        name: '电影'
-    },
-    {
-        type: 'tv',
-        name: '电视剧'
-    },
-    {
-        type: 'comic',
-        name: '动漫'
-    },
-    {
-        type: 'variety',
-        name: '综艺'
-    }
-]
+import i18n from '../util/i18n';
 
 export default class TabNavigator extends PureComponent {
-    static navigationOptions = {
-        drawerLabel: '首页',
-        drawerIcon: ({ tintColor }) => (
-            <Icon name='home' size={18} color={tintColor} />
-        ),
-    };
+
+    constructor(props) {
+        super(props);
+
+        this.tablist = [
+            {
+                type: 'movie',
+                name: i18n.t('FILMS')
+            },
+            {
+                type: 'tv',
+                name: i18n.t('TV_SERIES')
+            },
+            {
+                type: 'comic',
+                name: i18n.t('ANIME')
+            },
+            {
+                type: 'variety',
+                name: i18n.t('VARIETY')
+            }
+        ]
+    }
+
     render() {
-        const {navigation,screenProps:{themeColor}} = this.props;
+        const { navigation, screenProps: { themeColor } } = this.props;
         return (
             <View style={styles.container}>
-                <AppTop title="电影天堂" navigation={navigation} themeColor={themeColor}>
+                <AppTop title={i18n.t('MOVIE_HEAVEN')} navigation={navigation} themeColor={themeColor}>
                     {
                         /*
                         <Touchable
@@ -48,14 +49,14 @@ export default class TabNavigator extends PureComponent {
                         </Touchable>
                         */
                     }
-                    <BorderlessButton activeOpacity={.8} style={styles.btn} onPress={()=>navigation.navigate('Search')} >
+                    <BorderlessButton activeOpacity={.8} style={styles.btn} onPress={() => navigation.navigate('Search')} >
                         <Icon name='search' size={20} color='#fff' />
                     </BorderlessButton>
                 </AppTop>
                 <Scrollviewpager themeColor={themeColor[0]}>
-                    <Home tablabel="首页" {...this.props} />
+                    <Home tablabel={i18n.t('HOME')} {...this.props} />
                     {
-                        tablist.map(el => <Screen key={el.type} type={el.type} tablabel={el.name} {...this.props} />)
+                        this.tablist.map(el => <Screen key={el.type} type={el.type} tablabel={el.name} {...this.props} />)
                     }
                 </Scrollviewpager>
             </View>

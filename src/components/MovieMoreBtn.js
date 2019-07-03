@@ -1,17 +1,17 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import {
     StyleSheet,
     TouchableOpacity,
-	Text,
+    Text
 } from 'react-native';
 
 const Btn = (props) => {
-    if(!props.show){
+    if (!props.show) {
         return null
     }
-    return(
-        <TouchableOpacity style={[styles.btn,props.style]} activeOpacity={.8} onPress={props.onPress}>
-            <Text style={[styles.text,{color:props.themeColor}]}>{props.text}</Text>
+    return (
+        <TouchableOpacity style={[styles.btn, props.style]} activeOpacity={.8} onPress={props.onPress}>
+            <Text style={[styles.text, { color: props.themeColor }]}>{props.text}</Text>
         </TouchableOpacity>
     )
 }
@@ -19,17 +19,17 @@ const Btn = (props) => {
 export default Btn;
 
 const styles = StyleSheet.create({
-    btn:{
-        margin:10,
-        height:40,
-        backgroundColor:'#fff',
+    btn: {
+        margin: 10,
+        height: 40,
+        backgroundColor: '#fff',
         justifyContent: "center",
         alignItems: 'center',
-        borderRadius:3,
-        overflow:'hidden'
+        borderRadius: 3,
+        overflow: 'hidden'
     },
-    text:{
-        fontSize:14,
-        color:'#666'
+    text: {
+        fontSize: 14,
+        color: '#666'
     }
 })

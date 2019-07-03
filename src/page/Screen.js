@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { 
+import {
     View,
     InteractionManager,
     LayoutAnimation,
@@ -11,6 +11,7 @@ import Loading from '../components/Loading';
 import MovieList from '../components/MovieList';
 import MovieMoreBtn from '../components/MovieMoreBtn';
 import { GetPageList } from '../../util/api';
+import i18n from '../../util/i18n';
 
 const { UIManager } = NativeModules;
 
@@ -20,14 +21,14 @@ export default class extends PureComponent {
         super(props);
         UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
         this.state = {
-            data:[],
-            isRender:false,
+            data: [],
+            isRender: false,
         }
     }
 
     getData = async () => {
-        const data = await GetPageList({ pageIndex: 1, pageSize: 30, Type:this.type });
-        if(this.mounted){
+        const data = await GetPageList({ pageIndex: 1, pageSize: 30, Type: this.type });
+        if (this.mounted) {
             LayoutAnimation.easeInEaseOut();
             this.setState({
                 data: data,
@@ -50,8 +51,12 @@ export default class extends PureComponent {
     }
 
     ListFooterComponent = () => {
-        const { navigation,type,tablabel } = this.props;
-        return <View style={{paddingBottom:10}}><MovieMoreBtn text="查看更多" show={true} style={{marginHorizontal:5}} onPress={()=>navigation.navigate('MovieContent',{type:type,title:tablabel})} /></View>;
+        const { navigation, type, tablabel } = this.props;
+        return (
+            <View style={{ paddingBottom: 10 }}>
+                <MovieMoreBtn text={i18n.t('SEE_MORE')} show={true} style={{ marginHorizontal: 5 }} onPress={() => navigation.navigate('MovieContent', { type: type, title: tablabel })} />
+            </View>
+        );
     }
 
     render() {
@@ -61,9 +66,9 @@ export default class extends PureComponent {
             <View style={styles.container}>
                 {
                     isRender ?
-                        <MovieList style={{paddingHorizontal:5}} isRender={true} ListFooterComponent={this.ListFooterComponent} data={data} navigation={navigation} themeColor={themeColor[0]} onEndReached={this.loadMore} />
+                        <MovieList style={{ paddingHorizontal: 5 }} isRender={true} ListFooterComponent={this.ListFooterComponent} data={data} navigation={navigation} themeColor={themeColor[0]} onEndReached={this.loadMore} />
                         :
-                        <Loading size='small' text='正在努力加载中...' themeColor={themeColor[0]} />
+                        <Loading size='small' text={`${i18n.t('TRY_LOADING')}...`} themeColor={themeColor[0]} />
                 }
             </View>
         );

@@ -10,11 +10,13 @@ import {
 	View,
 } from 'react-native';
 
+import i18n from '../../util/i18n';
+
 export default class Loading extends PureComponent {
 
 	static defaultProps = {
 		style:{},
-		text: '正在努力加载中',
+		text: i18n.t('TRY_LOADING'),
 		textColor: '#666',
 		size:'large'
 	}

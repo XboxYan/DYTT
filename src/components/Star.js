@@ -49,7 +49,7 @@ export default ({ score, style, themeColor, isShowNum = true }) => (
         <Image source={require('../img/star.png')} style={styles.star} />
         <StarCurrent score={score} themeColor={themeColor} />
         {
-            isShowNum&&<Text style={[styles.score, { color: themeColor }]}>{score || '0.0'}</Text>
+            isShowNum && <Text style={[styles.score, { color: themeColor }]}>{score || '0.0'}</Text>
         }
     </View>
 )
@@ -63,8 +63,8 @@ const styles = StyleSheet.create({
     star: {
         flexDirection: 'row',
         position: 'absolute',
-        width:70,
-        height:14,
+        width: 70,
+        height: 14,
         zIndex: 10,
         overflow: 'hidden'
     },

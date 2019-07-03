@@ -3,6 +3,7 @@ package com.dytt;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.reactcommunity.rnlocalize.RNLocalizePackage;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.microsoft.codepush.react.CodePush;
 import com.github.yamill.orientation.OrientationPackage;
@@ -36,6 +37,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNLocalizePackage(),
             new LinearGradientPackage(),
             new CodePush(BuildConfig.CODEPUSH_KEY, MainApplication.this, BuildConfig.DEBUG),
             new OrientationPackage(),
