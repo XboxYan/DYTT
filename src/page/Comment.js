@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 
 import { GetDoubanInterests } from '../../util/api';
+import i18n from '../../util/i18n';
 import AppTop from '../components/AppTop';
 import CommentList from '../components/CommentList';
 
@@ -24,10 +25,10 @@ export default class Comment extends PureComponent {
     pageSize = 50;
 
     state = {
-        data : [],
+        data: [],
         total: 0,
         isRender: false,
-        isEnding:false
+        isEnding: false
     }
 
     componentDidMount() {
@@ -38,7 +39,7 @@ export default class Comment extends PureComponent {
     }
 
     componentWillUnmount() {
-        BackHandler.removeEventListener('hardwareBackPress', this.goBack); 
+        BackHandler.removeEventListener('hardwareBackPress', this.goBack);
     }
 
     goBack = () => {
@@ -48,40 +49,40 @@ export default class Comment extends PureComponent {
     }
 
     getData = async () => {
-        const { params:{DBID} } = this.props.navigation.state;
-        const data = await GetDoubanInterests({DBID,start:(this.page-1)*this.pageSize,count:this.pageSize})
+        const { params: { DBID } } = this.props.navigation.state;
+        const data = await GetDoubanInterests({ DBID, start: (this.page - 1) * this.pageSize, count: this.pageSize })
         this.setState({
-            data : [...this.state.data,...data.interests],
+            data: [...this.state.data, ...data.interests],
             isRender: true,
-            total:data.total
+            total: data.total
         })
-        if(data.interests.length == 0){
+        if (data.interests.length == 0) {
             this.setState({
-                isEnding:true
+                isEnding: true
             })
-        }else{
-            this.page = this.page+1;
+        } else {
+            this.page = this.page + 1;
         }
     }
 
     loadMore = () => {
-        if(!this.state.isEnding){
+        if (!this.state.isEnding) {
             this.getData();
         }
     }
 
     render() {
-        const {navigation,screenProps:{themeColor}} = this.props;
-        const { data,isRender,total,isEnding } = this.state;
+        const { navigation, screenProps: { themeColor } } = this.props;
+        const { data, isRender, total, isEnding } = this.state;
         return (
             <View style={styles.content}>
-                <AppTop navigation={navigation} themeColor={themeColor} isBack={true} title={`全部${total}条热评`} />
-                <CommentList 
+                <AppTop navigation={navigation} themeColor={themeColor} isBack={true} title={`${i18n.t('ALL')} ${total} ${i18n.t('HOT_REVIEWS')}`} />
+                <CommentList
                     style={styles.commentview}
                     themeColor={themeColor[0]}
-                    isRender={isRender} 
-                    data={data} 
-                    navigation={navigation} 
+                    isRender={isRender}
+                    data={data}
+                    navigation={navigation}
                     isEnding={isEnding}
                     onEndReached={this.loadMore}
                 />
@@ -91,10 +92,10 @@ export default class Comment extends PureComponent {
 }
 
 const styles = StyleSheet.create({
-    content:{
-        flex:1
+    content: {
+        flex: 1
     },
-	commentview:{
-		backgroundColor:'#f7f7f7',
-	}
+    commentview: {
+        backgroundColor: '#f7f7f7',
+    }
 })

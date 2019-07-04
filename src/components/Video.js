@@ -22,19 +22,20 @@ import { timeFormat } from '../../util/timeformat';
 import Video from 'react-native-video';
 import Icon from 'react-native-vector-icons/Feather';
 import IconF from 'react-native-vector-icons/FontAwesome5';
+import i18n from "../../util/i18n";
 
 const { UIManager } = NativeModules;
 
-const VideoBarMini = ({themeColor,playableDuration,currentTime,duration,isFull,isShowBar}) => (
-    <View pointerEvents="none" style={[styles.progresscon,isFull&&styles.progressconFull,!isShowBar&&{bottom:0}]}>
-        <View style={[styles.progressbar,{backgroundColor:themeColor,flex:currentTime}]}/>
-        <View style={[styles.progressbar,{backgroundColor:themeColor,opacity:.5,flex:playableDuration>currentTime?playableDuration-currentTime:0}]}/>
-        <View style={[styles.progressbar,{flex:duration-(playableDuration>currentTime?playableDuration:currentTime)}]}/>
+const VideoBarMini = ({ themeColor, playableDuration, currentTime, duration, isFull, isShowBar }) => (
+    <View pointerEvents="none" style={[styles.progresscon, isFull && styles.progressconFull, !isShowBar && { bottom: 0 }]}>
+        <View style={[styles.progressbar, { backgroundColor: themeColor, flex: currentTime }]} />
+        <View style={[styles.progressbar, { backgroundColor: themeColor, opacity: .5, flex: playableDuration > currentTime ? playableDuration - currentTime : 0 }]} />
+        <View style={[styles.progressbar, { flex: duration - (playableDuration > currentTime ? playableDuration : currentTime) }]} />
     </View>
 )
 
-const VideoBar = ({themeColor,toSeek,toPlay,playableDuration,currentTime,duration,isFull,paused,toFull,isShowBar}) => (
-    <View style={[styles.videobar,isFull&&styles.videobarFull,!isShowBar&&{bottom:isFull?-70:-40}]}>
+const VideoBar = ({ themeColor, toSeek, toPlay, playableDuration, currentTime, duration, isFull, paused, toFull, isShowBar }) => (
+    <View style={[styles.videobar, isFull && styles.videobarFull, !isShowBar && { bottom: isFull ? -70 : -40 }]}>
         {
             /*
             <Touchable
@@ -48,26 +49,26 @@ const VideoBar = ({themeColor,toSeek,toPlay,playableDuration,currentTime,duratio
             </Touchable>
             */
         }
-        <Text style={[styles.videotime,isFull&&{fontSize:14}]}><Text style={{color:themeColor}}>{timeFormat(currentTime)}</Text>{' / '+timeFormat(duration)}</Text>
-        <View style={[styles.videoslider,isFull&&{marginHorizontal:10}]}>
+        <Text style={[styles.videotime, isFull && { fontSize: 14 }]}><Text style={{ color: themeColor }}>{timeFormat(currentTime)}</Text>{' / ' + timeFormat(duration)}</Text>
+        <View style={[styles.videoslider, isFull && { marginHorizontal: 10 }]}>
             <Slider
                 style={styles.videosliderbar}
                 value={currentTime}
-                onValueChange={(value)=>toSeek(value,false,true)}
-                onSlidingComplete={(value)=>toSeek(value,true,true)}
+                onValueChange={(value) => toSeek(value, false, true)}
+                onSlidingComplete={(value) => toSeek(value, true, true)}
                 maximumValue={duration}
                 maximumTrackTintColor="#333"
                 minimumTrackTintColor={themeColor}
                 thumbTintColor={themeColor}
             />
-            <View pointerEvents="none" style={[styles.videoslidercon,{backgroundColor:themeColor,flex:playableDuration}]}/>
-            <View pointerEvents="none" style={[styles.videoslidercon,{flex:duration-playableDuration}]}/>
+            <View pointerEvents="none" style={[styles.videoslidercon, { backgroundColor: themeColor, flex: playableDuration }]} />
+            <View pointerEvents="none" style={[styles.videoslidercon, { flex: duration - playableDuration }]} />
         </View>
         <Touchable
             onPress={toFull}
-            style={[styles.videobtn,isFull&&{padding:5}]}
+            style={[styles.videobtn, isFull && { padding: 5 }]}
         >
-            <Icon name={isFull?'minimize':'maximize'} size={isFull?22:20} color='#333' />
+            <Icon name={isFull ? 'minimize' : 'maximize'} size={isFull ? 22 : 20} color='#333' />
         </Touchable>
     </View>
 )
@@ -82,11 +83,11 @@ export default class extends PureComponent {
             currentTime: 0,
             $currentTime: 0,
             paused: true,
-            isBuffering:true,
-            isFull:false,
-            isError:false,
-            isShowBar:false,
-            isEnd:false
+            isBuffering: true,
+            isFull: false,
+            isError: false,
+            isShowBar: false,
+            isEnd: false
         };
         UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
     }
@@ -98,23 +99,23 @@ export default class extends PureComponent {
     * 主动调用方法
     */
     toFull = () => {
-        const {isFull} = this.state;
+        const { isFull } = this.state;
         StatusBar.setHidden(!isFull);
-        this.setState({isFull: !isFull})
-        this.props.onfullChanged&&this.props.onfullChanged(!isFull);
+        this.setState({ isFull: !isFull })
+        this.props.onfullChanged && this.props.onfullChanged(!isFull);
         //this.video.presentFullscreenPlayer()
     }
 
     toPlay = (bool) => {
-        const { isReady,currentTime } = this.state;
-        if( isReady ){
+        const { isReady, currentTime } = this.state;
+        if (isReady) {
             this.toShowBar();
-            this.setState({ 
+            this.setState({
                 paused: !bool,
                 isError: false,
             });
-            if(currentTime){
-                this.setState({ isEnd:false });
+            if (currentTime) {
+                this.setState({ isEnd: false });
             }
         }
     }
@@ -127,49 +128,49 @@ export default class extends PureComponent {
         this.setState({ paused: true });
     }
 
-    toSeek = (value,bool,show) => {
+    toSeek = (value, bool, show) => {
         LayoutAnimation.easeInEaseOut();
         this.setState({
             currentTime: value,
         });
-        if(bool){
+        if (bool) {
             this.video.seek(value);
-        }else{
+        } else {
             this.isSeeking = true;
         }
-        if(show){
+        if (show) {
             this.toShowBar();
         }
     }
 
     toHideBar = () => {
-        this.timer&&clearTimeout(this.timer);
+        this.timer && clearTimeout(this.timer);
         LayoutAnimation.easeInEaseOut();
-        this.props.onHideBar&&this.props.onHideBar();
+        this.props.onHideBar && this.props.onHideBar();
         this.setState({
-            isShowBar:false
+            isShowBar: false
         })
     }
 
     toShowBar = () => {
-        this.timer&&clearTimeout(this.timer);
+        this.timer && clearTimeout(this.timer);
         LayoutAnimation.easeInEaseOut();
-        this.props.onShowBar&&this.props.onShowBar();
+        this.props.onShowBar && this.props.onShowBar();
         this.setState({
-            isShowBar:true
+            isShowBar: true
         })
-        this.timer = setTimeout(()=>{
+        this.timer = setTimeout(() => {
             this.toHideBar()
-        },5000)
+        }, 5000)
     }
 
     toEnd = () => {
-        this.toSeek(0,true);
-        this.timer&&clearTimeout(this.timer);
+        this.toSeek(0, true);
+        this.timer && clearTimeout(this.timer);
         LayoutAnimation.easeInEaseOut();
         this.setState({
-            paused:true,
-            isEnd:true
+            paused: true,
+            isEnd: true
         })
     }
 
@@ -189,37 +190,37 @@ export default class extends PureComponent {
             duration: data.duration,
             //paused:false
         });
-        if(this.props.seekTime>0){
+        if (this.props.seekTime > 0) {
             this.video.seek(this.props.seekTime);
         }
         //this.toShowBar(true);
     }
 
     onEnd = () => {
-        if(this.props.onEnd&& (typeof this.props.onEnd === 'function')){
+        if (this.props.onEnd && (typeof this.props.onEnd === 'function')) {
             this.props.onEnd();
-        }else{
+        } else {
             this.toEnd();
         }
     }
 
     onBuffer = (event) => {
         this.setState({
-            isBuffering:event.isBuffering
+            isBuffering: event.isBuffering
         })
     }
 
     onError = (event) => {
         this.setState({
-            isError:true,
-            isBuffering:false
+            isError: true,
+            isBuffering: false
         })
     }
 
     onProgress = (data) => {
-        if(!this.isSeeking){
+        if (!this.isSeeking) {
             LayoutAnimation.easeInEaseOut();
-            this.setState({ 
+            this.setState({
                 currentTime: data.currentTime,
                 playableDuration: data.playableDuration
             });
@@ -228,7 +229,7 @@ export default class extends PureComponent {
 
     onSeek = (data) => {
         this.isSeeking = false;
-        this.setState({ 
+        this.setState({
             currentTime: data.seekTime,
         });
     }
@@ -246,61 +247,61 @@ export default class extends PureComponent {
 
     onPanResponderMove = (evt, gestureState) => {
 
-        if(!this.state.duration){
-            if(Math.abs(gestureState.dx)>20||Math.abs(gestureState.dy)>20){
+        if (!this.state.duration) {
+            if (Math.abs(gestureState.dx) > 20 || Math.abs(gestureState.dy) > 20) {
                 this.$isMoved = true;
             }
             return false
         }
-        
+
         //进度
-        if(Math.abs(gestureState.dx)>20&&Math.abs(gestureState.dy)<50){
+        if (Math.abs(gestureState.dx) > 20 && Math.abs(gestureState.dy) < 50) {
             this.$isMoved = true;
-            let current = this.$currentTime+gestureState.dx*.2;
-            if(current < 0){
+            let current = this.$currentTime + gestureState.dx * .2;
+            if (current < 0) {
                 current = 0;
             }
-            if(current > this.$duration){
+            if (current > this.$duration) {
                 current = this.$duration;
             }
             this._currentTime = current;
             this._isSet = true;
             this.setState({
-                $currentTime:current,
-                $isMove:true
+                $currentTime: current,
+                $isMove: true
             });
-        }else{
+        } else {
             this._isSet = false;
-            this.setState({$isMove:false})
+            this.setState({ $isMove: false })
         }
 
     }
 
     onPanResponderRelease = (evt, gestureState) => {
         //console.warn('onPanResponderRelease')
-        if(this._isSet){ 
-            this.setState({$isMove:false});
+        if (this._isSet) {
+            this.setState({ $isMove: false });
             this._isSet = false;
             this.toSeek(this._currentTime, true);
             // this.video.seek(_currentTime);
         }
-        if(!this.$isMoved){
-            const {isShowBar} = this.state;
-            if(isShowBar){
+        if (!this.$isMoved) {
+            const { isShowBar } = this.state;
+            if (isShowBar) {
                 this.toHideBar();
-            }else{
+            } else {
                 this.toShowBar();
             }
         }
     }
 
     _handleAppStateChange = (nextAppState) => {
-        if(nextAppState === 'active'){
-            this.setState({paused:!this.prePlayState});
-        }else{
+        if (nextAppState === 'active') {
+            this.setState({ paused: !this.prePlayState });
+        } else {
             this.prePlayState = !this.state.paused;
-            if(this.prePlayState){
-                this.setState({paused:true})
+            if (this.prePlayState) {
+                this.setState({ paused: true })
             }
         }
     }
@@ -328,65 +329,65 @@ export default class extends PureComponent {
             },
         });
     }
-    
+
     componentDidUpdate(prevProps, prevState) {
         if (this.props.uri !== prevProps.uri) {
             this.setState({
-                isReady:false,
-                isError:false,
-                duration:0,
-                currentTime:0,
-                playableDuration:0
+                isReady: false,
+                isError: false,
+                duration: 0,
+                currentTime: 0,
+                playableDuration: 0
             })
         }
     }
 
-    componentWillUnmount(){
+    componentWillUnmount() {
         AppState.removeEventListener('change', this._handleAppStateChange);
-        this.timer&&clearTimeout(this.timer);
+        this.timer && clearTimeout(this.timer);
     }
 
-    render(){
-        const {style,uri,themeColor} = this.props;
-        const {paused,isReady,currentTime,duration,playableDuration,isBuffering,isFull,isError,isEnd,isShowBar,$isMove,$currentTime} = this.state;
+    render() {
+        const { style, uri, themeColor } = this.props;
+        const { paused, isReady, currentTime, duration, playableDuration, isBuffering, isFull, isError, isEnd, isShowBar, $isMove, $currentTime } = this.state;
         return (
-            <View style={[styles.container,style]}>
+            <View style={[styles.container, style]}>
                 {
-                    uri?
-                    <Video
-                        ref={(ref) => this.video = ref}
-                        style={styles.fullScreen}
-                        useTextureView={false}
-                        progressUpdateInterval={1000}
-                        source={{uri:uri}}
-                        paused={paused}
-                        resizeMode="contain"
-                        onFullscreenPlayerDidPresent={this.onFullscreenPlayerDidPresent}
-                        onLoad={this.onLoad}
-                        onProgress={this.onProgress}
-                        onSeek={this.onSeek}
-                        onBuffer={this.onBuffer}
-                        onEnd={this.onEnd}
-                        onError={this.onError}
-                        onTimedMetadata={this.onTimedMetadata}
-                        bufferConfig={{
-                            minBufferMs: 15000,
-                            maxBufferMs: 6000000,
-                            bufferForPlaybackMs: 5000,
-                            bufferForPlaybackAfterRebufferMs: 10000
-                        }}
-                        repeat={false}
-                    />
-                    :
-                    null
+                    uri ?
+                        <Video
+                            ref={(ref) => this.video = ref}
+                            style={styles.fullScreen}
+                            useTextureView={false}
+                            progressUpdateInterval={1000}
+                            source={{ uri: uri }}
+                            paused={paused}
+                            resizeMode="contain"
+                            onFullscreenPlayerDidPresent={this.onFullscreenPlayerDidPresent}
+                            onLoad={this.onLoad}
+                            onProgress={this.onProgress}
+                            onSeek={this.onSeek}
+                            onBuffer={this.onBuffer}
+                            onEnd={this.onEnd}
+                            onError={this.onError}
+                            onTimedMetadata={this.onTimedMetadata}
+                            bufferConfig={{
+                                minBufferMs: 15000,
+                                maxBufferMs: 6000000,
+                                bufferForPlaybackMs: 5000,
+                                bufferForPlaybackAfterRebufferMs: 10000
+                            }}
+                            repeat={false}
+                        />
+                        :
+                        null
                 }
-                <View pointerEvents={(isShowBar||paused)?"auto":"none"} style={[styles.playbtnWrap,(!isShowBar&&!paused||!isReady)&&{left:-50},isShowBar&&{bottom:isFull?80:60}]} ><TouchableOpacity style={styles.playbtn} activeOpacity={.8} onPress={this.toTogglePlay}><IconF name={paused?'play':'pause'} size={20} color={themeColor} /></TouchableOpacity></View>
-                <View {...this._panResponder.panHandlers} style={[styles.fullScreen,{zIndex:5}]}>
-                    <ActivityIndicator pointerEvents="none" color={themeColor} size={isFull?'large':'small'} style={!isBuffering&&{opacity:0,zIndex:-1}} />
-                    <Text pointerEvents="none" style={[styles.tips,!isError&&{opacity:0}]}>╮(╯﹏╰）╭ 抱歉，视频播放失败</Text>
-                    <Text pointerEvents="none" style={[styles.tips,(!(isEnd&&!currentTime))&&{opacity:0}]}>播放完成</Text>
-                    <Text pointerEvents="none" style={[styles.showTime,isFull&&styles.showTimeFull,!$isMove&&{opacity:0}]}>
-                        <Text style={{color:themeColor}}>{timeFormat($currentTime)}</Text>
+                <View pointerEvents={(isShowBar || paused) ? "auto" : "none"} style={[styles.playbtnWrap, (!isShowBar && !paused || !isReady) && { left: -50 }, isShowBar && { bottom: isFull ? 80 : 60 }]} ><TouchableOpacity style={styles.playbtn} activeOpacity={.8} onPress={this.toTogglePlay}><IconF name={paused ? 'play' : 'pause'} size={20} color={themeColor} /></TouchableOpacity></View>
+                <View {...this._panResponder.panHandlers} style={[styles.fullScreen, { zIndex: 5 }]}>
+                    <ActivityIndicator pointerEvents="none" color={themeColor} size={isFull ? 'large' : 'small'} style={!isBuffering && { opacity: 0, zIndex: -1 }} />
+                    <Text pointerEvents="none" style={[styles.tips, !isError && { opacity: 0 }]}>╮(╯﹏╰）╭ {i18n.t('SORRY_VIDEO_FAIL')}</Text>
+                    <Text pointerEvents="none" style={[styles.tips, (!(isEnd && !currentTime)) && { opacity: 0 }]}>{i18n.t('PLAY_FINISH')}</Text>
+                    <Text pointerEvents="none" style={[styles.showTime, isFull && styles.showTimeFull, !$isMove && { opacity: 0 }]}>
+                        <Text style={{ color: themeColor }}>{timeFormat($currentTime)}</Text>
                         /{timeFormat(duration)}
                     </Text>
                 </View>
@@ -422,7 +423,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#000',
-        zIndex:10,
+        zIndex: 10,
         overflow: 'hidden',
     },
     fullScreen: {
@@ -434,100 +435,100 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    videobar:{
+    videobar: {
         position: 'absolute',
-        zIndex:10,
+        zIndex: 10,
         left: 0,
         bottom: 0,
         right: 0,
-        flexDirection:'row',
+        flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor:'rgba(255,255,255,.7)'
+        backgroundColor: 'rgba(255,255,255,.7)'
     },
-    videobarFull:{
+    videobarFull: {
         left: 10,
         bottom: 10,
         right: 10,
-        borderRadius:50,
-        padding:5
+        borderRadius: 50,
+        padding: 5
     },
-    videobtn:{
-        width:40,
-        height:40,
+    videobtn: {
+        width: 40,
+        height: 40,
         justifyContent: 'center',
         alignItems: 'center',
     },
-    videoslider:{
-        flex:1,
-        marginHorizontal:5,
-        flexDirection:'row',
+    videoslider: {
+        flex: 1,
+        marginHorizontal: 5,
+        flexDirection: 'row',
         alignItems: 'center',
     },
-    videosliderbar:{
-        position:'absolute',
-        zIndex:5,
-        left:-16,
-        right:-16,
-    },
-    videoslidercon:{
-        height:2,
-        opacity:.5
-    },
-    videotime:{
-        fontSize:12,
-        color:'#333',
-        paddingHorizontal:10,
-    },
-    showTime:{
+    videosliderbar: {
         position: 'absolute',
-        zIndex:20,
-        backgroundColor:'rgba(255,255,255,.7)',
-        color:'#333',
-        top:'10%',
-        fontSize:18,
-        paddingHorizontal:10,
-        paddingVertical:5,
-        borderRadius:5
+        zIndex: 5,
+        left: -16,
+        right: -16,
     },
-    showTimeFull:{
-        fontSize:24,
-        paddingHorizontal:15,
-        paddingVertical:10,
-        borderRadius:10
+    videoslidercon: {
+        height: 2,
+        opacity: .5
     },
-    tips:{
-        color:'#fff',
-        position:'absolute'
+    videotime: {
+        fontSize: 12,
+        color: '#333',
+        paddingHorizontal: 10,
     },
-    progresscon:{
-        position:'absolute',
-        bottom:-2,
-        left:0,
-        right:0,
-        height:2,
-        flexDirection:'row',
-        backgroundColor:'rgba(255,255,255,.7)'
+    showTime: {
+        position: 'absolute',
+        zIndex: 20,
+        backgroundColor: 'rgba(255,255,255,.7)',
+        color: '#333',
+        top: '10%',
+        fontSize: 18,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        borderRadius: 5
     },
-    progressconFull:{
-        bottom:-3,
-        height:3,
+    showTimeFull: {
+        fontSize: 24,
+        paddingHorizontal: 15,
+        paddingVertical: 10,
+        borderRadius: 10
+    },
+    tips: {
+        color: '#fff',
+        position: 'absolute'
+    },
+    progresscon: {
+        position: 'absolute',
+        bottom: -2,
+        left: 0,
+        right: 0,
+        height: 2,
+        flexDirection: 'row',
+        backgroundColor: 'rgba(255,255,255,.7)'
+    },
+    progressconFull: {
+        bottom: -3,
+        height: 3,
         // borderRadius:3,
         //overflow:'hidden'
     },
-    progressbar:{
-        height:'100%',
+    progressbar: {
+        height: '100%',
     },
-    playbtnWrap:{
-        position:'absolute',
-        left:20,
-        bottom:20,
-        zIndex:15
+    playbtnWrap: {
+        position: 'absolute',
+        left: 20,
+        bottom: 20,
+        zIndex: 15
     },
-    playbtn:{
-        width:50,
-        height:50,
-        borderRadius:100,
-        backgroundColor:'rgba(255,255,255,.7)',
+    playbtn: {
+        width: 50,
+        height: 50,
+        borderRadius: 100,
+        backgroundColor: 'rgba(255,255,255,.7)',
         justifyContent: 'center',
         alignItems: 'center',
     }

@@ -1,53 +1,54 @@
-import React, { PureComponent,Fragment } from 'react';
-import { StyleSheet, ScrollView, Text, View, TouchableOpacity,LayoutAnimation,NativeModules } from 'react-native';
+import React, { PureComponent, Fragment } from 'react';
+import { StyleSheet, ScrollView, Text, View, TouchableOpacity, LayoutAnimation, NativeModules } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
 import Swiper from '../components/Swiper';
 import MovieTitle from '../components/MovieTitle';
 import MovieList from '../components/MovieList';
 import MovieMoreBtn from '../components/MovieMoreBtn'
-import {GetHomeData} from '../../util/api';
+import { GetHomeData } from '../../util/api';
+import i18n from '../../util/i18n';
 
-const {UIManager} = NativeModules;
+const { UIManager } = NativeModules;
 
 const maps = [
     {
-        listType:'solling',
-        name:'轮播图',
-        isRender:true
+        listType: 'solling',
+        name: '轮播图',
+        isRender: true
     },
     {
-        listType:'movie',
-        name:'电影',
-        icon:'film'
+        listType: 'movie',
+        name: i18n.t('FILMS'),
+        icon: 'film'
     },
     {
-        listType:'tv',
-        name:'电视剧',
-        icon:'tv'
+        listType: 'tv',
+        name: i18n.t('TV_SERIES'),
+        icon: 'tv'
     },
     {
-        listType:'comic',
-        name:'动漫',
-        icon:'gitlab'
+        listType: 'comic',
+        name: i18n.t('ANIME'),
+        icon: 'gitlab'
     },
     {
-        listType:'variety',
-        name:'娱乐',
-        icon:'anchor'
+        listType: 'variety',
+        name: i18n.t('ENTERTAINMENT'),
+        icon: 'anchor'
     },
 ]
 
-const mapto = (list,maps) => {
+const mapto = (list, maps) => {
     const data = {};
-    list.forEach(d=>{
-        maps.forEach(el=>{
-            !data[el.listType]&&(data[el.listType]={
-                name:'',
-                list:[]
+    list.forEach(d => {
+        maps.forEach(el => {
+            !data[el.listType] && (data[el.listType] = {
+                name: '',
+                list: []
             });
-            if(el.listType===d.listType){
-                !data[el.listType].name&&(data[el.listType].name = el.name);
+            if (el.listType === d.listType) {
+                !data[el.listType].name && (data[el.listType].name = el.name);
                 data[el.listType].list.push(d);
             }
         })
@@ -60,20 +61,20 @@ export default class Home extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            loading:true,
-            data:{}
+            loading: true,
+            data: {}
         }
-		UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
-	}
+        UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
+    }
 
     GetHomeData = async () => {
         const data = await GetHomeData();
         //const data = mapto(_data,maps);
-        if(this.mounted){
+        if (this.mounted) {
             LayoutAnimation.easeInEaseOut();
             this.setState({
                 data,
-                loading:false
+                loading: false
             })
         }
     }
@@ -88,31 +89,31 @@ export default class Home extends PureComponent {
     }
 
     goDetail = (params) => () => {
-        this.props.navigation.navigate('MovieContent',params);
+        this.props.navigation.navigate('MovieContent', params);
     }
 
     render() {
-        const {loading,data={}} = this.state;
-        const {navigation,screenProps:{themeColor}} = this.props;
+        const { loading, data = {} } = this.state;
+        const { navigation, screenProps: { themeColor } } = this.props;
         return (
             <ScrollView style={styles.content}>
-                <Swiper loading={loading} data={data.solling&&data.solling.list} navigation={navigation} themeColor={themeColor[0]} />
+                <Swiper loading={loading} data={data.solling && data.solling.list} navigation={navigation} themeColor={themeColor[0]} />
                 <View style={styles.links}>
                     {
-                        maps.filter(el=>!el.isRender).map((d,i)=>(
-                            <TouchableOpacity key={i} style={styles.linkitem} activeOpacity={.9} onPress={this.goDetail({type:d.listType,title:d.name})} >
-                                <LinearGradient colors={themeColor.length>1?themeColor:[...themeColor,...themeColor]} start={{x: 0, y: 0}} end={{x: 1, y: 0}} style={styles.linkicon}><Icon name={d.icon} color={'#fff'} size={16} /></LinearGradient>
+                        maps.filter(el => !el.isRender).map((d, i) => (
+                            <TouchableOpacity key={i} style={styles.linkitem} activeOpacity={.9} onPress={this.goDetail({ type: d.listType, title: d.name })} >
+                                <LinearGradient colors={themeColor.length > 1 ? themeColor : [...themeColor, ...themeColor]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.linkicon}><Icon name={d.icon} color={'#fff'} size={16} /></LinearGradient>
                                 <Text style={styles.linktext}>{d.name}</Text>
                             </TouchableOpacity>
                         ))
                     }
                 </View>
                 {
-                    maps.filter(el=>!el.isRender).map((d,i)=>(
+                    maps.filter(el => !el.isRender).map((d, i) => (
                         <Fragment key={i}>
                             <MovieTitle title={d.name} icon={d.icon} themeColor={themeColor[0]} />
-                            <MovieList isRender={!loading} style={{marginTop:-10}} data={data[d.listType]?data[d.listType]['list']:[]} navigation={navigation} themeColor={themeColor[0]} />
-                            <MovieMoreBtn show={!loading} text={"查看更多"+d.name} onPress={this.goDetail({type:d.listType,title:d.name})} />
+                            <MovieList isRender={!loading} style={{ marginTop: -10 }} data={data[d.listType] ? data[d.listType]['list'] : []} navigation={navigation} themeColor={themeColor[0]} />
+                            <MovieMoreBtn show={!loading} text={i18n.t('SEE_MORE') + d.name} onPress={this.goDetail({ type: d.listType, title: d.name })} />
                         </Fragment>
                     ))
                 }
@@ -122,40 +123,40 @@ export default class Home extends PureComponent {
 }
 
 const styles = StyleSheet.create({
-	content: {
+    content: {
         flex: 1,
     },
-    links:{
-        borderRadius:5,
-        backgroundColor:'#fff',
-        overflow:'hidden',
-        marginHorizontal:10,
-        padding:10,
-        marginTop:-25,
-        flexDirection:'row'
+    links: {
+        borderRadius: 5,
+        backgroundColor: '#fff',
+        overflow: 'hidden',
+        marginHorizontal: 10,
+        padding: 10,
+        marginTop: -25,
+        flexDirection: 'row'
     },
-    linkitem:{
-        flex:1,
-        alignItems:'center'
+    linkitem: {
+        flex: 1,
+        alignItems: 'center'
     },
-    linkicon:{
-        width:40,
-        height:40,
-        borderRadius:40,
-        backgroundColor:'#fff',
+    linkicon: {
+        width: 40,
+        height: 40,
+        borderRadius: 40,
+        backgroundColor: '#fff',
         justifyContent: 'center',
-		alignItems: 'center',
+        alignItems: 'center',
     },
-    linktext:{
-        marginTop:5,
-        fontSize:12,
+    linktext: {
+        marginTop: 5,
+        fontSize: 12,
     },
-    links2:{
-        borderRadius:5,
-        backgroundColor:'#fff',
-        overflow:'hidden',
-        margin:10,
-        padding:10,
-        marginTop:-20
+    links2: {
+        borderRadius: 5,
+        backgroundColor: '#fff',
+        overflow: 'hidden',
+        margin: 10,
+        padding: 10,
+        marginTop: -20
     }
 });

@@ -16,7 +16,7 @@ export default ({ icon, title, themeColor }) => (
         <Icon name={icon} size={16} color={themeColor} />
         <Text style={styles.view_title}>{title}</Text>
     </View>
-) 
+)
 
 
 const styles = StyleSheet.create({
@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
         //backgroundColor:'#fff'
     },
     view_title: {
-        marginLeft:5,
+        marginLeft: 5,
         fontSize: 16,
         color: '#333',
         flex: 1

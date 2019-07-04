@@ -13,25 +13,27 @@ import {
 import Loading from './Loading';
 import LoadView from './LoadView';
 
-const {UIManager} = NativeModules;
+import i18n from '../../util/i18n';
+
+const { UIManager } = NativeModules;
 
 const MovieEmpty = () => (
 	<View style={styles.flexcon}>
-		<Text style={styles.empty}>╮(╯﹏╰）╭什么也没找到</Text>
+		<Text style={styles.empty}>╮(╯﹏╰）╭ {i18n.t('NOTHING_FOUND')}</Text>
 	</View>
 )
 
 const MovieItem = (props) => (
 	<TouchableOpacity
 		activeOpacity={.9}
-		onPress={() => props.navigation.navigate('MovieDetail',{movieId:props.item.ID})}
+		onPress={() => props.navigation.navigate('MovieDetail', { movieId: props.item.ID })}
 		style={styles.movieitem}>
-		<Image 
+		<Image
 			style={styles.movieimg}
-			source={{uri:props.item.Cover||'http'}}
+			source={{ uri: props.item.Cover || 'http' }}
 		/>
 		<View style={styles.movietext}>
-			<Text style={[styles.moviename,{color:props.themeColor}]}>{props.item.Name}</Text>
+			<Text style={[styles.moviename, { color: props.themeColor }]}>{props.item.Name}</Text>
 			<Text numberOfLines={1} style={styles.movietxt1}>类型：{props.item.Info.Type}</Text>
 			<Text numberOfLines={1} style={styles.movietxt2}>主演：{props.item.Info.Art}</Text>
 			{
@@ -58,37 +60,37 @@ export default class extends PureComponent {
 
 	renderFooter = () => {
 		const { data } = this.props;
-		const { onEndReached,themeColor,isEnding=false,ListFooterComponent } = this.props;
-		if(ListFooterComponent){
-			return <ListFooterComponent/>;
+		const { onEndReached, themeColor, isEnding = false, ListFooterComponent } = this.props;
+		if (ListFooterComponent) {
+			return <ListFooterComponent />;
 		}
-		if(onEndReached){
+		if (onEndReached) {
 			return <LoadView isEnding={isEnding} themeColor={themeColor} />;
-		}else{
+		} else {
 			return null;
 		}
 	}
 
 	render() {
-		const { data, isRender,themeColor,style,onEndReached=()=>{} } = this.props;
+		const { data, isRender, themeColor, style, onEndReached = () => { } } = this.props;
 		const height = 150;
 		if (!isRender) {
-			return <Loading style={{height:100}} size='small' text='' themeColor={themeColor} />
+			return <Loading style={{ height: 100 }} size='small' text='' themeColor={themeColor} />
 		}
-		if(data.length==0){
+		if (data.length == 0) {
 			return <MovieEmpty />;
 		}
 		return (
 			<FlatList
-				style={[styles.content,style]}
+				style={[styles.content, style]}
 				numColumns={1}
-				ItemSeparatorComponent={() => <View style={{height:10}} />}
+				ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
 				ListFooterComponent={this.renderFooter}
 				data={data}
-				getItemLayout={(data, index) => ( {length: height, offset: height * index, index} )}
+				getItemLayout={(data, index) => ({ length: height, offset: height * index, index })}
 				onEndReached={onEndReached}
 				onEndReachedThreshold={0.1}
-				keyExtractor={(item, index) => index+item.ID.toString()}
+				keyExtractor={(item, index) => index + item.ID.toString()}
 				renderItem={this.renderItem}
 			/>
 		)
@@ -98,48 +100,48 @@ export default class extends PureComponent {
 const styles = StyleSheet.create({
 	content: {
 		flex: 1,
-		paddingVertical:10,
+		paddingVertical: 10,
 	},
 	movieitem: {
-        marginHorizontal: 10,
-        padding: 10,
-        borderRadius: 5,
-		overflow:'hidden',
-		backgroundColor:'#fff',
-		flexDirection:'row'
+		marginHorizontal: 10,
+		padding: 10,
+		borderRadius: 5,
+		overflow: 'hidden',
+		backgroundColor: '#fff',
+		flexDirection: 'row'
 	},
 	movieimg: {
-		width:90,
-		height:120,
-		borderRadius:3,
-		backgroundColor:'#f1f1f1',
+		width: 90,
+		height: 120,
+		borderRadius: 3,
+		backgroundColor: '#f1f1f1',
 		resizeMode: 'cover'
 	},
 	movietext: {
-		flex:1,
+		flex: 1,
 		paddingHorizontal: 10,
 	},
 	moviename: {
 		fontSize: 16,
 	},
-	movietxt1:{
-		marginTop:10,
+	movietxt1: {
+		marginTop: 10,
 		fontSize: 14,
 		color: '#666',
 	},
-	movietxt2:{
-		marginTop:5,
+	movietxt2: {
+		marginTop: 5,
 		fontSize: 14,
 		color: '#666',
 	},
-	flexcon:{
+	flexcon: {
 		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center',
 	},
 	empty: {
-        textAlign: 'center',
-        fontSize: 14,
-        color: '#666'
-    }
+		textAlign: 'center',
+		fontSize: 14,
+		color: '#666'
+	}
 });

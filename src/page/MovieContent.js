@@ -25,7 +25,8 @@ import AppTop from '../components/AppTop';
 import Loading from '../components/Loading';
 import MovieList from '../components/MovieList';
 import { GetPageList } from '../../util/api';
-import  { CommonList,Categories } from '../../util/categories';
+import { CommonList, Categories } from '../../util/categories';
+import i18n from '../../util/i18n';
 const { UIManager } = NativeModules;
 
 class DrawerContent extends PureComponent {
@@ -37,7 +38,7 @@ class DrawerContent extends PureComponent {
             Status: props.state.Status,
             Area: props.state.Area,
             Year: props.state.Year,
-            isVisible:false
+            isVisible: false
         }
     }
 
@@ -73,7 +74,7 @@ class DrawerContent extends PureComponent {
         const { isVisible } = this.state;
         return (
             <Fragment>
-                <LinearGradient colors={themeColor.length>1?themeColor:[...themeColor,...themeColor]} start={{x: 0, y: 0}} end={{x: 1, y: 0}} style={styles.appbar}>
+                <LinearGradient colors={themeColor.length > 1 ? themeColor : [...themeColor, ...themeColor]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.appbar}>
                     <BorderlessButton
                         activeOpacity={.8}
                         style={styles.btn}
@@ -81,7 +82,7 @@ class DrawerContent extends PureComponent {
                     >
                         <Icon name='x' size={22} color='#fff' />
                     </BorderlessButton>
-                    <Text style={styles.apptitle} numberOfLines={1} onLongPress={this.setVisibel}>高级筛选</Text>
+                    <Text style={styles.apptitle} numberOfLines={1} onLongPress={this.setVisibel}>{i18n.t('SEE_MORE')}</Text>
                 </LinearGradient>
                 <ScrollView style={styles.content}>
                     {
@@ -92,7 +93,7 @@ class DrawerContent extends PureComponent {
                                     <Text style={[styles.typetitletxt, { color: themeColor[0] }]}>{d.name}</Text>
                                 </View>
                                 <View style={styles.typecon}>
-                                    <BorderlessButton disabled={this.state[d.cate].id == ''} onPress={() => this.setType(d.cate, {name:'',id:''})} style={styles.typeitem}><Text style={[styles.typeitemtxt, this.state[d.cate].id == '' && { color: themeColor[0] }]}>全部</Text></BorderlessButton>
+                                    <BorderlessButton disabled={this.state[d.cate].id == ''} onPress={() => this.setType(d.cate, { name: '', id: '' })} style={styles.typeitem}><Text style={[styles.typeitemtxt, this.state[d.cate].id == '' && { color: themeColor[0] }]}>全部</Text></BorderlessButton>
                                     {
                                         d.type.map((el, j) => (
                                             <BorderlessButton disabled={this.state[d.cate].id === el.id} onPress={() => this.setType(d.cate, el)} key={j} style={styles.typeitem}><Text style={[styles.typeitemtxt, el.id == this.state[d.cate].id && { color: themeColor[0] }]}>{el.name}</Text></BorderlessButton>
@@ -105,18 +106,20 @@ class DrawerContent extends PureComponent {
                 </ScrollView>
                 <View style={styles.typeaction}>
                     <TouchableOpacity activeOpacity={.8} onPress={this.onSubmit} style={{ flex: 1 }}>
-                        <LinearGradient style={[styles.typebtn,{borderWidth:0}]} colors={themeColor.length>1?themeColor:[...themeColor,...themeColor]} start={{x: 0, y: 0}} end={{x: 1, y: 0}}>
-                            <Text style={styles.typebtns}>确定</Text>
+                        <LinearGradient style={[styles.typebtn, { borderWidth: 0 }]} colors={themeColor.length > 1 ? themeColor : [...themeColor, ...themeColor]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
+                            <Text style={styles.typebtns}>{i18n.t('DETERMINE')}</Text>
                         </LinearGradient>
                     </TouchableOpacity>
-                    <TouchableOpacity activeOpacity={.8} onPress={closeDrawer} style={[styles.typebtn, { borderColor: themeColor[0] }]}><Text style={[styles.typebtns, { color: themeColor[0] }]}>取消</Text></TouchableOpacity>
+                    <TouchableOpacity activeOpacity={.8} onPress={closeDrawer} style={[styles.typebtn, { borderColor: themeColor[0] }]}>
+                        <Text style={[styles.typebtns, { color: themeColor[0] }]}>{i18n.t('CANCEL')}</Text>
+                    </TouchableOpacity>
                 </View>
             </Fragment>
         )
     }
 }
 
-const CategoryTop = ({state,type,openDrawer,themeColor}) => (
+const CategoryTop = ({ state, type, openDrawer, themeColor }) => (
     <View style={styles.typetop}>
         {
             [...Categories[type], ...CommonList].map((d, i) => (
@@ -143,20 +146,20 @@ export default class extends PureComponent {
             isRender: false,
             isEnding: false,
             Status: {
-                name:'',
-                id:''
+                name: '',
+                id: ''
             },
             Plot: {
-                name:'',
-                id:''
+                name: '',
+                id: ''
             },
             Area: {
-                name:'',
-                id:''
+                name: '',
+                id: ''
             },
             Year: {
-                name:'',
-                id:''
+                name: '',
+                id: ''
             }
         }
     }
@@ -173,7 +176,7 @@ export default class extends PureComponent {
 
     setType = (options) => {
         LayoutAnimation.easeInEaseOut();
-        this.setState(options,this.regetData);
+        this.setState(options, this.regetData);
     }
 
     regetData = () => {
@@ -187,8 +190,8 @@ export default class extends PureComponent {
 
     getData = async () => {
         const { Status, Plot, Area, Year } = this.state;
-        const data = await GetPageList({ pageIndex: this.page, pageSize: this.pageSize, Type:this.type, Status:Status.id, Area:Area.id, Plot:Plot.id, Year:Year.id,orderBy:'addtime' });
-        if(this.mounted){
+        const data = await GetPageList({ pageIndex: this.page, pageSize: this.pageSize, Type: this.type, Status: Status.id, Area: Area.id, Plot: Plot.id, Year: Year.id, orderBy: 'addtime' });
+        if (this.mounted) {
             LayoutAnimation.easeInEaseOut();
             this.setState({
                 data: [...this.state.data, ...data],
@@ -219,7 +222,7 @@ export default class extends PureComponent {
     }
 
     onBackAndroid = () => {
-        if(this.open){
+        if (this.open) {
             this.closeDrawer();
             return true;
         }
@@ -271,9 +274,9 @@ export default class extends PureComponent {
                     <CategoryTop openDrawer={this.openDrawer} type={type} state={{ Status, Plot, Area, Year }} themeColor={themeColor} />
                     {
                         isRender ?
-                            <MovieList style={{paddingHorizontal:5}} isRender={true} isEnding={isEnding} data={data} navigation={navigation} themeColor={themeColor[0]} onEndReached={this.loadMore} />
+                            <MovieList style={{ paddingHorizontal: 5 }} isRender={true} isEnding={isEnding} data={data} navigation={navigation} themeColor={themeColor[0]} onEndReached={this.loadMore} />
                             :
-                            <Loading size='small' text='正在努力加载中...' themeColor={themeColor[0]} />
+                            <Loading size='small' text={i18n.t('TRY_LOADING')} themeColor={themeColor[0]} />
                     }
                 </View>
             </DrawerLayout>

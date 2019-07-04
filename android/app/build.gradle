@@ -176,6 +176,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-localize')
     compile project(':react-native-linear-gradient')
     compile project(':react-native-code-push')
     compile project(':react-native-orientation')

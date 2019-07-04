@@ -27,13 +27,14 @@ import Icon from 'react-native-vector-icons/Feather';
 import IconE from 'react-native-vector-icons/Entypo';
 import IconM from 'react-native-vector-icons/MaterialIcons';
 import Video from '../components/Video';
-import { GetVideoInfo,GetSameVideo,GetDoubanInterests,GetPlayUrl } from '../../util/api';
+import { GetVideoInfo, GetSameVideo, GetDoubanInterests, GetPlayUrl } from '../../util/api';
 import { Store } from '../../util/store';
+import i18n from '../../util/i18n';
 
 const { UIManager } = NativeModules;
 
-const Appbar = ({themeColor,isFull,scrollTop,name,hasFollow,isRender,setFollow,goBack}) => (
-    <View pointerEvents={isFull?'none':'auto'} style={[styles.appbar,isFull&&{ opacity:0 }]}>
+const Appbar = ({ themeColor, isFull, scrollTop, name, hasFollow, isRender, setFollow, goBack }) => (
+    <View pointerEvents={isFull ? 'none' : 'auto'} style={[styles.appbar, isFull && { opacity: 0 }]}>
         <BorderlessButton
             activeOpacity={.8}
             style={styles.btn}
@@ -42,35 +43,35 @@ const Appbar = ({themeColor,isFull,scrollTop,name,hasFollow,isRender,setFollow,g
             <Icon name='chevron-left' size={24} color='#fff' />
         </BorderlessButton>
         <View style={styles.apptitle}>
-            <Text style={styles.apptitletext}>{name||'影视详情'}</Text>
+            <Text style={styles.apptitletext}>{name || i18n.t('FILM_DETAILS')}</Text>
         </View>
-        <BorderlessButton activeOpacity={.8} style={styles.btn} onPress={isRender?setFollow:null} >
-            <IconM name={hasFollow?'favorite':'favorite-border'} size={20} color='#fff' />
+        <BorderlessButton activeOpacity={.8} style={styles.btn} onPress={isRender ? setFollow : null} >
+            <IconM name={hasFollow ? 'favorite' : 'favorite-border'} size={20} color='#fff' />
         </BorderlessButton>
         <Animated.View style={[styles.fullcon, {
             opacity: scrollTop.interpolate({
                 inputRange: [$.STATUS_HEIGHT, $.STATUS_HEIGHT + 150],
                 outputRange: [0, 1]
             })
-        }]} ><LinearGradient colors={themeColor.length>1?themeColor:[...themeColor,...themeColor]} start={{x: 0, y: 0}} end={{x: 1, y: 0}} style={styles.fullcon} /></Animated.View>
+        }]} ><LinearGradient colors={themeColor.length > 1 ? themeColor : [...themeColor, ...themeColor]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.fullcon} /></Animated.View>
     </View>
 )
 
-const MovieInfo = ({movieInfo,themeColor,isPlaying,onPlay,isRender}) => (
+const MovieInfo = ({ movieInfo, themeColor, isPlaying, onPlay, isRender }) => (
     <View style={styles.videosInfo}>
         <View style={styles.poster}>
             <Image source={{ uri: movieInfo.Cover }} style={[styles.fullcon, styles.borR]} />
             <TouchableOpacity disabled={!isRender} onPress={onPlay} activeOpacity={.8} style={[styles.playbtn, { backgroundColor: themeColor }]}>
-                <IconE name='controller-play' style={{marginLeft:3}} size={24} color='#fff' />
+                <IconE name='controller-play' style={{ marginLeft: 3 }} size={24} color='#fff' />
             </TouchableOpacity>
         </View>
-        <View style={[styles.postertext,isPlaying&&{height:($.WIDTH-40)*9/16}]}>
-            <Text style={[styles.title, { color: themeColor }]}>{movieInfo.Name||'正在加载...'}</Text>
+        <View style={[styles.postertext, isPlaying && { height: ($.WIDTH - 40) * 9 / 16 }]}>
+            <Text style={[styles.title, { color: themeColor }]}>{movieInfo.Name || `${i18n.t('LOADING')}...`}</Text>
             {
                 //<Star style={styles.score} score={movieInfo.Score} themeColor={themeColor} />
             }
             {
-                movieInfo.MovieTitle ? <Text style={styles.status}>{movieInfo.MovieTitle}</Text>:null
+                movieInfo.MovieTitle ? <Text style={styles.status}>{movieInfo.MovieTitle}</Text> : null
             }
             <Text style={styles.subtitle}>{movieInfo.Tags}</Text>
             <Text style={styles.subtitle}>{movieInfo.ReleaseDate} 更新</Text>
@@ -80,7 +81,7 @@ const MovieInfo = ({movieInfo,themeColor,isPlaying,onPlay,isRender}) => (
 
 const SortTitle = (props) => (
     <View style={styles.view_hd}>
-        <Icon name={props.icon} size={16} color={props.themeColor}/>
+        <Icon name={props.icon} size={16} color={props.themeColor} />
         <Text style={styles.view_title}>{props.title}</Text>
         {
             props.children || null
@@ -90,27 +91,27 @@ const SortTitle = (props) => (
 
 class MovieSummary extends PureComponent {
     state = {
-        isMore:false
+        isMore: false
     }
 
     expand = () => {
         LayoutAnimation.spring();
-        this.setState({isMore:!this.state.isMore})
+        this.setState({ isMore: !this.state.isMore })
     }
 
-    render () {
-        const {summary,isRender,themeColor} = this.props;
-        const {isMore} = this.state;
+    render() {
+        const { summary, isRender, themeColor } = this.props;
+        const { isMore } = this.state;
         return (
             <View style={styles.viewcon}>
-                <SortTitle title='剧情' icon="compass" themeColor={themeColor}>
+                <SortTitle title={i18n.t('剧情')} icon="compass" themeColor={themeColor}>
                     {
                         isRender &&
                         <TouchableOpacity
                             onPress={this.expand}
                             style={styles.view_more}
                         >
-                            <Text style={styles.view_moretext}>{isMore ? '收起' : '展开'}</Text>
+                            <Text style={styles.view_moretext}>{isMore ? i18n.t("COLLAPSE") : i18n.t("EXPAND")}</Text>
                             <Icon name={isMore ? 'chevron-up' : 'chevron-down'} size={16} color={themeColor} />
                         </TouchableOpacity>
                     }
@@ -136,46 +137,46 @@ class MovieSource extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            source:props.source||[],
-            dir:true
+            source: props.source || [],
+            dir: true
         }
     }
 
     onLayout = (index) => (ev) => {
-        const {width} = ev.nativeEvent.layout;
+        const { width } = ev.nativeEvent.layout;
         this.columns[index] = width;
     }
 
     changeDir = () => {
         this.setState({
-            source:[...this.state.source.reverse()],
-            dir:!this.state.dir
+            source: [...this.state.source.reverse()],
+            dir: !this.state.dir
         })
     }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.isRender !== this.props.isRender) {
             this.setState({
-                source:nextProps.source,
-            },()=>{
-                setTimeout(()=>{
-                    const index = nextProps.source.findIndex(el=>el.ID==nextProps.sourceId);
-                    this.flatlist&&this.flatlist.scrollToIndex({index,viewPosition:.5});
-                },1000)
+                source: nextProps.source,
+            }, () => {
+                setTimeout(() => {
+                    const index = nextProps.source.findIndex(el => el.ID == nextProps.sourceId);
+                    this.flatlist && this.flatlist.scrollToIndex({ index, viewPosition: .5 });
+                }, 1000)
             })
         }
     }
 
     renderItem = ({ item, index }) => {
-        const {sourceId,onPlay,themeColor} = this.props;
-        const current = sourceId==item.ID;
-        
+        const { sourceId, onPlay, themeColor } = this.props;
+        const current = sourceId == item.ID;
+
         const play = () => {
-            onPlay(item.ID,true);
+            onPlay(item.ID, true);
         }
         return (
             <TouchableOpacity disabled={current} onLayout={this.onLayout(index)} style={styles.sourceitem} onPress={play} activeOpacity={.9}>
-                <Text numberOfLines={2} style={styles.castname}>{item.Name || '资源'+(index+1)}</Text>
+                <Text numberOfLines={2} style={styles.castname}>{item.Name || i18n.t('RESOURCE') + (index + 1)}</Text>
                 <View style={[styles.sourcedot, { backgroundColor: themeColor }, current && { opacity: 1 }]} />
             </TouchableOpacity>
         )
@@ -184,54 +185,54 @@ class MovieSource extends PureComponent {
     getItemLayout = (data, rowIndex) => {
         let offset = 0;
         for (let ii = 0; ii < rowIndex; ii += 1) {
-          offset += this.columns[ii]+10;
+            offset += this.columns[ii] + 10;
         }
-        return { length: this.columns[rowIndex]+10, offset, index: rowIndex };
+        return { length: this.columns[rowIndex] + 10, offset, index: rowIndex };
     };
 
     renderFooter = () => (
-        <View style={{width:30,height:10}} />
+        <View style={{ width: 30, height: 10 }} />
     )
 
-    render () {
-        const {isRender,themeColor,sourceId} = this.props;
-        const {source,dir} = this.state;
+    render() {
+        const { isRender, themeColor, sourceId } = this.props;
+        const { source, dir } = this.state;
         return (
             <View style={styles.viewcon}>
-                <SortTitle title={`选集(${source.length})`} icon="grid" themeColor={themeColor}>
-                {
-                    source.length>1&&
-                    <TouchableOpacity
-                        onPress={this.changeDir}
-                        style={styles.view_more}
-                    >
-                        <Text style={styles.view_moretext}>{dir?'正常':'倒序'}</Text>
-                        <Icon name={dir ? 'chevron-right' : 'chevron-left'} size={16} color={themeColor} />
-                    </TouchableOpacity>
-                }
+                <SortTitle title={`${i18n.t('SELECTION')}(${source.length})`} icon="grid" themeColor={themeColor}>
+                    {
+                        source.length > 1 &&
+                        <TouchableOpacity
+                            onPress={this.changeDir}
+                            style={styles.view_more}
+                        >
+                            <Text style={styles.view_moretext}>{dir ? i18n.t('NORMAL') : i18n.t('REVERSE_OREDER')}</Text>
+                            <Icon name={dir ? 'chevron-right' : 'chevron-left'} size={16} color={themeColor} />
+                        </TouchableOpacity>
+                    }
                 </SortTitle>
                 {
                     isRender
                         ?
                         (
-                            source.length>0?
-                            <FlatList
-                                ref={(ref) => this.flatlist = ref}
-                                style={styles.sourcelist}
-                                showsHorizontalScrollIndicator={false}
-                                ListFooterComponent={this.renderFooter}
-                                horizontal={true}
-                                ItemSeparatorComponent={() => <View style={{width:10}} />}
-                                //initialNumToRender={20}
-                                getItemLayout={this.getItemLayout}
-                                removeClippedSubviews={false}
-                                data={source}
-                                extraData={sourceId}
-                                keyExtractor={(item, index) => item.ID.toString()}
-                                renderItem={this.renderItem}
-                            />
-                            :
-                            <Text style={styles.empty}>╮(╯﹏╰）╭ 暂无资源</Text>
+                            source.length > 0 ?
+                                <FlatList
+                                    ref={(ref) => this.flatlist = ref}
+                                    style={styles.sourcelist}
+                                    showsHorizontalScrollIndicator={false}
+                                    ListFooterComponent={this.renderFooter}
+                                    horizontal={true}
+                                    ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
+                                    //initialNumToRender={20}
+                                    getItemLayout={this.getItemLayout}
+                                    removeClippedSubviews={false}
+                                    data={source}
+                                    extraData={sourceId}
+                                    keyExtractor={(item, index) => item.ID.toString()}
+                                    renderItem={this.renderItem}
+                                />
+                                :
+                                <Text style={styles.empty}>╮(╯﹏╰）╭ {i18n.t("NO_RESOURCES")}</Text>
                         )
                         :
                         <Loading size='small' text='' themeColor={themeColor} />
@@ -243,30 +244,30 @@ class MovieSource extends PureComponent {
 
 class MovieSame extends PureComponent {
     state = {
-        isFetch:false,
-        sameVideo:[]
+        isFetch: false,
+        sameVideo: []
     }
 
-    GetSameVideo = async (vName,movieId) => {
-        const data = await GetSameVideo(vName,movieId)||[];
+    GetSameVideo = async (vName, movieId) => {
+        const data = await GetSameVideo(vName, movieId) || [];
         this.setState({
-            sameVideo:data,
-            isFetch:true,
+            sameVideo: data,
+            isFetch: true,
         })
         LayoutAnimation.easeInEaseOut();
     }
 
     renderItem = ({ item, index }) => {
-        const {navigation} = this.props;
+        const { navigation } = this.props;
 
         return (
             <TouchableOpacity
                 activeOpacity={.9}
-                onPress={() => navigation.replace('MovieDetail',{movieId:item.ID})}
+                onPress={() => navigation.replace('MovieDetail', { movieId: item.ID })}
                 style={styles.movieitem}>
-                <Image 
+                <Image
                     style={styles.movieimg}
-                    source={{uri:item.Cover||'http'}}
+                    source={{ uri: item.Cover || 'http' }}
                 />
                 <View style={styles.movietext}>
                     <Text numberOfLines={1} style={styles.moviename}>{item.Name}</Text>
@@ -276,7 +277,7 @@ class MovieSame extends PureComponent {
     }
 
     renderFooter = () => (
-        <View style={{width:20,height:100}} />
+        <View style={{ width: 20, height: 100 }} />
     )
 
     componentWillReceiveProps(nextProps) {
@@ -286,33 +287,33 @@ class MovieSame extends PureComponent {
         // }
     }
 
-    render () {
-        const {isRender,themeColor,movieInfo:{RelateList}} = this.props;
+    render() {
+        const { isRender, themeColor, movieInfo: { RelateList } } = this.props;
         //const {isFetch,sameVideo} = this.state;
         return (
             <View style={styles.viewcon}>
-                <SortTitle title='相关热播' icon="cast" themeColor={themeColor}/>
+                <SortTitle title={i18n.t('RELATED_HITS')} icon="cast" themeColor={themeColor} />
                 {
                     isRender
                         ?
                         (
-                            RelateList.length>0?
-                            <View style={{height:180}}>
-                                <FlatList
-                                    style={{flex:1,paddingHorizontal:10}}
-                                    showsHorizontalScrollIndicator={false}
-                                    horizontal={true}
-                                    removeClippedSubviews={true}
-                                    ItemSeparatorComponent={() => <View style={{width:10}} />}
-                                    ListFooterComponent={this.renderFooter}
-                                    data={RelateList}
-                                    getItemLayout={(data, index) => ( {length: 110, offset: 110 * index, index} )}
-                                    keyExtractor={(item, index) => item.ID.toString()}
-                                    renderItem={this.renderItem}
-                                />
-                            </View>
-                            :
-                            <Text style={styles.empty}>╮(╯﹏╰）╭ 暂无相关热播</Text>
+                            RelateList.length > 0 ?
+                                <View style={{ height: 180 }}>
+                                    <FlatList
+                                        style={{ flex: 1, paddingHorizontal: 10 }}
+                                        showsHorizontalScrollIndicator={false}
+                                        horizontal={true}
+                                        removeClippedSubviews={true}
+                                        ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
+                                        ListFooterComponent={this.renderFooter}
+                                        data={RelateList}
+                                        getItemLayout={(data, index) => ({ length: 110, offset: 110 * index, index })}
+                                        keyExtractor={(item, index) => item.ID.toString()}
+                                        renderItem={this.renderItem}
+                                    />
+                                </View>
+                                :
+                                <Text style={styles.empty}>╮(╯﹏╰）╭ {i18n.t('NO_RELATED_HITS')}</Text>
                         )
                         :
                         <Loading size='small' text='' themeColor={themeColor} />
@@ -325,23 +326,23 @@ class MovieSame extends PureComponent {
 class MovieComments extends PureComponent {
 
     state = {
-        isFetch:false,
-        data:[],
-        height:null
+        isFetch: false,
+        data: [],
+        height: null
     }
 
     GetDoubanInterests = async (DBID) => {
-        const data = await GetDoubanInterests({DBID});
+        const data = await GetDoubanInterests({ DBID });
         this.setState({
-            data:data.interests||[],
-            isFetch:true
+            data: data.interests || [],
+            isFetch: true
         })
     }
 
     onLayout = (ev) => {
-        const {height} = ev.nativeEvent.layout;
-        if(height>0){
-            this.setState({height});
+        const { height } = ev.nativeEvent.layout;
+        if (height > 0) {
+            this.setState({ height });
         }
     }
 
@@ -352,22 +353,22 @@ class MovieComments extends PureComponent {
         }
     }
 
-    render(){
-        const {isRender,themeColor,navigation,DBID} = this.props;
-        const {isFetch,data,height} = this.state;
-        return(
+    render() {
+        const { isRender, themeColor, navigation, DBID } = this.props;
+        const { isFetch, data, height } = this.state;
+        return (
             <View style={styles.viewcon}>
                 <SortTitle title='豆瓣影评' icon='message-circle' themeColor={themeColor} />
                 <View>
                     {
-                        isRender&&isFetch
+                        isRender && isFetch
                             ?
-                            <View style={{height:height,marginTop:-10}}><CommentList isRender={isFetch} data={data} onLayout={this.onLayout} themeColor={themeColor} /></View>
+                            <View style={{ height: height, marginTop: -10 }}><CommentList isRender={isFetch} data={data} onLayout={this.onLayout} themeColor={themeColor} /></View>
                             :
                             <Loading size='small' text='' themeColor={themeColor} />
                     }
                 </View>
-                <MovieMoreBtn show={data.length>=5} themeColor={themeColor} style={{backgroundColor:'#f1f1f1',marginBottom:0}} text='查看更多评论' onPress={()=>navigation.navigate('Comment',{DBID})} />
+                <MovieMoreBtn show={data.length >= 5} themeColor={themeColor} style={{ backgroundColor: '#f1f1f1', marginBottom: 0 }} text='查看更多评论' onPress={() => navigation.navigate('Comment', { DBID })} />
             </View>
         )
     }
@@ -379,16 +380,16 @@ export default class MovieDetail extends PureComponent {
         super(props);
         UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
         this.state = {
-            isRender:false,
-            movieInfo:{},
-            sourceId:null,
-            sourceName:'',
-            hasFollow:false,
-            isPlaying:false,
-            isFull:false,
-            playUrl:null,
-            seekTime:0,
-            isWiFi:true,
+            isRender: false,
+            movieInfo: {},
+            sourceId: null,
+            sourceName: '',
+            hasFollow: false,
+            isPlaying: false,
+            isFull: false,
+            playUrl: null,
+            seekTime: 0,
+            isWiFi: true,
         }
     }
 
@@ -397,30 +398,30 @@ export default class MovieDetail extends PureComponent {
     scrollRotate = new Animated.Value(0);
 
     GetVideoInfo = async (movieId) => {
-        const { findHistory,findFollow,settings:{allowMoblieNetwork,preLoad} } = this.context;
-        const data = await GetVideoInfo(movieId)||{};
-        if(this.mounted){
+        const { findHistory, findFollow, settings: { allowMoblieNetwork, preLoad } } = this.context;
+        const data = await GetVideoInfo(movieId) || {};
+        if (this.mounted) {
             const historyItem = findHistory(movieId);
             const hasFollow = findFollow(movieId);
             let _sourceId = null;
-            if(historyItem){
-                this.lastPlayTime = historyItem.currentTime-3;
+            if (historyItem) {
+                this.lastPlayTime = historyItem.currentTime - 3;
                 _sourceId = historyItem.sourceId;
-            }else{
-                _sourceId = data.MoviePlayUrls[0]?data.MoviePlayUrls[0].ID:null;
+            } else {
+                _sourceId = data.MoviePlayUrls[0] ? data.MoviePlayUrls[0].ID : null;
             }
-            const item = data.MoviePlayUrls.find(el=>el.ID==_sourceId||el.Name==historyItem.sourceName)||{};
-            if(item.ID){
+            const item = data.MoviePlayUrls.find(el => el.ID == _sourceId || el.Name == historyItem.sourceName) || {};
+            if (item.ID) {
                 this.PlayUrl = await GetPlayUrl(item.PlayUrl);
             }
             this.setState({
-                movieInfo:data,
-                sourceName:item.Name,
-                isRender:true,
-                sourceId:item.ID,
-                seekTime:this.lastPlayTime||0,
-                playUrl:((!allowMoblieNetwork||this.isWiFi)?preLoad:false)?this.PlayUrl:null,
-                hasFollow:hasFollow
+                movieInfo: data,
+                sourceName: item.Name,
+                isRender: true,
+                sourceId: item.ID,
+                seekTime: this.lastPlayTime || 0,
+                playUrl: ((!allowMoblieNetwork || this.isWiFi) ? preLoad : false) ? this.PlayUrl : null,
+                hasFollow: hasFollow
             })
             LayoutAnimation.easeInEaseOut();
         }
@@ -428,50 +429,50 @@ export default class MovieDetail extends PureComponent {
 
     setFollow = () => {
         const { setFollow } = this.context;
-        const { movieInfo:{ID,Name,Cover} } = this.state;
-        this.setState({hasFollow:!this.state.hasFollow});
+        const { movieInfo: { ID, Name, Cover } } = this.state;
+        this.setState({ hasFollow: !this.state.hasFollow });
         setFollow({
-            id:ID,
-            name:Name,
-            img:Cover
+            id: ID,
+            name: Name,
+            img: Cover
         })
     }
 
     onplayRotate = (bool) => {
-        const { settings:{allowMoblieNetwork} } = this.context;
+        const { settings: { allowMoblieNetwork } } = this.context;
         Animated.timing(
             this.scrollRotate,
             {
-                toValue: bool?1:0,
+                toValue: bool ? 1 : 0,
                 duration: 500,
                 //useNativeDriver: true
-            }                              
+            }
         ).start();
         this.setState({
-            isPlaying:bool,
+            isPlaying: bool,
         })
-        if(!allowMoblieNetwork||this.isWiFi){
+        if (!allowMoblieNetwork || this.isWiFi) {
             this.setState({
-                playUrl:(!allowMoblieNetwork||this.isWiFi)?this.PlayUrl:null,
+                playUrl: (!allowMoblieNetwork || this.isWiFi) ? this.PlayUrl : null,
             })
         }
 
-        this.video.toPlay((this.isWiFi||!allowMoblieNetwork)?bool:false);
+        this.video.toPlay((this.isWiFi || !allowMoblieNetwork) ? bool : false);
         LayoutAnimation.easeInEaseOut();
     }
 
-    onPlay = async (ID,bool) => {
-        if(bool){
+    onPlay = async (ID, bool) => {
+        if (bool) {
             //跳转
-            const { settings:{allowMoblieNetwork} } = this.context;
+            const { settings: { allowMoblieNetwork } } = this.context;
             this.lastPlayTime = null;
-            const {movieInfo} = this.state;
-            const item = movieInfo.MoviePlayUrls.find(el=>el.ID==ID);
+            const { movieInfo } = this.state;
+            const item = movieInfo.MoviePlayUrls.find(el => el.ID == ID);
             this.PlayUrl = await GetPlayUrl(item.PlayUrl);
             this.setState({
-                sourceId:item.ID,
-                sourceName:item.Name,
-                seekTime:0,
+                sourceId: item.ID,
+                sourceName: item.Name,
+                seekTime: 0,
             })
         }
         this.hasPlay = true;
@@ -483,46 +484,46 @@ export default class MovieDetail extends PureComponent {
     }
 
     onEnd = async () => {
-        const {sourceId} = this.state;
+        const { sourceId } = this.state;
         const source = this.moviesource.state.source;
-        const index = source.findIndex(el=>el.ID==sourceId);
-        if(index>=0&&index<source.length-1){
-            ToastAndroid && ToastAndroid.show('(oﾟ▽ﾟ)o  即将播放下一资源', ToastAndroid.SHORT);
-            const item = source[index+1];
+        const index = source.findIndex(el => el.ID == sourceId);
+        if (index >= 0 && index < source.length - 1) {
+            ToastAndroid && ToastAndroid.show(`(oﾟ▽ﾟ)o  ${i18n.t('WILL_PLAYED_SOON')}`, ToastAndroid.SHORT);
+            const item = source[index + 1];
             this.PlayUrl = await GetPlayUrl(item.PlayUrl);
             this.setState({
-                sourceId:item.ID,
-                sourceName:item.Name,
-                seekTime:0,
-                playUrl:this.PlayUrl
+                sourceId: item.ID,
+                sourceName: item.Name,
+                seekTime: 0,
+                playUrl: this.PlayUrl
             })
-            this.moviesource.flatlist.scrollToIndex({index:index+1,viewPosition:.5});
-        }else{
-            ToastAndroid && ToastAndroid.show('(oﾟ▽ﾟ)o  全部播放完毕~', ToastAndroid.SHORT);
+            this.moviesource.flatlist.scrollToIndex({ index: index + 1, viewPosition: .5 });
+        } else {
+            ToastAndroid && ToastAndroid.show(`(oﾟ▽ﾟ)o  ${i18n.t('ALL_FINISHED_PLAYING')}~`, ToastAndroid.SHORT);
             this.video.toEnd();
         }
     }
 
     onfullChanged = (isFull) => {
-        this.setState({isFull});
-        if(isFull){
-            this.scrollview.getNode().scrollTo({y:$.STATUS_HEIGHT + 48});
+        this.setState({ isFull });
+        if (isFull) {
+            this.scrollview.getNode().scrollTo({ y: $.STATUS_HEIGHT + 48 });
             Orientation.lockToLandscape();
-        }else{
-            this.scrollview.getNode().scrollTo({y:0});
+        } else {
+            this.scrollview.getNode().scrollTo({ y: 0 });
             Orientation.lockToPortrait();
         }
     }
-    
+
     onBackAndroid = () => {
-        const { isPlaying,isFull } = this.state;
-        if(isFull){
+        const { isPlaying, isFull } = this.state;
+        if (isFull) {
             this.video.toFull(false);
-        }else{
-            if(isPlaying){
+        } else {
+            if (isPlaying) {
                 this.onClose();
-                this.scrollview.getNode().scrollTo({y:0});
-            }else{
+                this.scrollview.getNode().scrollTo({ y: 0 });
+            } else {
                 const { navigation } = this.props;
                 navigation.goBack();
             }
@@ -533,32 +534,32 @@ export default class MovieDetail extends PureComponent {
     allowPlay = () => {
         this.isWiFi = true;
         this.setState({
-            playUrl:this.PlayUrl,
-            isWiFi:true
+            playUrl: this.PlayUrl,
+            isWiFi: true
         });
         this.video.toPlay(true);
-        ToastAndroid && ToastAndroid.show('ヾ(ｏ･ω･)ﾉ  已允许本次使用移动网络播放', ToastAndroid.SHORT);
+        ToastAndroid && ToastAndroid.show(`ヾ(ｏ･ω･)ﾉ  ${i18n.t('PLAYER_NOT_ALLOWED')}`, ToastAndroid.SHORT);
     }
 
     onNectivityChange = (connectionInfo) => {
-        const { settings:{allowMoblieNetwork} } = this.context;
-        this.isWiFi = connectionInfo.type==='wifi';
+        const { settings: { allowMoblieNetwork } } = this.context;
+        this.isWiFi = connectionInfo.type === 'wifi';
         this.setState({
-            isWiFi:this.isWiFi
+            isWiFi: this.isWiFi
         })
-        if(allowMoblieNetwork){
-            if(!this.isWiFi){
-                ToastAndroid && ToastAndroid.show('(oﾟ▽ﾟ)o  当前处于移动网络', ToastAndroid.SHORT);
+        if (allowMoblieNetwork) {
+            if (!this.isWiFi) {
+                ToastAndroid && ToastAndroid.show(`(oﾟ▽ﾟ)o  ${i18n.t('CURRENT_ON_MOBILE')}`, ToastAndroid.SHORT);
                 this.video.toPlay(false);
-            }else{
-                ToastAndroid && ToastAndroid.show('ヾ(ｏ･ω･)ﾉ  当前处于WiFi网络', ToastAndroid.SHORT);
-                this.setState({playUrl:this.PlayUrl});
+            } else {
+                ToastAndroid && ToastAndroid.show(`ヾ(ｏ･ω･)ﾉ  ${i18n.t('CURRENT_ON_WIFI')}`, ToastAndroid.SHORT);
+                this.setState({ playUrl: this.PlayUrl });
             }
         }
     }
 
     componentDidMount() {
-        InteractionManager.runAfterInteractions( async () => {
+        InteractionManager.runAfterInteractions(async () => {
             const connectionInfo = await NetInfo.getConnectionInfo();
             this.onNectivityChange(connectionInfo);
             const { params: { movieId } } = this.props.navigation.state;
@@ -568,7 +569,7 @@ export default class MovieDetail extends PureComponent {
 
     componentWillMount() {
         this.mounted = true;
-        NetInfo.addEventListener('connectionChange',this.onNectivityChange);
+        NetInfo.addEventListener('connectionChange', this.onNectivityChange);
         if (Platform.OS === 'android') {
             BackHandler.addEventListener('handwareBackPress', this.onBackAndroid)
         }
@@ -577,43 +578,43 @@ export default class MovieDetail extends PureComponent {
 
     componentWillUnmount() {
         this.mounted = false;
-        NetInfo.removeEventListener('connectionChange',this.onNectivityChange);
+        NetInfo.removeEventListener('connectionChange', this.onNectivityChange);
         if (Platform.OS === 'android') {
             BackHandler.removeEventListener('handwareBackPress', this.onBackAndroid)
         }
         const { addHistory } = this.context;
-        const { movieInfo:{ID,Name,Cover},isRender,sourceName,sourceId } = this.state;
-        if(isRender){
-            const { currentTime,duration,isEnd } = this.video.state;
-            if(this.hasPlay && (currentTime>=10||isEnd)){
+        const { movieInfo: { ID, Name, Cover }, isRender, sourceName, sourceId } = this.state;
+        if (isRender) {
+            const { currentTime, duration, isEnd } = this.video.state;
+            if (this.hasPlay && (currentTime >= 10 || isEnd)) {
                 //大于10s才保存历史记录
                 const now = new Date();
                 addHistory({
                     currentTime,
                     duration,
                     isEnd,
-                    id:ID,
-                    img:Cover,
-                    name:Name,
+                    id: ID,
+                    img: Cover,
+                    name: Name,
                     sourceName,
                     sourceId,
                     //date:new Date()
-                    date:[now.getFullYear(),now.getMonth()+1,now.getDate(),now.getHours(),now.getMinutes()]
+                    date: [now.getFullYear(), now.getMonth() + 1, now.getDate(), now.getHours(), now.getMinutes()]
                 })
             }
         }
     }
 
     render() {
-        const { navigation,screenProps:{themeColor} } = this.props;
-        const { settings:{allowMoblieNetwork,autoPlayNext} } = this.context;
-        const { movieInfo,isRender,isPlaying,sourceId,playUrl,hasFollow,seekTime,isFull,isWiFi } = this.state;
+        const { navigation, screenProps: { themeColor } } = this.props;
+        const { settings: { allowMoblieNetwork, autoPlayNext } } = this.context;
+        const { movieInfo, isRender, isPlaying, sourceId, playUrl, hasFollow, seekTime, isFull, isWiFi } = this.state;
         return (
             <View style={styles.content}>
                 <Animated.ScrollView
                     ref={(ref) => this.scrollview = ref}
                     showsVerticalScrollIndicator={false}
-                    style={{flex:1}}
+                    style={{ flex: 1 }}
                     scrollEnabled={!isFull}
                     stickyHeaderIndices={[0]}
                     //scrollEventThrottle={1}
@@ -626,53 +627,54 @@ export default class MovieDetail extends PureComponent {
                     <Animated.Image
                         resizeMode='cover'
                         blurRadius={3.5}
-                        source={{ uri: movieInfo.Cover||'http' }}
-                        style={[styles.bg_place, {backgroundColor: themeColor[0],
+                        source={{ uri: movieInfo.Cover || 'http' }}
+                        style={[styles.bg_place, {
+                            backgroundColor: themeColor[0],
                             transform: [{
                                 scale: this.scrollTop.interpolate({
                                     inputRange: [0, $.STATUS_HEIGHT + 50],
                                     outputRange: [1, 1.3]
                                 })
                             }]
-                    }]} />
-                    <Animated.View style={[styles.videobox,isFull&&{margin:0,height:$.WIDTH}, {
+                        }]} />
+                    <Animated.View style={[styles.videobox, isFull && { margin: 0, height: $.WIDTH }, {
                         transform: [{ perspective: 850 }, {
                             rotateX: this.scrollRotate.interpolate({
                                 inputRange: [0, 1],
-                                outputRange: ['0deg','180deg']
+                                outputRange: ['0deg', '180deg']
                             })
                         }]
                     }]}>
                         <MovieInfo movieInfo={movieInfo} themeColor={themeColor[0]} onPlay={this.onPlay} isPlaying={isPlaying} isRender={isRender} />
                         <Animated.View style={[styles.videoCon, {
                             zIndex: this.scrollRotate.interpolate({
-                                inputRange: [0,.499,.501, 1],
-                                outputRange: [-1,-1,1, 1]
+                                inputRange: [0, .499, .501, 1],
+                                outputRange: [-1, -1, 1, 1]
                             }),
                             opacity: this.scrollRotate.interpolate({
-                                inputRange: [0,.499,.501, 1],
-                                outputRange: [0,0,1, 1]
+                                inputRange: [0, .499, .501, 1],
+                                outputRange: [0, 0, 1, 1]
                             })
-                        },isFull&&styles.fullScreen]}>
+                        }, isFull && styles.fullScreen]}>
                             <Video
                                 ref={(ref) => this.video = ref}
                                 uri={playUrl}
-                                onEnd={autoPlayNext?this.onEnd:false}
+                                onEnd={autoPlayNext ? this.onEnd : false}
                                 useTextureView={false}
                                 style={styles.backgroundVideo}
                                 seekTime={seekTime}
                                 onfullChanged={this.onfullChanged}
                                 themeColor={themeColor[0]}
                             />
-                            <View pointerEvents={(isWiFi||!allowMoblieNetwork)?'none':'auto'} style={[styles.fullScreen,styles.center,{backgroundColor:'rgba(0,0,0,.5)'},(isWiFi||!allowMoblieNetwork)&&{opacity:0}]}>
-                                <Text style={styles.maskTip}>当前正处于移动网络环境</Text>
+                            <View pointerEvents={(isWiFi || !allowMoblieNetwork) ? 'none' : 'auto'} style={[styles.fullScreen, styles.center, { backgroundColor: 'rgba(0,0,0,.5)' }, (isWiFi || !allowMoblieNetwork) && { opacity: 0 }]}>
+                                <Text style={styles.maskTip}>{i18n.t('CURRENT_ON_MOBILE_ENV')}</Text>
                                 <TouchableOpacity onPress={this.allowPlay} activeOpacity={.8}>
-                                    <LinearGradient colors={themeColor.length>1?themeColor:[...themeColor,...themeColor]} start={{x: 0, y: 0}} end={{x: 1, y: 0}} style={styles.maskButton}>
-                                        <Text style={styles.maskButtonText}>继续播放?</Text>
+                                    <LinearGradient colors={themeColor.length > 1 ? themeColor : [...themeColor, ...themeColor]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.maskButton}>
+                                        <Text style={styles.maskButtonText}>{i18n.t('CONTINUE_PLAYING')}?</Text>
                                     </LinearGradient>
                                 </TouchableOpacity>
                             </View>
-                            <TouchableOpacity style={[styles.closebtn,isFull&&{ opacity:0, top:-50 }]} onPress={this.onClose} >
+                            <TouchableOpacity style={[styles.closebtn, isFull && { opacity: 0, top: -50 }]} onPress={this.onClose} >
                                 <Icon name='x' size={20} color='#fff' />
                             </TouchableOpacity>
                         </Animated.View>
@@ -693,8 +695,8 @@ MovieDetail.contextType = Store;
 
 const styles = StyleSheet.create({
     content: {
-        backgroundColor:'#f7f7f7',
-        flex:1
+        backgroundColor: '#f7f7f7',
+        flex: 1
     },
     bg_place: {
         position: 'absolute',
@@ -718,7 +720,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         backgroundColor: '#fff',
         paddingBottom: 10,
-        paddingTop:5,
+        paddingTop: 5,
         borderRadius: 5,
         marginHorizontal: 10,
     },
@@ -735,7 +737,7 @@ const styles = StyleSheet.create({
     view_title: {
         fontSize: 15,
         color: '#333',
-        marginLeft:5,
+        marginLeft: 5,
         flex: 1
     },
     con: {
@@ -753,7 +755,7 @@ const styles = StyleSheet.create({
         top: 0,
         left: 0,
         right: 0,
-        bottom:0
+        bottom: 0
     },
     appbar: {
         paddingTop: $.STATUS_HEIGHT,
@@ -779,7 +781,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    center:{
+    center: {
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -812,7 +814,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 18,
         color: '#333',
-        paddingBottom:2
+        paddingBottom: 2
     },
     subtitle: {
         fontSize: 14,
@@ -908,7 +910,7 @@ const styles = StyleSheet.create({
         right: 0,
         top: 0,
         padding: 10,
-        zIndex:30
+        zIndex: 30
     },
     videobox: {
         margin: 10,
@@ -920,48 +922,48 @@ const styles = StyleSheet.create({
         flexDirection: 'row'
     },
     movieitem: {
-		width: 100,
-		overflow:'hidden',
-	},
-	movieimg: {
-		width: 100,
-        height:150,
-        backgroundColor:'#f1f1f1',
-        borderRadius:3,
-		flex: 1,
-		resizeMode: 'cover'
-	},
-	movietext: {
-		alignItems: 'center',
-		height: 30,
-		paddingHorizontal: 5,
-		flexDirection: 'row'
-	},
-	moviename: {
-		fontSize: 14,
-		color: '#333',
-		textAlign: 'center',
-		flex: 1
+        width: 100,
+        overflow: 'hidden',
     },
-    empty:{
-		flex:1,
-		padding:10,
-		textAlign:'center',
-		fontSize: 14,
-		color: '#666'
+    movieimg: {
+        width: 100,
+        height: 150,
+        backgroundColor: '#f1f1f1',
+        borderRadius: 3,
+        flex: 1,
+        resizeMode: 'cover'
     },
-    maskTip:{
-        color:'#fff',
-        fontSize:16
+    movietext: {
+        alignItems: 'center',
+        height: 30,
+        paddingHorizontal: 5,
+        flexDirection: 'row'
     },
-    maskButton:{
-        marginTop:15,
-        borderRadius:3,
-        height:30,
-        paddingHorizontal:10,
+    moviename: {
+        fontSize: 14,
+        color: '#333',
+        textAlign: 'center',
+        flex: 1
+    },
+    empty: {
+        flex: 1,
+        padding: 10,
+        textAlign: 'center',
+        fontSize: 14,
+        color: '#666'
+    },
+    maskTip: {
+        color: '#fff',
+        fontSize: 16
+    },
+    maskButton: {
+        marginTop: 15,
+        borderRadius: 3,
+        height: 30,
+        paddingHorizontal: 10,
         justifyContent: 'center',
     },
-    maskButtonText:{
-        color:'#fff'
+    maskButtonText: {
+        color: '#fff'
     }
 })

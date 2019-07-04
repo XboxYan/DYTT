@@ -28,6 +28,7 @@ import SearchList from '../components/SearchList';
 import AnimatedView from '../components/AnimatedView';
 import Storage from '../../util/storage';
 import { GetSearch } from '../../util/api';
+import i18n from '../../util/i18n';
 
 const { UIManager } = NativeModules;
 
@@ -68,7 +69,7 @@ class SearchResult extends PureComponent {
 
     getData = async () => {
         const data = await GetSearch({ SearchKey: this.keywords, pageIndex: this.page, pageSize: this.pageSize });
-        if( this.mounted ){
+        if (this.mounted) {
             LayoutAnimation.easeInEaseOut();
             if (data.isEnd) {
                 this.setState({
@@ -92,7 +93,7 @@ class SearchResult extends PureComponent {
     }
 
     render() {
-        const { themeColor,navigation } = this.props;
+        const { themeColor, navigation } = this.props;
         const { isRender, data, isEnding } = this.state;
         return (
             <AnimatedView style={[styles.content, styles.bg, styles.full]}>
@@ -100,7 +101,7 @@ class SearchResult extends PureComponent {
                     isRender ?
                         <SearchList isRender={true} isEnding={isEnding} data={data} navigation={navigation} themeColor={themeColor} onEndReached={this.loadMore} />
                         :
-                        <Loading size='small' text='正在努力搜索中...' themeColor={themeColor} />
+                        <Loading size='small' text={`${i18n.t('TRYING_SEARCH')}...`} themeColor={themeColor} />
                 }
             </AnimatedView>
         )
@@ -112,24 +113,24 @@ class SearchHistory extends PureComponent {
     state = {
         isEdit: false
     }
-    
+
     onEdit = () => {
         LayoutAnimation.easeInEaseOut();
-        this.setState({isEdit:!this.state.isEdit})
+        this.setState({ isEdit: !this.state.isEdit })
     }
 
     onPress = (name) => () => {
         const { isEdit } = this.state;
-        if(isEdit){
+        if (isEdit) {
             this.props.removeHistory(name);
-        }else{
+        } else {
             this.props.onSubmit(name, true);
         }
     }
 
     onLongPress = () => {
         LayoutAnimation.easeInEaseOut();
-        this.setState({isEdit: true});
+        this.setState({ isEdit: true });
     }
 
     render() {
@@ -142,15 +143,15 @@ class SearchHistory extends PureComponent {
                         <ScrollView style={styles.content}>
                             <View style={styles.view_hd}>
                                 <Icon name="clock" size={16} color={themeColor} />
-                                <Text style={styles.view_title}>搜索历史</Text>
+                                <Text style={styles.view_title}>{i18n.t('SEARCH_HISTROY')}</Text>
                                 {
-                                    searchList.length>0&&
-                                    <BorderlessButton style={styles.editbtn} onPress={this.onEdit} activeOpacity={.8}><Text style={{color:'#666',fontSize: 14}}>{isEdit?'取消':'编辑'}</Text></BorderlessButton>
+                                    searchList.length > 0 &&
+                                    <BorderlessButton style={styles.editbtn} onPress={this.onEdit} activeOpacity={.8}><Text style={{ color: '#666', fontSize: 14 }}>{isEdit ? '取消' : '编辑'}</Text></BorderlessButton>
                                 }
                             </View>
                             {
                                 searchList.length === 0 ?
-                                    <Text style={styles.search_h_null}>╮(╯﹏╰）╭还没有搜索过~</Text>
+                                    <Text style={styles.search_h_null}>╮(╯﹏╰）╭{i18n.t('EMPTY_SEARCH_HISTROY')}~</Text>
                                     :
                                     <View style={styles.search_h_list}>
                                         {
@@ -163,8 +164,8 @@ class SearchHistory extends PureComponent {
                                                 >
                                                     <Text numberOfLines={1} style={styles.search_h_el}>{el}</Text>
                                                     {
-                                                        isEdit&&
-                                                        <Icon name="x" size={16} style={{marginLeft:5,marginRight:-5}} color="#ccc" />
+                                                        isEdit &&
+                                                        <Icon name="x" size={16} style={{ marginLeft: 5, marginRight: -5 }} color="#ccc" />
                                                     }
                                                 </TouchableOpacity>
                                             ))
@@ -219,7 +220,7 @@ export default class Search extends PureComponent {
             this.addHistory(keywords);
             this.searchcon && this.searchcon.reSearch(keywords);
         } else {
-            ToastAndroid.show('请输入点什么吧~', ToastAndroid.SHORT);
+            ToastAndroid.show(`${i18n.t('ENTER_SOMETHING')}~`, ToastAndroid.SHORT);
         }
     }
 
@@ -272,7 +273,7 @@ export default class Search extends PureComponent {
         const { isSearch, searchList, isRender, keywords } = this.state;
         return (
             <View style={[styles.content, styles.bg]}>
-                <LinearGradient colors={themeColor.length>1?themeColor:[...themeColor,...themeColor]} start={{x: 0, y: 0}} end={{x: 1, y: 0}}  style={styles.top}>
+                <LinearGradient colors={themeColor.length > 1 ? themeColor : [...themeColor, ...themeColor]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.top}>
                     <BorderlessButton
                         activeOpacity={.8}
                         style={styles.btn}
@@ -288,8 +289,8 @@ export default class Search extends PureComponent {
                             underlineColorAndroid='transparent'
                             onSubmitEditing={this.onSubmit}
                             onChangeText={this.onChange}
-                            placeholder='搜索影片、演员~'
-                            returnKeyLabel='搜索'
+                            placeholder={i18n.t('SEARCH_VDEIOS_ACTORS')}
+                            returnKeyLabel={i18n.t('SEARCH_FOR')}
                             placeholderTextColor='#909090'
                         />
                     </View>
@@ -333,9 +334,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    editbtn:{
-        height:'100%',
-        paddingHorizontal:5,
+    editbtn: {
+        height: '100%',
+        paddingHorizontal: 5,
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -391,8 +392,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
         borderRadius: 15,
         justifyContent: 'center',
-        flexDirection:'row',
-        alignItems:'center',
+        flexDirection: 'row',
+        alignItems: 'center',
         marginRight: 10,
         marginBottom: 10
     },

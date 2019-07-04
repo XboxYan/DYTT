@@ -16,8 +16,8 @@ import Icon from 'react-native-vector-icons/Feather';
 import AppTop from '../components/AppTop';
 import LoadView from '../components/LoadView';
 import Touchable from '../components/Touchable';
-import Storage from '../../util/storage';
 import { Store } from '../../util/store';
+import i18n from '../../util/i18n';
 
 const { UIManager } = NativeModules;
 
@@ -27,7 +27,7 @@ const CheckBox = ({ themeColor, checked }) => (
 
 const FollowEmpty = () => (
     <View style={styles.flexcon}>
-        <Text style={styles.empty}>╮(╯﹏╰）╭ 暂无收藏影片</Text>
+        <Text style={styles.empty}>╮(╯﹏╰）╭ {i18n.t('NO_FAVORITE')}</Text>
     </View>
 )
 
@@ -47,13 +47,6 @@ const FollowItem = ({ item: { img, name }, themeColor, onPress, onLongPress, che
 )
 
 export default class Follow extends PureComponent {
-
-    static navigationOptions = {
-        drawerLabel: '收藏',
-        drawerIcon: ({ tintColor }) => (
-            <Icon name='heart' size={18} color={tintColor} />
-        ),
-    };
 
     constructor(props) {
         super(props);
@@ -173,7 +166,7 @@ export default class Follow extends PureComponent {
         const { selected, isEdit, isRender } = this.state;
         return (
             <View style={styles.container}>
-                <AppTop title="收藏" navigation={navigation} themeColor={themeColor}>
+                <AppTop title={i18n.t('COLLECTION')} navigation={navigation} themeColor={themeColor}>
                     {
                         fllowList.length > 0 &&
                         <BorderlessButton onPress={this.onEdit} activeOpacity={.8} style={styles.btn}><Text style={styles.btntext}>{isEdit ? '取消' : '编辑'}</Text></BorderlessButton>
@@ -181,28 +174,28 @@ export default class Follow extends PureComponent {
                 </AppTop>
                 {
                     fllowList.length === 0 ?
-                    <FollowEmpty />
-                    :
-                    <FlatList
-                        style={[styles.content, isEdit && { marginBottom: 48 }]}
-                        numColumns={3}
-                        ListFooterComponent={this.renderFooter}
-                        //removeClippedSubviews={true}
-                        data={fllowList}
-                        onEndReachedThreshold={0.1}
-                        extraData={themeColor||isEdit}
-                        keyExtractor={(item) => item.id.toString()}
-                        renderItem={this.renderItem}
-                    />
+                        <FollowEmpty />
+                        :
+                        <FlatList
+                            style={[styles.content, isEdit && { marginBottom: 48 }]}
+                            numColumns={3}
+                            ListFooterComponent={this.renderFooter}
+                            //removeClippedSubviews={true}
+                            data={fllowList}
+                            onEndReachedThreshold={0.1}
+                            extraData={themeColor || isEdit}
+                            keyExtractor={(item) => item.id.toString()}
+                            renderItem={this.renderItem}
+                        />
                 }
                 <View style={[styles.footer, fllowList.length > 0 && isEdit && { bottom: 0 }]}>
                     <Touchable style={styles.vbtn} onPress={this.selectAll}>
                         <CheckBox themeColor={themeColor[0]} checked={selected.length === fllowList.length} />
-                        <Text style={styles.vbtntext}>全选</Text>
+                        <Text style={styles.vbtntext}>{i18n.t('SELECT_ALL')}</Text>
                     </Touchable>
                     <Touchable style={styles.vbtn} disabled={selected.length === 0} onPress={this.delSelect}>
                         <Icon name='trash-2' size={20} style={{ marginRight: 10 }} color={selected.length === 0 ? '#ccc' : themeColor[0]} />
-                        <Text style={styles.vbtntext}>取消收藏({selected.length})</Text>
+                        <Text style={styles.vbtntext}>{i18n.t('UNFAVORITE')}({selected.length})</Text>
                     </Touchable>
                 </View>
             </View>
