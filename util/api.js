@@ -30,7 +30,7 @@ const GetHomeData = async () => {
     const banner = $('.focusList>li').map((i,item)=>{
         return ({
             "ID": $(item).find('a').attr('href'),
-            "Cover": getHref($(item).find('img').attr('src'),WEBM),
+            "Cover": $(item).find('img').attr('src'),
             "Name": $(item).find('.sTxt').text(),
         })
     }).get();
@@ -40,7 +40,7 @@ const GetHomeData = async () => {
         const data = $('.all_tab>.list_tab_img').eq(index).find('li').map((i, item)=>{
             return ({
                 "ID": $(item).find('a').attr('href'),
-                "Cover": getHref($(item).find('img').attr('src'),WEBM),
+                "Cover": $(item).find('img').attr('src'),
                 "Name": $(item).find('a').attr('title'),
                 "MovieTitle": $(item).find('.title').text(),
                 "Score": $(item).find('.score').text(),
@@ -177,7 +177,7 @@ const GetSearch = async ({pageSize=25,pageIndex=1, SearchKey}) => {
         return ({
             "ID": video.attr('href'),
             "Name": video.attr('title'),
-            "Cover": getHref(video.find('img').attr('src'),WEB),
+            "Cover": video.find('img').attr('src'),
             "Info":{
                 "Type":getInfo(info,1),
                 "Art":getInfo(info,2),
