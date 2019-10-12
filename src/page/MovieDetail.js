@@ -90,7 +90,7 @@ const SortTitle = (props) => (
 
 class MovieSummary extends PureComponent {
     state = {
-        isMore:false
+        isMore:true
     }
 
     expand = () => {
