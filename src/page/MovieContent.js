@@ -33,8 +33,8 @@ class DrawerContent extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
+            Channel: props.state.Channel,
             Plot: props.state.Plot,
-            Status: props.state.Status,
             Area: props.state.Area,
             Year: props.state.Year,
             isVisible:false
@@ -49,18 +49,16 @@ class DrawerContent extends PureComponent {
     }
 
     setVisibel = () => {
-        /*
         if(this.props.type==='movie'){
             this.setType('isVisible',true);
         }
-        */
     }
 
     onSubmit = () => {
-        const { Status, Plot, Area, Year } = this.state;
+        const { Channel, Plot, Area, Year } = this.state;
         const { setType, closeDrawer } = this.props;
         closeDrawer();
-        setType({ Status, Plot, Area, Year });
+        setType({ Channel, Plot, Area, Year });
     }
 
     componentDidMount() {
@@ -92,11 +90,15 @@ class DrawerContent extends PureComponent {
                                     <Text style={[styles.typetitletxt, { color: themeColor[0] }]}>{d.name}</Text>
                                 </View>
                                 <View style={styles.typecon}>
-                                    <BorderlessButton disabled={this.state[d.cate].id == ''} onPress={() => this.setType(d.cate, {name:'',id:''})} style={styles.typeitem}><Text style={[styles.typeitemtxt, this.state[d.cate].id == '' && { color: themeColor[0] }]}>全部</Text></BorderlessButton>
+                                    <BorderlessButton disabled={this.state[d.cate] == ''} onPress={() => this.setType(d.cate, '')} style={styles.typeitem}><Text style={[styles.typeitemtxt, this.state[d.cate] == '' && { color: themeColor[0] }]}>全部</Text></BorderlessButton>
                                     {
                                         d.type.map((el, j) => (
-                                            <BorderlessButton disabled={this.state[d.cate].id === el.id} onPress={() => this.setType(d.cate, el)} key={j} style={styles.typeitem}><Text style={[styles.typeitemtxt, el.id == this.state[d.cate].id && { color: themeColor[0] }]}>{el.name}</Text></BorderlessButton>
+                                            <BorderlessButton disabled={this.state[d.cate] === el} onPress={() => this.setType(d.cate, el)} key={j} style={styles.typeitem}><Text style={[styles.typeitemtxt, el == this.state[d.cate] && { color: themeColor[0] }]}>{el}</Text></BorderlessButton>
                                         ))
+                                    }
+                                    {
+                                        d.cate==='Channel'&&isVisible&&
+                                        <BorderlessButton disabled={this.state[d.cate] == '伦理'} onPress={() => this.setType(d.cate, '伦理')} style={styles.typeitem}><Text style={[styles.typeitemtxt, this.state[d.cate] == '伦理' && { color: themeColor[0] }]}>伦理</Text></BorderlessButton>
                                     }
                                 </View>
                             </View>
@@ -122,7 +124,7 @@ const CategoryTop = ({state,type,openDrawer,themeColor}) => (
             [...Categories[type], ...CommonList].map((d, i) => (
                 <BorderlessButton onPress={openDrawer} style={styles.typetopitem} key={i}>
                     <Icon name={d.icon} size={16} color={themeColor[0]} />
-                    <Text style={[styles.typetoptxt, { color: themeColor[0] }]}>{state[d.cate].name || d.name}</Text>
+                    <Text style={[styles.typetoptxt, { color: themeColor[0] }]}>{state[d.cate] || d.name}</Text>
                 </BorderlessButton>
             ))
         }
@@ -142,29 +144,17 @@ export default class extends PureComponent {
             data: [],
             isRender: false,
             isEnding: false,
-            Status: {
-                name:'',
-                id:''
-            },
-            Plot: {
-                name:'',
-                id:''
-            },
-            Area: {
-                name:'',
-                id:''
-            },
-            Year: {
-                name:'',
-                id:''
-            }
+            Channel: '',
+            Plot: '',
+            Area: '',
+            Year: ''
         }
     }
 
     openDrawer = () => {
-        const { Status, Plot, Area, Year } = this.state;
+        const { Channel, Plot, Area, Year } = this.state;
         this.drawer.openDrawer();
-        this.drawerContent.setState({ Status, Plot, Area, Year });
+        this.drawerContent.setState({ Channel, Plot, Area, Year });
     }
 
     closeDrawer = () => {
@@ -186,15 +176,15 @@ export default class extends PureComponent {
     }
 
     getData = async () => {
-        const { Status, Plot, Area, Year } = this.state;
-        const data = await GetPageList({ pageIndex: this.page, pageSize: this.pageSize, Type:this.type, Status:Status.id, Area:Area.id, Plot:Plot.id, Year:Year.id,orderBy:'addtime' });
+        const { Channel, Plot, Area, Year } = this.state;
+        const data = await GetPageList({ pageIndex: this.page, pageSize: this.pageSize, Type:this.type, Channel, Area, Plot, Year,orderBy:'new' });
         if(this.mounted){
             LayoutAnimation.easeInEaseOut();
             this.setState({
                 data: [...this.state.data, ...data],
                 isRender: true,
             })
-            if (data.length < 25) {
+            if (data.length == 0) {
                 this.setState({
                     isEnding: true
                 })
@@ -250,7 +240,7 @@ export default class extends PureComponent {
     render() {
         const { navigation, screenProps: { themeColor } } = this.props;
         const { title, type } = navigation.state.params;
-        const { Status, Plot, Area, Year, isRender, data, isEnding } = this.state;
+        const { Channel, Plot, Area, Year, isRender, data, isEnding } = this.state;
         return (
             <DrawerLayout
                 drawerPosition={DrawerLayout.positions.Right}
@@ -260,7 +250,7 @@ export default class extends PureComponent {
                 onDrawerOpen={this.onDrawerOpen}
                 onDrawerClose={this.onDrawerClose}
                 drawerWidth={$.WIDTH * .8}
-                renderNavigationView={() => <DrawerContent ref={drawer => this.drawerContent = drawer} themeColor={themeColor} closeDrawer={this.closeDrawer} type={type} state={{ Status, Plot, Area, Year }} setType={this.setType} />}
+                renderNavigationView={() => <DrawerContent ref={drawer => this.drawerContent = drawer} themeColor={themeColor} closeDrawer={this.closeDrawer} type={type} state={{ Channel, Plot, Area, Year }} setType={this.setType} />}
             >
                 <View style={[styles.content, styles.bg]}>
                     <AppTop navigation={navigation} themeColor={themeColor} title={title} isBack={true} >
@@ -268,7 +258,7 @@ export default class extends PureComponent {
                             <Icon name='filter' size={18} color='#fff' />
                         </BorderlessButton>
                     </AppTop>
-                    <CategoryTop openDrawer={this.openDrawer} type={type} state={{ Status, Plot, Area, Year }} themeColor={themeColor} />
+                    <CategoryTop openDrawer={this.openDrawer} type={type} state={{ Channel, Plot, Area, Year }} themeColor={themeColor} />
                     {
                         isRender ?
                             <MovieList style={{paddingHorizontal:5}} isRender={true} isEnding={isEnding} data={data} navigation={navigation} themeColor={themeColor[0]} onEndReached={this.loadMore} />

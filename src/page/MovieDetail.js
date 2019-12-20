@@ -27,7 +27,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import IconE from 'react-native-vector-icons/Entypo';
 import IconM from 'react-native-vector-icons/MaterialIcons';
 import Video from '../components/Video';
-import { GetVideoInfo,GetSameVideo,GetDoubanInterests,GetPlayUrl } from '../../util/api';
+import { GetVideoInfo,GetSameVideo,GetDoubanInterests } from '../../util/api';
 import { Store } from '../../util/store';
 
 const { UIManager } = NativeModules;
@@ -279,24 +279,26 @@ class MovieSame extends PureComponent {
         <View style={{width:20,height:100}} />
     )
 
+
     componentWillReceiveProps(nextProps) {
-        // if (nextProps.isRender !== this.props.isRender) {
-        //     const {Name,ID} = nextProps.movieInfo;
-        //     this.GetSameVideo(Name,ID);
-        // }
+        if (nextProps.isRender !== this.props.isRender) {
+            const {Name,ID} = nextProps.movieInfo;
+            this.GetSameVideo(Name,ID);
+        }
     }
 
     render () {
-        const {isRender,themeColor,movieInfo:{RelateList}} = this.props;
-        //const {isFetch,sameVideo} = this.state;
+        //const {isRender,themeColor,movieInfo:{RelateList=}} = this.props;
+        const {themeColor} = this.props;
+        const {isFetch,sameVideo} = this.state;
         return (
             <View style={styles.viewcon}>
                 <SortTitle title='相关热播' icon="cast" themeColor={themeColor}/>
                 {
-                    isRender
+                    isFetch
                         ?
                         (
-                            RelateList.length>0?
+                            sameVideo.length>0?
                             <View style={{height:180}}>
                                 <FlatList
                                     style={{flex:1,paddingHorizontal:10}}
@@ -305,7 +307,7 @@ class MovieSame extends PureComponent {
                                     removeClippedSubviews={true}
                                     ItemSeparatorComponent={() => <View style={{width:10}} />}
                                     ListFooterComponent={this.renderFooter}
-                                    data={RelateList}
+                                    data={sameVideo}
                                     getItemLayout={(data, index) => ( {length: 110, offset: 110 * index, index} )}
                                     keyExtractor={(item, index) => item.ID.toString()}
                                     renderItem={this.renderItem}
@@ -411,7 +413,7 @@ export default class MovieDetail extends PureComponent {
             }
             const item = data.MoviePlayUrls.find(el=>el.ID==_sourceId||el.Name==historyItem.sourceName)||{};
             if(item.ID){
-                this.PlayUrl = await GetPlayUrl(item.PlayUrl);
+                this.PlayUrl = item.PlayUrl;
             }
             this.setState({
                 movieInfo:data,
@@ -467,7 +469,7 @@ export default class MovieDetail extends PureComponent {
             this.lastPlayTime = null;
             const {movieInfo} = this.state;
             const item = movieInfo.MoviePlayUrls.find(el=>el.ID==ID);
-            this.PlayUrl = await GetPlayUrl(item.PlayUrl);
+            this.PlayUrl = item.PlayUrl;
             this.setState({
                 sourceId:item.ID,
                 sourceName:item.Name,
@@ -489,7 +491,7 @@ export default class MovieDetail extends PureComponent {
         if(index>=0&&index<source.length-1){
             ToastAndroid && ToastAndroid.show('(oﾟ▽ﾟ)o  即将播放下一资源', ToastAndroid.SHORT);
             const item = source[index+1];
-            this.PlayUrl = await GetPlayUrl(item.PlayUrl);
+            this.PlayUrl = item.PlayUrl;
             this.setState({
                 sourceId:item.ID,
                 sourceName:item.Name,

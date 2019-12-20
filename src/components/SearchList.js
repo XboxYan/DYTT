@@ -32,12 +32,12 @@ const MovieItem = (props) => (
 		/>
 		<View style={styles.movietext}>
 			<Text style={[styles.moviename,{color:props.themeColor}]}>{props.item.Name}</Text>
-			<Text numberOfLines={1} style={styles.movietxt1}>类型：{props.item.Info.Type}</Text>
-			<Text numberOfLines={1} style={styles.movietxt2}>主演：{props.item.Info.Art}</Text>
+			<Text numberOfLines={1} style={styles.movietxt1}>类型：{props.item.Tags}</Text>
+			<Text numberOfLines={1} style={styles.movietxt2}>状态：{props.item.MovieTitle}</Text>
 			{
 				//<Text numberOfLines={1} style={styles.movietxt2}>{props.item.Info.Status}</Text>
 			}
-			<Text numberOfLines={1} style={styles.movietxt2}>{props.item.Info.Time}</Text>
+			<Text numberOfLines={1} style={styles.movietxt2}>{props.item.UpdateTime}</Text>
 		</View>
 	</TouchableOpacity>
 )

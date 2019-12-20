@@ -29,14 +29,14 @@ class SwiperCon extends React.Component {
                     data.map((d,i)=>(
                         <TouchableOpacity key={i} activeOpacity={.9} style={styles.item} onPress={()=>navigation.navigate('MovieDetail',{movieId:d.ID})} >
                             <ImageBackground style={styles.bg} resizeMode="cover" blurRadius={5} source={{uri:d.Cover}}>
-                                <Image style={styles.itemimg} source={{uri:d.Cover}} />
+                                <Image style={styles.itemimg} resizeMode="cover" source={{uri:d.Cover}} />
                                 <View style={styles.iteminfo}>
                                     <Text style={styles.title}>{d.Name}</Text>
                                     {
-                                        //!!d.MovieTitle&&<Text style={styles.MovieTitle}>{d.MovieTitle}</Text>
+                                        !!d.MovieTitle&&<Text style={styles.MovieTitle}>{d.MovieTitle}</Text>
                                     }
+                                    <Text style={styles.Tags}>{d.Tags}</Text>
                                     {
-                                        //<Text style={styles.Tags}>{d.Tags}</Text>
                                         //<Text style={styles.UpdateTime}>{d.UpdateTime}</Text>
                                     }
                                 </View>
@@ -64,14 +64,14 @@ const styles = StyleSheet.create({
     },
     bg:{
         flex:1,
-        padding:20,
-        alignItems:'center'
+        padding:15,
         //borderRadius:5,
-        //flexDirection:'row',
+        backgroundColor:'#333',
+        flexDirection:'row',
     },
     itemimg:{
-        width:180,
-        height:180*180/447,
+        width:100,
+        height:150,
         borderRadius:3,
     },
     iteminfo:{
@@ -79,9 +79,9 @@ const styles = StyleSheet.create({
         paddingLeft:10
     },
     title:{
-        marginTop:10,
+        marginTop:5,
         color:'#fff',
-        fontSize:16
+        fontSize:20
     },
     MovieTitle:{
         marginTop:10,

@@ -288,7 +288,7 @@ export default class Search extends PureComponent {
                             underlineColorAndroid='transparent'
                             onSubmitEditing={this.onSubmit}
                             onChangeText={this.onChange}
-                            placeholder='搜索影片、演员~'
+                            placeholder='搜索影片~'
                             returnKeyLabel='搜索'
                             placeholderTextColor='#909090'
                         />
