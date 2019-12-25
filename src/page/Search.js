@@ -72,6 +72,7 @@ class SearchResult extends PureComponent {
             LayoutAnimation.easeInEaseOut();
             if (data.isEnd) {
                 this.setState({
+                    data: [...this.state.data, ...data.list],
                     isEnding: true,
                     isRender: true,
                 })

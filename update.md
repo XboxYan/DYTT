@@ -2,6 +2,11 @@
 
 记录一些页面的关键点
 
+### 20191225
+
+更换`API`，原网站因为`SSL`证书问题暂不可用
+修复搜索问题
+
 ### 20191012
 
 修复首页和搜索页图片的链接问题
@@ -62,6 +67,9 @@ code-push deployment history dyttAndroid Production
 # 发布更新
 code-push release-react dyttAndroid android --t 2.0.0 --dev false --d Production --des "1.修复了已知BUG\n 2.测试code push" --m true
 ```
+
+code-push release-react dyttAndroid android --t 2.2.0 --dev false --d Production --des "修复搜索结果问题" --m true
+
 
 ### 20190104
 
