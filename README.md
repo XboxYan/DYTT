@@ -91,6 +91,8 @@ react-native run-android
 
 > 一般功能可通过热更新直接更新，无需重新更新安装包。
 
+**安装完成后需要杀掉后台重启，可以通过热更新升级**
+
 ## 相关截图
 
 安卓
@@ -161,10 +163,6 @@ react-native run-android
 yanwenbin1991@live.com
 
 或者直接提 `issue`
-
-新建立了一个qq群，欢迎交流。
-
-![qq](./screenshot/qq.png)
 
 ## 打赏
 
